@@ -1,8 +1,9 @@
 #include "api.h"
 
 #include <cpprest/http_client.h>
+
 #include "external/json.hpp"
-#include <codecvt>
+#include <future>
 
 namespace ModDiscord
 {
@@ -26,6 +27,24 @@ namespace ModDiscord
           << ")";
 
         return {};
+      }
+
+      std::string get_method_name(RequestType type)
+      {
+        switch (type)
+        {
+        case GET:
+          return "GET";
+        case POST:
+          return "POST";
+        }
+
+        BOOST_LOG_TRIVIAL(error)
+          << "Invalid RequestType sent to ModDiscord::API::detail::get_method_name ("
+          << static_cast<int>(type)
+          << ")";
+
+        return{};
       }
     }
 
@@ -51,7 +70,7 @@ namespace ModDiscord
           container_buffer<std::string> inStringBuffer;
           return bodyStream.read_to_end(inStringBuffer).then([inStringBuffer](size_t bytesRead)
           {
-            return inStringBuffer.collection();;
+            return inStringBuffer.collection();
           }).then([](std::string text)
           {
             return json::parse(text.c_str());
@@ -70,7 +89,8 @@ namespace ModDiscord
 
     json request(RequestType type, utility::string_t endpoint)
     {
-      raw_request(detail::get_method(type), endpoint);
+      BOOST_LOG_TRIVIAL(debug) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
+      return raw_request(detail::get_method(type), endpoint);
     }
 
     std::string get_wss_url()

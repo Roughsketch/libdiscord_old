@@ -18,27 +18,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\json.hpp">
+      <Filter>Header Files\external</Filter>
+    </ClInclude>
     <ClInclude Include="gateway.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\external</Filter>
     </ClInclude>
-    <ClInclude Include="external\json.hpp">
+    <ClInclude Include="bot.h">
       <Filter>Header Files\external</Filter>
     </ClInclude>
     <ClInclude Include="api.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\external</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="gateway.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gateway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
