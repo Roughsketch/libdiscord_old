@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <fstream>
 
+#include <boost/log/trivial.hpp>
+
 #include "external/json.hpp"
 
 namespace nm = nlohmann;

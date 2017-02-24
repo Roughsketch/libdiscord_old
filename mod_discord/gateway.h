@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 
+#include "api.h"
 
 namespace ModDiscord
 {
@@ -35,6 +36,7 @@ namespace ModDiscord
     static const std::string VERSION;
 
     std::string m_token;
+    std::string m_wss_url;
 
   public:
     explicit Gateway(std::string token);
