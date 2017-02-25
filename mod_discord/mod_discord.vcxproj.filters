@@ -72,8 +72,8 @@
     <ClInclude Include="api_channel.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="event_message.h">
-      <Filter>Header Files\event</Filter>
+    <ClInclude Include="message.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,8 +116,8 @@
     <ClCompile Include="api_channel.cpp">
       <Filter>Source Files\api</Filter>
     </ClCompile>
-    <ClCompile Include="event_message.cpp">
-      <Filter>Source Files\event</Filter>
+    <ClCompile Include="message.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

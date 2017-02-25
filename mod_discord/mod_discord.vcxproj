@@ -123,7 +123,7 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="emoji.h" />
     <ClInclude Include="events.h" />
-    <ClInclude Include="event_message.h" />
+    <ClInclude Include="message.h" />
     <ClInclude Include="external\json.hpp" />
     <ClInclude Include="gateway.h" />
     <ClInclude Include="guild.h" />
@@ -139,7 +139,7 @@
     <ClCompile Include="channel.cpp" />
     <ClCompile Include="emoji.cpp" />
     <ClCompile Include="events.cpp" />
-    <ClCompile Include="event_message.cpp" />
+    <ClCompile Include="message.cpp" />
     <ClCompile Include="gateway.cpp" />
     <ClCompile Include="guild.cpp" />
     <ClCompile Include="main.cpp" />

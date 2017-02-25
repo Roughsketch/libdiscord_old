@@ -2,7 +2,7 @@
 
 #include "api.h"
 #include "channel.h"
-#include "event_message.h"
+#include "message.h"
 
 namespace ModDiscord
 {
@@ -53,15 +53,19 @@ namespace ModDiscord
     else if (event_name == "MESSAGE_CREATE")
     {
       m_threads.push_back(std::async([&]() {
-        Event::Message msg(data);
-        BOOST_LOG_TRIVIAL(info) << "Got message: " << msg.content();
+        auto msg = std::make_shared<Message>(data);
+        BOOST_LOG_TRIVIAL(info) << "Got message: " << msg->content();
 
-        if (msg.content() == ".guilds")
+        if (msg->content() == ".guilds")
         {
           BOOST_LOG_TRIVIAL(info) << "Currently have " << m_guilds.size() << " guilds.";
-          auto chan = API::Channel::get_channel(msg.channel_id());
-          chan.send_message("This message is sent directly from a channel object.");
-          chan.send_temp_message("This is a temporary message.", 5);
+          auto chan = API::Channel::get_channel(msg->channel_id());
+          chan->send_message("This message is sent directly from a channel object.");
+          chan->send_temp_message("This is a temporary message.", 5);
+        }
+        else if (msg->content() == ".info")
+        {
+          msg->respond("I am " + m_self.distinct() + " (" + std::to_string(m_self.id()) + ")");
         }
       }));
     }

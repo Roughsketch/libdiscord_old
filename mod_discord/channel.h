@@ -2,7 +2,7 @@
 
 #include "common.h"
 #include "user.h"
-#include "event_message.h"
+#include "message.h"
 
 namespace ModDiscord
 {
@@ -56,7 +56,7 @@ namespace ModDiscord
 
     bool is_dm() const;
     bool is_pm() const;
-    Event::Message send_message(std::string content, bool tts = false) const;
+    std::shared_ptr<Message> send_message(std::string content, bool tts = false) const;
     void Channel::send_temp_message(std::string content, uint32_t timeout, bool tts = false) const;
   };
 

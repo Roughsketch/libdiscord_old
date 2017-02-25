@@ -62,17 +62,16 @@ namespace ModDiscord
     return m_is_dm;
   }
 
-  Event::Message Channel::send_message(std::string content, bool tts) const
+  std::shared_ptr<Message> Channel::send_message(std::string content, bool tts) const
   {
-    auto response = ModDiscord::API::Channel::create_message(m_id, content);
-    return Event::Message(response);
+    return ModDiscord::API::Channel::create_message(m_id, content);
   }
 
   void Channel::send_temp_message(std::string content, uint32_t timeout, bool tts) const
   {
     using namespace std::chrono;
-    auto response = ModDiscord::API::Channel::create_message(m_id, content);
-    auto message = Event::Message(response);
+    auto message = ModDiscord::API::Channel::create_message(m_id, content);
     std::this_thread::sleep_for(10s);
+    message->remove();
   }
 }
