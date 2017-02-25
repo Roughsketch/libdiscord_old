@@ -16,6 +16,12 @@ namespace ModDiscord
   public:
     User();
     explicit User(nlohmann::json data);
+
+    std::string username() const;
+    std::string discriminator() const;
+    std::string distinct() const;
+    std::string email() const;
+    std::string avatar_id() const;
   };
 
   inline void from_json(const nlohmann::json& json, User& user)

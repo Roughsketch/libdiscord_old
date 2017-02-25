@@ -21,4 +21,29 @@ namespace ModDiscord
     set_from_json(m_verified, "verified", data);
     set_from_json(m_email, "email", data);
   }
+
+  std::string User::username() const
+  {
+    return m_username;
+  }
+
+  std::string User::discriminator() const
+  {
+    return m_discriminator;
+  }
+
+  std::string User::distinct() const
+  {
+    return username() + "#" + discriminator();
+  }
+
+  std::string User::email() const
+  {
+    return m_email;
+  }
+
+  std::string User::avatar_id() const
+  {
+    return m_avatar;
+  }
 }
