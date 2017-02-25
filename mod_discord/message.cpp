@@ -61,6 +61,11 @@ namespace ModDiscord
     return m_mentions;
   }
 
+  std::shared_ptr<Channel> Message::channel() const
+  {
+    return ModDiscord::API::Channel::get_channel(channel_id());
+  }
+
   bool Message::remove() const
   {
     return ModDiscord::API::Channel::delete_message(channel_id(), id());
