@@ -6,20 +6,31 @@
 
 namespace ModDiscord
 {
-  Bot::Bot(nm::json settings)
+  Bot::Bot()
   {
-    set_from_json(m_token, "token", settings);
-    set_from_json(m_client_id, "client_id", settings);
-    set_from_json(m_is_user, "user_account", settings);
+    m_client_id = 0;
+    m_is_user = false;
+  }
 
-    if (!m_is_user)
+  std::shared_ptr<Bot> Bot::create(nlohmann::json settings)
+  {
+    auto bot = std::make_shared<Bot>();
+
+    set_from_json(bot->m_token, "token", settings);
+    set_from_json(bot->m_client_id, "client_id", settings);
+    set_from_json(bot->m_is_user, "user_account", settings);
+
+    if (!bot->m_is_user)
     {
-      m_token = "Bot " + m_token;
+      bot->m_token = "Bot " + bot->m_token;
     }
 
-    ModDiscord::API::set_token(m_token);
+    ModDiscord::API::set_token(bot->m_token);
 
-    m_gateway = std::make_shared<Gateway>(m_token);
+    bot->m_gateway = std::make_shared<Gateway>(bot->m_token);
+    bot->m_gateway->set_bot(bot); //  Let the gateway know about the bot so it can send events.
+
+    return bot;
   }
 
   std::shared_ptr<Gateway> Bot::gateway() const
