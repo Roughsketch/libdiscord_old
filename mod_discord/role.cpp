@@ -14,7 +14,7 @@ namespace ModDiscord
 
   Role::Role(const nlohmann::json& data)
   {
-    set_from_json(m_id, "id", data);
+    set_id_from_json("id", data);
     set_from_json(m_name, "name", data);
     set_from_json(m_color, "color", data);
     set_from_json(m_hoist, "hoist", data);

@@ -4,9 +4,8 @@
 
 namespace ModDiscord
 {
-  class User
+  class User : public Identifiable
   {
-    snowflake m_id;
     std::string m_username;
     std::string m_discriminator;
     std::string m_avatar;

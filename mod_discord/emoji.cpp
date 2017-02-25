@@ -10,7 +10,7 @@ namespace ModDiscord
 
   Emoji::Emoji(const nlohmann::json& data)
   {
-    set_from_json(m_id, "id", data);
+    set_id_from_json("id", data);
     set_from_json(m_name, "name", data);
     set_from_json(m_roles, "roles", data);
     set_from_json(m_require_colons, "require_colons", data);

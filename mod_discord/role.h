@@ -35,9 +35,8 @@ namespace ModDiscord
     MANAGE_EMOJIS         = 0x40000000  // Allows management and editing of emojis
   };
 
-  class Role
+  class Role : public Identifiable
   {
-    snowflake m_id;
     std::string m_name;
     uint32_t m_color;
     bool m_hoist;

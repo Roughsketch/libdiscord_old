@@ -12,7 +12,7 @@ namespace ModDiscord
 
   User::User(nlohmann::json data)
   {
-    set_from_json(m_id, "id", data);
+    set_id_from_json("id", data);
     set_from_json(m_username, "username", data);
     set_from_json(m_discriminator, "discriminator", data);
     set_from_json(m_avatar, "avatar", data);

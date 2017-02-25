@@ -5,9 +5,8 @@
 
 namespace ModDiscord
 {
-  class Emoji
+  class Emoji : public Identifiable
   {
-    snowflake m_id;
     std::string m_name;
     std::vector<snowflake> m_roles;
     bool m_require_colons;

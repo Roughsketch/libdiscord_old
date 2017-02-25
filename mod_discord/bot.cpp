@@ -6,32 +6,20 @@
 
 namespace ModDiscord
 {
-  Bot::Bot()
+  Bot::Bot(nm::json settings)
   {
-    m_client_id = 0;
-    m_is_user = false;
-  }
+    set_from_json(m_token, "token", settings);
+    set_from_json(m_client_id, "client_id", settings);
+    set_from_json(m_is_user, "user_account", settings);
 
-  std::shared_ptr<Bot> Bot::create(nm::json settings)
-  {
-    auto bot = std::make_shared<Bot>();
-
-    set_from_json(bot->m_token, "token", settings);
-    set_from_json(bot->m_client_id, "client_id", settings);
-    set_from_json(bot->m_is_user, "user_account", settings);
-
-    if (!bot->m_is_user)
+    if (!m_is_user)
     {
-      bot->m_token = "Bot " + bot->m_token;
+      m_token = "Bot " + m_token;
     }
 
-    ModDiscord::API::set_token(bot->m_token);
+    ModDiscord::API::set_token(m_token);
 
-    bot->m_gateway = std::make_shared<Gateway>(bot->m_token);
-
-    bot->m_gateway->set_bot(bot); //  Let the gateway know about the bot so it can send events.
-
-    return bot;
+    m_gateway = std::make_shared<Gateway>(m_token);
   }
 
   std::shared_ptr<Gateway> Bot::gateway() const
@@ -72,12 +60,8 @@ namespace ModDiscord
         {
           BOOST_LOG_TRIVIAL(info) << "Currently have " << m_guilds.size() << " guilds.";
           auto chan = API::Channel::get_channel(msg.channel_id());
-          chan->send_message("This message is sent directly from a channel object.");
-          chan->send_temp_message("This is a temporary message.", 5);
-        }
-        else if (msg.content() == ".info")
-        {
-          msg.respond("I am " + m_self.distinct() + " (" + std::to_string(m_self.id()) + ").");
+          chan.send_message("This message is sent directly from a channel object.");
+          chan.send_temp_message("This is a temporary message.", 5);
         }
       }));
     }

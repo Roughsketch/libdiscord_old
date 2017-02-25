@@ -13,22 +13,7 @@
 
 namespace ModDiscord
 {
-  class UnavailableGuild
-  {
-  protected:
-    snowflake m_id;
-    bool m_unavailable;
-  public:
-    UnavailableGuild();
-    explicit UnavailableGuild(nlohmann::json data);
-  };
-
-  inline void from_json(const nlohmann::json& json, UnavailableGuild& guild)
-  {
-    guild = UnavailableGuild(json);
-  }
-
-  class Guild : private UnavailableGuild
+  class Guild : public Identifiable
   {
     std::string m_name;
     std::string m_icon;
@@ -52,6 +37,8 @@ namespace ModDiscord
     std::vector<Member> m_members;
     std::vector<Channel> m_channels;
     std::vector<PresenceUpdate> m_presences;
+
+    bool m_unavailable;
   public:
     explicit Guild(nlohmann::json data);
 

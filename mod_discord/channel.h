@@ -30,10 +30,9 @@ namespace ModDiscord
     Group
   };
 
-  class Channel
+  class Channel : public Identifiable
   {
     //  All Channels
-    snowflake m_id;
     bool m_is_private;
     snowflake m_last_message_id;
 

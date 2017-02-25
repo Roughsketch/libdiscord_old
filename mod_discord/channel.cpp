@@ -32,7 +32,7 @@ namespace ModDiscord
 
   Channel::Channel(const nlohmann::json& data)
   {
-    set_from_json(m_id, "id", data);
+    set_id_from_json("id", data);
     set_from_json(m_is_private, "is_private", data);
     set_from_json(m_last_message_id, "last_message_id", data);
 

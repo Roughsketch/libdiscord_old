@@ -2,20 +2,10 @@
 
 namespace ModDiscord
 {
-  UnavailableGuild::UnavailableGuild()
+  Guild::Guild(nlohmann::json data)
   {
-    m_unavailable = false;
-  }
+    set_id_from_json("id", data);
 
-  UnavailableGuild::UnavailableGuild(nlohmann::json data)
-  {
-    set_from_json(m_id, "id", data);
-    set_from_json(m_unavailable, "unavailable", data);
-  }
-
-
-  Guild::Guild(nlohmann::json data) : UnavailableGuild(data)
-  {
     for (auto& channel : data["channels"])
     {
       //  Set the guild_id member for each channel since it is missing.
@@ -44,5 +34,6 @@ namespace ModDiscord
     set_from_json(m_members, "members", data);
     set_from_json(m_channels, "channels", data);
     set_from_json(m_presences, "presences", data);
+    set_from_json(m_unavailable, "unavailable", data);
   }
 }
