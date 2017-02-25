@@ -25,7 +25,8 @@ namespace ModDiscord
     std::vector<std::future<void>> m_threads;
     std::mutex m_thread_mutex;
   public:
-    explicit Bot(nm::json);
+    Bot();
+    static std::shared_ptr<Bot> create(nm::json settings);
 
     std::shared_ptr<Gateway> gateway() const;
     void run() const;
