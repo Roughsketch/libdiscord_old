@@ -94,6 +94,10 @@ namespace ModDiscord
             return json::parse(text.c_str());
           }).get();
         }
+        else if ((type == methods::DEL && res.status_code() == status_codes::NoContent))
+        {
+          return{ { "response_status", res.status_code() } };
+        }
         else
         {
           BOOST_LOG_TRIVIAL(error) << "Did not get proper response from API call (" << res.status_code() << ") - " << res.extract_string().get().c_str();
