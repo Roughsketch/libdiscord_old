@@ -76,7 +76,11 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  ModDiscord::Bot bot(settings);
+  auto bot = std::make_shared<ModDiscord::Bot>(settings);
+
+  bot->gateway()->set_bot(bot); //  Let the gateway know about the bot so it can send events.
+  bot->run();                   //  Start the bot.
+  
 
   std::cout << "Done.";
   std::cin.get();

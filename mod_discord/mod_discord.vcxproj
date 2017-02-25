@@ -117,16 +117,36 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="api.h" />
+    <ClInclude Include="api_channel.h" />
     <ClInclude Include="bot.h" />
+    <ClInclude Include="channel.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="emoji.h" />
+    <ClInclude Include="events.h" />
+    <ClInclude Include="event_message.h" />
     <ClInclude Include="external\json.hpp" />
     <ClInclude Include="gateway.h" />
+    <ClInclude Include="guild.h" />
+    <ClInclude Include="member.h" />
+    <ClInclude Include="role.h" />
+    <ClInclude Include="user.h" />
+    <ClInclude Include="voice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
+    <ClCompile Include="api_channel.cpp" />
     <ClCompile Include="bot.cpp" />
+    <ClCompile Include="channel.cpp" />
+    <ClCompile Include="emoji.cpp" />
+    <ClCompile Include="events.cpp" />
+    <ClCompile Include="event_message.cpp" />
     <ClCompile Include="gateway.cpp" />
+    <ClCompile Include="guild.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="member.cpp" />
+    <ClCompile Include="role.cpp" />
+    <ClCompile Include="user.cpp" />
+    <ClCompile Include="voice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
