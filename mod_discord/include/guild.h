@@ -41,12 +41,12 @@ namespace ModDiscord
 
     bool m_unavailable;
   public:
+    Guild();
     explicit Guild(nlohmann::json data);
 
-    bool operator< (const Guild& other) const
-    {
-      return m_id < other.m_id;
-    }
+    void merge(std::shared_ptr<Guild> other);
+
+    void set_unavailable(bool value);
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)

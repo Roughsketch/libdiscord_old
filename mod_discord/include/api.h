@@ -1,11 +1,9 @@
 #pragma once
 
-#include <future>
-
-#include <cpprest/http_client.h>
 #include "external/json.hpp"
 
 #include "api/api_channel.h"
+#include "api/api_guild.h"
 #include "common.h"
 
 namespace ModDiscord
@@ -21,7 +19,11 @@ namespace ModDiscord
       PATCH
     };
 
-    static utility::string_t Token;
+    enum Status : uint16_t
+    {
+      OK = 200,
+      NoContent = 204
+    };
 
     void set_token(std::string token);
     std::string get_wss_url();

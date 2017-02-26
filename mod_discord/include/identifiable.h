@@ -11,6 +11,11 @@ namespace ModDiscord
   public:
     Identifiable() : m_id(0) {}
 
+    explicit operator snowflake() const
+    {
+      return m_id;
+    }
+
     template <typename T>
     void set_id_from_json(T key, nlohmann::json data)
     {

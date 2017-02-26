@@ -3,6 +3,7 @@
 #include <future>
 #include <memory>
 
+#include "common.h"
 #include "guild.h"
 #include "user.h"
 
@@ -24,8 +25,9 @@ namespace ModDiscord
     std::vector<std::future<void>> m_threads;
     std::mutex m_thread_mutex;
 
-    //  Callbacks
-    std::function<void(std::shared_ptr<Message>)> m_on_message;
+    //  Callbacks for events
+    typedef std::function<void(std::shared_ptr<Message>)> OnMessageCallback;
+    OnMessageCallback m_on_message;
   public:
     explicit Bot();
 
@@ -37,7 +39,7 @@ namespace ModDiscord
     std::string invite_url() const;
     void handle_dispatch(std::string event_name, nlohmann::json data);
 
-    void on_message(std::function<void(std::shared_ptr<Message>)> callback)
+    void on_message(OnMessageCallback callback)
     {
       m_on_message = callback;
     }

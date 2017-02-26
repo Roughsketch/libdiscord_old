@@ -3,11 +3,14 @@
 
 #include <future>
 #include <boost/log/trivial.hpp>
+#include <cpprest/http_client.h>
 
 namespace ModDiscord
 {
   namespace API
   {
+    static utility::string_t Token;
+
     namespace detail
     {
       web::http::method get_method(RequestType type)
@@ -102,7 +105,7 @@ namespace ModDiscord
         else
         {
           BOOST_LOG_TRIVIAL(error) << "Did not get proper response from API call (" << res.status_code() << ") - " << res.extract_string().get().c_str();
-          return json();
+          return{ { "response_status", res.status_code() } };
         }
       });
 

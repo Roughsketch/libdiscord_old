@@ -64,24 +64,39 @@ namespace ModDiscord
       set_from_json(m_self, "user", data);
       set_from_json(m_private_channels, "private_channels", data);
     }
-    else if (event_name == "GUILD_CREATE")
+    else if (event_name == "CHANNEL_CREATE" || event_name == "CHANNEL_UPDATE")
     {
-      m_guilds.emplace_back(Guild(data));
+      ModDiscord::API::Channel::update_cache(std::make_shared<Channel>(data));
+    }
+    else if (event_name == "CHANNEL_DELETE")
+    {
+      ModDiscord::API::Channel::remove_cache(std::make_shared<Channel>(data));
+    }
+    else if (event_name == "GUILD_CREATE" || event_name == "GUILD_UPDATE")
+    {
+      ModDiscord::API::Guild::update_cache(std::make_shared<Guild>(data));
+    }
+    else if (event_name == "GUILD_DELETE")
+    {
+      snowflake id;
+      set_from_json(id, "id", data);
+
+      if (data.count("unavailable"))
+      {
+        //  The guild is just unavailable, mark it as such.
+        ModDiscord::API::Guild::mark_unavailable(id);
+      }
+      else
+      {
+        //  The user was removed from the guild, remove it from our cache.
+        ModDiscord::API::Guild::remove_cache(id);
+      }
     }
     else if (event_name == "MESSAGE_CREATE")
     {
       m_threads.push_back(std::async([&]() {
         auto msg = std::make_shared<Message>(data);
-        BOOST_LOG_TRIVIAL(info) << "Got message: " << msg->content();
-
-        if (msg->content() == ".guilds")
-        {
-          BOOST_LOG_TRIVIAL(info) << "Currently have " << m_guilds.size() << " guilds.";
-          auto chan = API::Channel::get_channel(msg->channel_id());
-          chan->send_message("This message is sent directly from a channel object.");
-          chan->send_temp_message("This is a temporary message.", 5);
-        }
-
+        BOOST_LOG_TRIVIAL(trace) << "Got message: " << msg->content();
         m_on_message(msg);
       }));
     }

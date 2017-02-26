@@ -2,6 +2,7 @@
 #include "api/api_channel.h"
 
 #include <boost/log/trivial.hpp>
+#include <cpprest/http_msg.h>
 
 namespace ModDiscord
 {
@@ -9,11 +10,39 @@ namespace ModDiscord
   {
     namespace Channel
     {
+      void update_cache(std::shared_ptr<ModDiscord::Channel> channel)
+      {
+        if (ChannelCache.count(channel->id()))
+        {
+          BOOST_LOG_TRIVIAL(trace) << "Merging new channel information with cached value.";
+          auto old = get_channel(channel->id());
+          old->merge(channel);
+        }
+        else
+        {
+          ChannelCache[channel->id()] = channel;
+        }
+      }
+
+      void remove_cache(std::shared_ptr<ModDiscord::Channel> channel)
+      {
+        auto itr = ChannelCache.find(channel->id());
+
+        if (itr != std::end(ChannelCache))
+        {
+          ChannelCache.erase(itr);
+        }
+        else
+        {
+          BOOST_LOG_TRIVIAL(error) << "Attempted to delete a channel that wasn't in the cache.";
+        }
+      }
+
       std::shared_ptr<ModDiscord::Channel> get_channel(snowflake channel_id)
       {
         if (ChannelCache.count(channel_id))
         {
-          BOOST_LOG_TRIVIAL(info) << "Returning channel from cache.";
+          BOOST_LOG_TRIVIAL(trace) << "Returning channel from cache.";
           return ChannelCache[channel_id];
         }
 
@@ -21,10 +50,49 @@ namespace ModDiscord
 
         if (!json.empty())
         {
-          return std::make_shared<ModDiscord::Channel>(json);
+          auto chan = std::make_shared<ModDiscord::Channel>(json);
+          update_cache(chan);
+          return chan;
         }
         
         return std::make_shared<ModDiscord::Channel>();
+      }
+
+      std::shared_ptr<ModDiscord::Channel> modify_text_channel(snowflake channel_id, std::string name, uint32_t position, std::string topic)
+      {
+        auto chan = get_channel(channel_id);
+
+        auto response = request(PATCH, "channels/" + std::to_string(channel_id), {
+          { "name", name },
+          { "position", position },
+          { "topic", topic }
+        });
+
+        if (response["response_status"].get<int>() != Status::OK)
+        {
+          BOOST_LOG_TRIVIAL(error) << "Modify text channel returned bad response (" << response["response_status"].get<int>() << ")";
+        }
+
+        return chan;
+      }
+
+      std::shared_ptr<ModDiscord::Channel> modify_voice_channel(snowflake channel_id, std::string name, uint32_t position, uint32_t bitrate, uint32_t user_limit)
+      {
+        auto chan = get_channel(channel_id);
+
+        auto response = request(PATCH, "channels/" + std::to_string(channel_id), {
+          { "name", name },
+          { "position", position },
+          { "bitrate", bitrate },
+          { "user_limit", user_limit }
+        });
+
+        if (response["response_status"].get<int>() != Status::OK)
+        {
+          BOOST_LOG_TRIVIAL(error) << "Modify voice channel returned bad response (" << response["response_status"].get<int>() << ")";
+        }
+
+        return chan;
       }
 
       std::shared_ptr<Message> create_message(snowflake channel_id, std::string content, bool tts)
@@ -42,7 +110,7 @@ namespace ModDiscord
       bool delete_message(snowflake channel_id, snowflake message_id)
       {
         auto response = request(DELETE, "channels/" + std::to_string(channel_id) + "/messages/" + std::to_string(message_id));
-        return response["response_status"].get<int>() == web::http::status_codes::NoContent;
+        return response["response_status"].get<int>() == Status::NoContent;
       }
     }
   }

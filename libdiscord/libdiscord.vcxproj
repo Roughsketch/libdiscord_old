@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\mod_discord\src\api.cpp" />
     <ClCompile Include="..\mod_discord\src\api_channel.cpp" />
+    <ClCompile Include="..\mod_discord\src\api_guild.cpp" />
     <ClCompile Include="..\mod_discord\src\bot.cpp" />
     <ClCompile Include="..\mod_discord\src\channel.cpp" />
     <ClCompile Include="..\mod_discord\src\emoji.cpp" />
@@ -39,6 +40,7 @@
   <ItemGroup>
     <ClInclude Include="..\mod_discord\include\api.h" />
     <ClInclude Include="..\mod_discord\include\api\api_channel.h" />
+    <ClInclude Include="..\mod_discord\include\api\api_guild.h" />
     <ClInclude Include="..\mod_discord\include\bot.h" />
     <ClInclude Include="..\mod_discord\include\channel.h" />
     <ClInclude Include="..\mod_discord\include\common.h" />

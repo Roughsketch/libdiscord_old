@@ -94,6 +94,13 @@ int main(int argc, char* argv[])
     {
       message->respond("I am " + bot->profile()->distinct() + " (" + std::to_string(bot->profile()->id()) + ")");
     }
+    else if (message->content() == ".modify")
+    {
+      message->channel()->modify([](std::shared_ptr<ModDiscord::Channel> chan)
+      {
+        chan->set_name("sandcastle");
+      });
+    }
   });
 
   bot->run(); //  Start the bot.

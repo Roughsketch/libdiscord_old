@@ -60,6 +60,9 @@
     <ClCompile Include="..\mod_discord\src\voice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\mod_discord\src\api_guild.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -111,6 +114,9 @@
       <Filter>Header Files\external</Filter>
     </ClInclude>
     <ClInclude Include="..\mod_discord\include\api\api_channel.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mod_discord\include\api\api_guild.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
   </ItemGroup>
