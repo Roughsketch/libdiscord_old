@@ -29,7 +29,6 @@
     <ClCompile Include="..\mod_discord\src\guild.cpp" />
     <ClCompile Include="..\mod_discord\src\member.cpp" />
     <ClCompile Include="..\mod_discord\src\message.cpp" />
-    <ClCompile Include="..\mod_discord\src\plugin_container.cpp" />
     <ClCompile Include="..\mod_discord\src\role.cpp" />
     <ClCompile Include="..\mod_discord\src\user.cpp" />
     <ClCompile Include="..\mod_discord\src\voice.cpp" />
@@ -51,8 +50,6 @@
     <ClInclude Include="..\mod_discord\include\identifiable.h" />
     <ClInclude Include="..\mod_discord\include\member.h" />
     <ClInclude Include="..\mod_discord\include\message.h" />
-    <ClInclude Include="..\mod_discord\include\plugin.h" />
-    <ClInclude Include="..\mod_discord\include\plugin_container.h" />
     <ClInclude Include="..\mod_discord\include\role.h" />
     <ClInclude Include="..\mod_discord\include\user.h" />
     <ClInclude Include="..\mod_discord\include\voice.h" />

@@ -51,9 +51,6 @@
     <ClCompile Include="..\mod_discord\src\message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\plugin_container.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\mod_discord\src\role.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,12 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\mod_discord\include\message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mod_discord\include\plugin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mod_discord\include\plugin_container.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\mod_discord\include\role.h">

@@ -9,14 +9,9 @@
 namespace ModDiscord
 {
   class Gateway;
-  class PluginContainer;
 
-  class Bot : std::enable_shared_from_this<Bot>
+  class Bot
   {
-    std::shared_ptr<Bot> m_bot;
-
-    std::string m_plugin_dir;
-    std::vector<std::shared_ptr<PluginContainer>> m_plugins;
     snowflake m_client_id;
     bool m_is_user;
     User m_self;
@@ -34,7 +29,6 @@ namespace ModDiscord
     static std::shared_ptr<Bot> create(nlohmann::json settings);
 
     void run() const;
-    void load_plugins();
 
     std::shared_ptr<User> profile() const;
     std::string invite_url() const;
