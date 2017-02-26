@@ -2,20 +2,16 @@
 #include <cstdint>
 #include <fstream>
 
-#include <boost/log/trivial.hpp>
-
 #include "external/json.hpp"
-
-namespace nm = nlohmann;
 
 namespace ModDiscord
 {
   typedef uint64_t snowflake;
 
-  inline nm::json read_json_file(std::string file)
+  inline nlohmann::json read_json_file(std::string file)
   {
     std::ifstream ifs(file);
-    nm::json json;
+    nlohmann::json json;
 
     if (ifs.is_open())
     {
@@ -25,7 +21,7 @@ namespace ModDiscord
     return json;
   }
 
-  inline void write_json_file(std::string file, nm::json json, bool pretty = false)
+  inline void write_json_file(std::string file, nlohmann::json json, bool pretty = false)
   {
     std::ofstream ofs(file);
 
@@ -36,21 +32,21 @@ namespace ModDiscord
   }
 
   template <typename T, typename U>
-  void set_from_json(T& var, U key, nm::json data)
+  void set_from_json(T& var, U key, nlohmann::json data)
   {
     var = (!data.count(key) || data[key].is_null()) ? T() : data[key].get<T>();
   }
 
   //  Specialization for snowflake because it's sent as a string, but is really a uint64_t
   template <typename U>
-  void set_from_json(snowflake& var, U key, nm::json data)
+  void set_from_json(snowflake& var, U key, nlohmann::json data)
   {
     var = (!data.count(key) || data[key].is_null()) ? snowflake() : std::stoull(data[key].get<std::string>());
   }
 
   //  Specialization for vector snowflake
   template <typename U>
-  void set_from_json(std::vector<snowflake>& var, U key, nm::json data)
+  void set_from_json(std::vector<snowflake>& var, U key, nlohmann::json data)
   {
     if (!data.count(key) || data[key].is_null())
     {
@@ -65,28 +61,4 @@ namespace ModDiscord
         });
     }
   }
-
-  class Identifiable
-  {
-  protected:
-    snowflake m_id;
-  public:
-    Identifiable() : m_id(0) {}
-
-    template <typename T>
-    void set_id_from_json(T key, nlohmann::json data)
-    {
-      set_from_json(m_id, key, data);
-    }
-
-    void set_id(snowflake id)
-    {
-      m_id = id;
-    }
-
-    snowflake id() const
-    {
-      return m_id;
-    }
-  };
 }

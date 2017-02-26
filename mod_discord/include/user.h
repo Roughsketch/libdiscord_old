@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include "identifiable.h"
 
 namespace ModDiscord
 {

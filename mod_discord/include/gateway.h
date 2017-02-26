@@ -1,7 +1,5 @@
 #pragma once
 
-#include <boost/iostreams/filtering_stream.hpp>
-#include <boost/iostreams/filter/zlib.hpp>
 #include <cpprest/ws_client.h>
 
 #include "api.h"

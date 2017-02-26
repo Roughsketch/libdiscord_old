@@ -2,6 +2,7 @@
 #include "common.h"
 
 #include <future>
+#include <boost/log/trivial.hpp>
 
 namespace ModDiscord
 {
@@ -66,7 +67,7 @@ namespace ModDiscord
 
     static const auto API_BASE = utility::string_t(L"https://discordapp.com/api/v6");
 
-    json raw_request(web::http::method type, utility::string_t endpoint, nm::json data)
+    json raw_request(web::http::method type, utility::string_t endpoint, nlohmann::json data)
     {
       http_client client(API_BASE);
       http_request request(type);
@@ -109,7 +110,7 @@ namespace ModDiscord
       return requestTask.get();
     }
 
-    json request(RequestType type, std::string endpoint, nm::json data)
+    json request(RequestType type, std::string endpoint, nlohmann::json data)
     {
       BOOST_LOG_TRIVIAL(debug) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
       return raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);

@@ -1,5 +1,7 @@
 #include "api.h"
-#include "api_channel.h"
+#include "api/api_channel.h"
+
+#include <boost/log/trivial.hpp>
 
 namespace ModDiscord
 {

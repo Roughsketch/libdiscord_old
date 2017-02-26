@@ -1,8 +1,13 @@
 #include "bot.h"
 
 #include "api.h"
-#include "channel.h"
-#include "message.h"
+#include "common.h"
+#include "gateway.h"
+#include "plugin_container.h"
+
+#include <boost/log/trivial.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace ModDiscord
 {
@@ -15,32 +20,60 @@ namespace ModDiscord
   std::shared_ptr<Bot> Bot::create(nlohmann::json settings)
   {
     auto bot = std::make_shared<Bot>();
+    bot->m_bot = bot;
 
-    set_from_json(bot->m_token, "token", settings);
     set_from_json(bot->m_client_id, "client_id", settings);
     set_from_json(bot->m_is_user, "user_account", settings);
+    set_from_json(bot->m_plugin_dir, "plugin_dir", settings);
+
+    std::string token;
+    set_from_json(token, "token", settings);
 
     if (!bot->m_is_user)
     {
-      bot->m_token = "Bot " + bot->m_token;
+      token = "Bot " + token;
     }
 
-    ModDiscord::API::set_token(bot->m_token);
+    ModDiscord::API::set_token(token);
 
-    bot->m_gateway = std::make_shared<Gateway>(bot->m_token);
+    bot->m_gateway = std::make_shared<Gateway>(token);
     bot->m_gateway->set_bot(bot); //  Let the gateway know about the bot so it can send events.
 
-    return bot;
-  }
+    BOOST_LOG_TRIVIAL(info) << "Loading plugins...";
+    bot->load_plugins();
 
-  std::shared_ptr<Gateway> Bot::gateway() const
-  { 
-    return m_gateway;
+    return bot;
   }
 
   void Bot::run() const
   {
     m_gateway->start();
+  }
+
+  void Bot::load_plugins()
+  {
+    namespace fs = boost::filesystem;
+    fs::path plugin_dir(m_plugin_dir);
+
+    BOOST_LOG_TRIVIAL(trace) << "Loading directory: " << plugin_dir;
+    if (fs::is_directory(plugin_dir))
+    {
+      BOOST_LOG_TRIVIAL(trace) << "Inside directory.";
+      for (auto& entry : boost::make_iterator_range(fs::directory_iterator(plugin_dir), {}))
+      {
+        BOOST_LOG_TRIVIAL(trace) << "Entry: " << entry;
+        if (is_regular_file(entry) && extension(entry) == ".dll")
+        {
+          BOOST_LOG_TRIVIAL(trace) << "Found plugin: " << entry;
+          m_plugins.push_back(PluginContainer::load(entry));
+        }
+      }
+    }
+  }
+
+  std::shared_ptr<User> Bot::profile() const
+  {
+    return std::make_shared<User>(m_self);
   }
 
   std::string Bot::invite_url() const
@@ -74,9 +107,10 @@ namespace ModDiscord
           chan->send_message("This message is sent directly from a channel object.");
           chan->send_temp_message("This is a temporary message.", 5);
         }
-        else if (msg->content() == ".info")
+
+        for (auto& plugin : m_plugins)
         {
-          msg->respond("I am " + m_self.distinct() + " (" + std::to_string(m_self.id()) + ")");
+          plugin->get()->OnMessage(std::make_shared<Bot>(), msg);
         }
       }));
     }

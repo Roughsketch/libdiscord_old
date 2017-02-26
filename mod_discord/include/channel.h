@@ -1,8 +1,9 @@
 #pragma once
 
 #include "common.h"
-#include "user.h"
+#include "identifiable.h"
 #include "message.h"
+#include "user.h"
 
 namespace ModDiscord
 {

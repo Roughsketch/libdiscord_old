@@ -5,7 +5,7 @@
 #include <cpprest/http_client.h>
 #include "external/json.hpp"
 
-#include "api_channel.h"
+#include "api/api_channel.h"
 #include "common.h"
 
 namespace ModDiscord

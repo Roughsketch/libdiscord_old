@@ -2,6 +2,7 @@
 
 #include "channel.h"
 #include "common.h"
+#include "identifiable.h"
 #include "role.h"
 #include "user.h"
 

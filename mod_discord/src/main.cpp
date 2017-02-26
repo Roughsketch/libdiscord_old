@@ -1,9 +1,17 @@
-#include "common.h"
 #include "bot.h"
+
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/sources/severity_logger.hpp>
+#include <boost/log/sources/record_ostream.hpp>
 
 void generate_default_settings()
 {
-  static nm::json default_settings = R"(
+  static nlohmann::json default_settings = R"(
   {
     "token": "",
     "client_id": 0,
@@ -23,7 +31,7 @@ void generate_default_settings()
   ModDiscord::write_json_file("default.json", default_settings, true);
 }
 
-bool valid_settings(nm::json settings)
+bool valid_settings(nlohmann::json settings)
 {
   auto valid = true;
 
@@ -57,6 +65,8 @@ bool valid_settings(nm::json settings)
 
 int main(int argc, char* argv[])
 {
+  boost::log::add_file_log("mod_discord.log");
+
   auto settings = ModDiscord::read_json_file("default.json");
 
   if (settings.empty())

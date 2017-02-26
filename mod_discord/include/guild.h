@@ -7,6 +7,7 @@
 #include "channel.h"
 #include "emoji.h"
 #include "events.h"
+#include "identifiable.h"
 #include "member.h"
 #include "role.h"
 #include "voice.h"

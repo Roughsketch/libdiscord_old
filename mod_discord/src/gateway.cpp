@@ -1,5 +1,8 @@
 #include "gateway.h"
 
+#include <boost/log/trivial.hpp>
+#include <zlib.h>
+
 namespace ModDiscord
 {
   const uint8_t Gateway::LARGE_SERVER = 100;
@@ -53,11 +56,6 @@ namespace ModDiscord
     //  If the message is binary data, then we need to decompress it using ZLib.
     if (msg.message_type() == web::websockets::client::websocket_message_type::binary_message)
     {
-      boost::iostreams::filtering_ostream os;
-
-      os.push(boost::iostreams::zlib_decompressor()); //  Add the zlib decompressor
-      os.push(std::back_inserter(str));               //  Set our decompressor to write to str
-
       Concurrency::streams::container_buffer<std::string> strbuf;
       std::string compressed;
 
@@ -67,8 +65,51 @@ namespace ModDiscord
         return strbuf.collection();
       }).get();
 
-      //  Decompress using our iostream
-      boost::iostreams::write(os, compressed.data(), msg.length());
+      z_stream zs;
+      memset(&zs, 0, sizeof(zs));
+
+      if (inflateInit(&zs) != Z_OK)
+      {
+        BOOST_LOG_TRIVIAL(error) << "Could not initialize zlib Inflate";
+      }
+
+      zs.next_in = reinterpret_cast<Bytef *>(const_cast<char *>(compressed.data()));
+      zs.avail_in = compressed.size();
+
+      int ret;
+      char buffer[32768];
+
+      do
+      {
+        zs.next_out = reinterpret_cast<Bytef *>(buffer);
+        zs.avail_out = sizeof(buffer);
+
+        ret = inflate(&zs, 0);
+
+        if (str.size() < zs.total_out)
+        {
+          str.append(buffer, zs.total_out - str.size());
+        }
+      } while (ret == Z_OK);
+
+      inflateEnd(&zs);
+
+      if (ret != Z_STREAM_END)
+      {
+        BOOST_LOG_TRIVIAL(error) << "Error during zlib decompression: (" << ret << ")";
+      }
+
+      /*  This code worked, but Boost randomly throws left brace errors (C1075 in MSVS)
+       *  I've opted to use ZLib instead to avoid this.
+         
+        boost::iostreams::filtering_ostream os;
+
+        os.push(boost::iostreams::zlib_decompressor()); //  Add the zlib decompressor
+        os.push(std::back_inserter(str));               //  Set our decompressor to write to str
+
+        //  Decompress using our iostream
+        boost::iostreams::write(os, compressed.data(), msg.length());
+      */
     }
     else
     {

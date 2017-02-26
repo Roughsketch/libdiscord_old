@@ -1,6 +1,7 @@
 #pragma once
 
 #include "external/json.hpp"
+#include "identifiable.h"
 #include "role.h"
 
 namespace ModDiscord
