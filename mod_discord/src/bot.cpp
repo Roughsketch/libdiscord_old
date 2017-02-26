@@ -81,6 +81,8 @@ namespace ModDiscord
           chan->send_message("This message is sent directly from a channel object.");
           chan->send_temp_message("This is a temporary message.", 5);
         }
+
+        m_on_message(msg);
       }));
     }
 

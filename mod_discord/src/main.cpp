@@ -87,6 +87,15 @@ int main(int argc, char* argv[])
   }
 
   auto bot = ModDiscord::Bot::create(settings);
+
+  bot->on_message([bot](std::shared_ptr<ModDiscord::Message> message)
+  {
+    if (message->content() == ".info")
+    {
+      message->respond("I am " + bot->profile()->distinct() + " (" + std::to_string(bot->profile()->id()) + ")");
+    }
+  });
+
   bot->run(); //  Start the bot.
   
 
