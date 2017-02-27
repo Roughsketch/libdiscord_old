@@ -15,6 +15,9 @@ namespace ModDiscord
   public:
     Emoji();
     explicit Emoji(const nlohmann::json& data);
+
+    std::string name() const;
+    std::vector<Snowflake> roles() const;
   };
 
   inline void from_json(const nlohmann::json& json, Emoji& emoji)
