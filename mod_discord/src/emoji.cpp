@@ -16,4 +16,14 @@ namespace ModDiscord
     set_from_json(m_require_colons, "require_colons", data);
     set_from_json(m_managed, "managed", data);
   }
+
+  std::string Emoji::name() const
+  {
+    return m_name;
+  }
+
+  std::vector<Snowflake> Emoji::roles() const
+  {
+    return m_roles;
+  }
 }
