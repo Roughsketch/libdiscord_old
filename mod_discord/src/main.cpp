@@ -94,6 +94,22 @@ int main(int argc, char* argv[])
     {
       message->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
     }
+    else if (message->content() == ".emoji")
+    {
+      auto emojis = message->channel()->guild()->emojis();
+      auto response = "There are " + std::to_string(emojis.size()) + " emojis";
+
+      if (emojis.size() > 0)
+      {
+        response += " including ";
+      }
+
+      for (auto& emoji : emojis)
+      {
+        response += emoji.name() + " ";
+      }
+      message->respond(response);
+    }
     else if (message->content() == ".modify")
     {
       message->channel()->modify([](std::shared_ptr<ModDiscord::Channel> chan)
