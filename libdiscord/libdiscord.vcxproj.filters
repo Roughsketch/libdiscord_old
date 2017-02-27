@@ -19,12 +19,15 @@
     <Filter Include="Header Files\external">
       <UniqueIdentifier>{9c7aa23f-99ae-42c8-ace7-2d064d5acb1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\api">
+      <UniqueIdentifier>{1d1df6af-c1a5-4ea2-9016-98902518e3e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\external">
+      <UniqueIdentifier>{cea97137-1105-4abd-9de8-0ba3d1d52d44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\mod_discord\src\api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mod_discord\src\api_channel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\mod_discord\src\bot.cpp">
@@ -60,11 +63,17 @@
     <ClCompile Include="..\mod_discord\src\voice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\api_guild.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\mod_discord\src\common.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mod_discord\src\api_channel.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mod_discord\src\api_guild.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mod_discord\src\external\easylogging++.cc">
+      <Filter>Source Files\external</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="..\mod_discord\include\snowflake.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mod_discord\include\external\easylogging++.h">
+      <Filter>Header Files\external</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

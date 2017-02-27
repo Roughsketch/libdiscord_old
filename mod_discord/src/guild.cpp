@@ -124,7 +124,7 @@ namespace ModDiscord
 
     if (member_itr == std::end(m_members))
     {
-      Logger->error("Update member called with previously unseen member. Ignoring.");
+      LOG(ERROR) << "Update member called with previously unseen member. Ignoring.";
       return;
     }
 

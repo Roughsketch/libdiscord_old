@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+INITIALIZE_EASYLOGGINGPP
+
 namespace ModDiscord
 {
 

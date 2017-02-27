@@ -1,8 +1,6 @@
 #include "bot.h"
 
-#include <spdlog/spdlog.h>
-
-auto Logger = spdlog::stdout_color_mt("main");
+#include <external/easylogging++.h>
 
 void generate_default_settings()
 {
@@ -32,26 +30,26 @@ bool valid_settings(nlohmann::json settings)
 
   if (!settings.count("token"))
   {
-    Logger->error("No token entry found in settings file.");
+    LOG(ERROR) << "No token entry found in settings file.";
     valid = false;
   }
   if (!settings.count("client_id"))
   {
-    Logger->error("No client_id entry found in settings file.");
+    LOG(ERROR) << "No client_id entry found in settings file.";
     valid = false;
   }
   if (!settings.count("owner_id"))
   {
-    Logger->error("No owner_id entry found in settings file.");
+    LOG(ERROR) << "No owner_id entry found in settings file.";
     valid = false;
   }
   if (!settings.count("prefix"))
   {
-    Logger->warn("No prefix entry found in settings file. It is recommended to set a prefix.");
+    LOG(WARNING) << "No prefix entry found in settings file. It is recommended to set a prefix.";
   }
   if (!settings.count("plugin_dir"))
   {
-    Logger->warn("No plugin_dir entry found in settings file. Defaulting to ./plugins");
+    LOG(WARNING) << "No plugin_dir entry found in settings file. Defaulting to ./plugins";
     settings["plugin_dir"] = "./plugins";
   }
 
@@ -64,17 +62,17 @@ int main(int argc, char* argv[])
 
   if (settings.empty())
   {
-    Logger->error("No settings file found. Please edit 'default.json' with your bot information.");
+    LOG(ERROR) << "No settings file found. Please edit 'default.json' with your bot information.";
     generate_default_settings();
     std::cin.get();
     return EXIT_SUCCESS;
   }
 
-  Logger->trace("Settings loaded.");
+  LOG(TRACE) << "Settings loaded.";
 
   if (!valid_settings(settings))
   {
-    Logger->error("One or more errors encountered with settings file. Please update your config and try again.");
+    LOG(ERROR) << "One or more errors encountered with settings file. Please update your config and try again.";
     std::cin.get();
     return EXIT_FAILURE;
   }

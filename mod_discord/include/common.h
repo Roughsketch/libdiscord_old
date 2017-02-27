@@ -1,14 +1,12 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
+#include <external/easylogging++.h>
 #include <external/json.hpp>
 
 #include "snowflake.h"
 
 namespace ModDiscord
 {
-  static auto Logger = spdlog::stdout_color_mt("console");
-
   nlohmann::json read_json_file(std::string file);
   void write_json_file(std::string file, nlohmann::json json, bool pretty = false);
 

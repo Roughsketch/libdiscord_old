@@ -28,7 +28,7 @@ namespace ModDiscord
           return web::http::methods::PATCH;
         }
 
-        Logger->error("Invalid RequestType sent to ModDiscord::API::detail::get_method ({})", static_cast<int>(type));
+        LOG(ERROR) << "Invalid RequestType sent to ModDiscord::API::detail::get_method (" << static_cast<int>(type) << ")";
 
         return {};
       }
@@ -49,8 +49,7 @@ namespace ModDiscord
           return "PATCH";
         }
 
-        Logger->error("Invalid RequestType sent to ModDiscord::API::detail::get_method_name ({})", static_cast<int>(type));
-
+        LOG(ERROR) << "Invalid RequestType sent to ModDiscord::API::detail::get_method_name (" << static_cast<int>(type) << ")";
         return{};
       }
     }
@@ -73,7 +72,7 @@ namespace ModDiscord
       
       if (!data.empty())
       {
-        Logger->info("Setting request data: {}", data.dump());
+        LOG(INFO) << "Setting request data: " << data.dump();
         request.set_body(data.dump());
       }
 
@@ -97,7 +96,7 @@ namespace ModDiscord
         }
         else
         {
-          Logger->error("Did not get proper response from API call ({}) - {}", res.status_code(), utility::conversions::to_utf8string(res.extract_string().get()));
+          LOG(ERROR) << "Did not get proper response from API call (" << res.status_code() << ") - " << utility::conversions::to_utf8string(res.extract_string().get());
           return{ { "response_status", res.status_code() } };
         }
       });
@@ -108,7 +107,7 @@ namespace ModDiscord
 
     json request(RequestType type, std::string endpoint, nlohmann::json data)
     {
-      Logger->debug("Request: ({}) - {}", detail::get_method_name(type), endpoint);
+      LOG(DEBUG) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
       return raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
     }
 

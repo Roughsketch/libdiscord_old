@@ -56,7 +56,7 @@ namespace ModDiscord
 
   void Bot::handle_dispatch(std::string event_name, nlohmann::json data)
   {
-    Logger->info("Bot.handle_dispatch entered with {}.", event_name.c_str());
+    LOG(INFO) << "Bot.handle_dispatch entered with " << event_name.c_str() << ".";
 
     if (event_name == "READY")
     {
@@ -95,23 +95,23 @@ namespace ModDiscord
     {
       auto user = std::make_shared<User>(data);
       auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
-      Logger->info("User {} has been banned from {}", user->distinct(), guild->name());
+      LOG(INFO) << "User " << user->distinct() << " has been banned from " << guild->name() << ".";
     }
     else if (event_name == "GUILD_BAN_REMOVE")
     {
       auto user = std::make_shared<User>(data);
       auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
-      Logger->info("User {} has been unbanned from {}", user->distinct(), guild->name());
+      LOG(INFO) << "User " << user->distinct() << " has been unbanned from " << guild->name();
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
     {
-      m_threads.push_back(std::async([&]() {
-        update_emojis(data);
-      }));
+      m_threads.push_back(std::async([&](nlohmann::json json) {
+        update_emojis(json);
+      }, data));
     }
     else if (event_name == "GUILD_INTEGRATIONS_UPDATE")
     {
-      Logger->info("Got a Guild Integrations Update, but left it unhandled.");
+      LOG(INFO) << "Got a Guild Integrations Update, but left it unhandled.";
     }
     else if (event_name == "GUILD_MEMBER_ADD")
     {
@@ -145,11 +145,10 @@ namespace ModDiscord
     }
     else if (event_name == "MESSAGE_CREATE")
     {
-      m_threads.push_back(std::async([&]() {
-        auto msg = std::make_shared<Message>(data);
-        Logger->trace("Got message: {}", msg->content());
-        m_on_message(msg);
-      }));
+      m_threads.push_back(std::async([&](std::shared_ptr<Message> msg, OnMessageCallback callback) {
+        LOG(DEBUG) << "Got message: " << msg->content();
+        callback(msg);
+      }, std::make_shared<Message>(data), m_on_message));
     }
 
     //  If we can lock the thread array, then do so.
@@ -196,7 +195,7 @@ namespace ModDiscord
 
       if (other == std::end(old_emojis))
       {
-        Logger->error("Somehow a new emoji got into the updated list.");
+        LOG(ERROR) << "Somehow a new emoji got into the updated list.";
         return false;
       }
 
@@ -213,21 +212,21 @@ namespace ModDiscord
 
     for (auto& emoji : added_emoji)
     {
-      Logger->trace("Sending Emoji Created event with emoji {}", emoji.name());
+      LOG(TRACE) << "Sending Emoji Created event with emoji " << emoji.name();
       auto ptr = std::make_shared<Emoji>(emoji);
       m_on_emoji_created(ptr);
     }
 
     for (auto& emoji : deleted_emoji)
     {
-      Logger->trace("Sending Emoji Deleted event with emoji {}", emoji.name());
+      LOG(TRACE) << "Sending Emoji Deleted event with emoji " << emoji.name();
       auto ptr = std::make_shared<Emoji>(emoji);
       m_on_emoji_deleted(ptr);
     }
 
     for (auto& emoji : updated_emoji)
     {
-      Logger->trace("Sending Emoji Updated event with emoji {}", emoji.name());
+      LOG(TRACE) << "Sending Emoji Updated event with emoji " << emoji.name();
       auto ptr = std::make_shared<Emoji>(emoji);
       m_on_emoji_updated(ptr);
     }

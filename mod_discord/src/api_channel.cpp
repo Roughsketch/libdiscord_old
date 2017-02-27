@@ -13,7 +13,7 @@ namespace ModDiscord
       {
         if (ChannelCache.count(channel->id()))
         {
-          Logger->trace("Merging new channel information with cached value.");
+          LOG(TRACE) << "Merging new channel information with cached value.";
           auto old = get_channel(channel->id());
           old->merge(channel);
         }
@@ -33,7 +33,7 @@ namespace ModDiscord
         }
         else
         {
-          Logger->error("Attempted to delete a channel that wasn't in the cache.");
+          LOG(ERROR) << "Attempted to delete a channel that wasn't in the cache.";
         }
       }
 
@@ -41,7 +41,7 @@ namespace ModDiscord
       {
         if (ChannelCache.count(channel_id))
         {
-          Logger->trace("Returning channel from cache.");
+          LOG(TRACE) << "Returning channel from cache.";
           return ChannelCache[channel_id];
         }
 
@@ -54,7 +54,7 @@ namespace ModDiscord
           return chan;
         }
 
-        Logger->error("Could not get Channel object with id {}", channel_id.to_string());
+        LOG(ERROR) << "Could not get Channel object with id " << channel_id.to_string();
         return std::make_shared<ModDiscord::Channel>();
       }
 
@@ -70,7 +70,7 @@ namespace ModDiscord
 
         if (response["response_status"].get<int>() != Status::OK)
         {
-          Logger->error("Modify text channel returned bad response ({})", response["response_status"].get<int>());
+          LOG(ERROR) << "Modify text channel returned bad response (" << response["response_status"].get<int>() << ")";
         }
 
         return chan;
@@ -89,7 +89,7 @@ namespace ModDiscord
 
         if (response["response_status"].get<int>() != Status::OK)
         {
-          Logger->error("Modify voice channel returned bad response ({})", response["response_status"].get<int>());
+          LOG(ERROR) << "Modify voice channel returned bad response (" << response["response_status"].get<int>() << ")";
         }
 
         return chan;

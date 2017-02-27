@@ -11,7 +11,7 @@ namespace ModDiscord
       {
         if (GuildCache.count(guild->id()))
         {
-          Logger->trace("Merging new guild information with cached value.");
+          LOG(TRACE) << "Merging new guild information with cached value.";
           auto old = get_guild(guild->id());
           old->merge(guild);
         }
@@ -31,7 +31,7 @@ namespace ModDiscord
         }
         else
         {
-          Logger->error("Attempted to delete a channel that wasn't in the cache.");
+          LOG(ERROR) << "Attempted to delete a channel that wasn't in the cache.";
         }
       }
 
@@ -50,7 +50,7 @@ namespace ModDiscord
       {
         if (GuildCache.count(guild_id))
         {
-          Logger->trace("Returning channel from cache.");
+          LOG(TRACE) << "Returning channel from cache.";
           return GuildCache[guild_id];
         }
 
@@ -63,7 +63,7 @@ namespace ModDiscord
           return guild;
         }
 
-        Logger->error("Could not get Guild object with id {}", guild_id.to_string());
+        LOG(ERROR) << "Could not get Guild object with id " << guild_id.to_string();
         return std::make_shared<ModDiscord::Guild>();
       }
     }

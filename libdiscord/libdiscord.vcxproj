@@ -27,6 +27,7 @@
     <ClCompile Include="..\mod_discord\src\common.cpp" />
     <ClCompile Include="..\mod_discord\src\emoji.cpp" />
     <ClCompile Include="..\mod_discord\src\events.cpp" />
+    <ClCompile Include="..\mod_discord\src\external\easylogging++.cc" />
     <ClCompile Include="..\mod_discord\src\gateway.cpp" />
     <ClCompile Include="..\mod_discord\src\guild.cpp" />
     <ClCompile Include="..\mod_discord\src\member.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="..\mod_discord\include\common.h" />
     <ClInclude Include="..\mod_discord\include\emoji.h" />
     <ClInclude Include="..\mod_discord\include\events.h" />
+    <ClInclude Include="..\mod_discord\include\external\easylogging++.h" />
     <ClInclude Include="..\mod_discord\include\external\json.hpp" />
     <ClInclude Include="..\mod_discord\include\gateway.h" />
     <ClInclude Include="..\mod_discord\include\guild.h" />
@@ -115,6 +117,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)\$(SolutionName)\include;C:\libs\zlib128-dll\include;C:\libs\boost_1_63_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>C:\libs\zlib128-dll\lib;C:\libs\boost_1_63_0\stage\lib;</AdditionalLibraryDirectories>
