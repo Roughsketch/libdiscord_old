@@ -4,6 +4,7 @@
 #include "identifiable.h"
 #include "message.h"
 #include "user.h"
+#include "guild.h"
 
 namespace ModDiscord
 {
@@ -31,6 +32,7 @@ namespace ModDiscord
     Group
   };
 
+  class Guild;
   class Channel : public Identifiable
   {
     static const uint32_t MinNameSize = 2;
@@ -69,6 +71,7 @@ namespace ModDiscord
     bool is_pm() const;
 
     Snowflake guild_id() const;
+    std::shared_ptr<Guild> guild() const;
     std::string name() const;
     ChannelType type() const;
     uint32_t position() const;
