@@ -1,4 +1,5 @@
 #include "guild.h"
+#include <boost/log/trivial.hpp>
 
 namespace ModDiscord
 {
@@ -36,7 +37,7 @@ namespace ModDiscord
     set_from_json(m_verification_level, "verification_level", data);
     set_from_json(m_default_message_notifications, "default_message_notifications", data);
     set_from_json(m_roles, "roles", data);
-    set_from_json(m_emoji, "emoji", data);
+    set_from_json(m_emojis, "emojis", data);
     set_from_json(m_features, "features", data);
     set_from_json(m_mfa_level, "mfa_level", data);
     set_from_json(m_joined_at, "joined_at", data);
@@ -63,7 +64,7 @@ namespace ModDiscord
     m_verification_level = other->m_verification_level;
     m_default_message_notifications = other->m_default_message_notifications;
     m_roles = other->m_roles;
-    m_emoji = other->m_emoji;
+    m_emojis = other->m_emojis;
     m_features = other->m_features;
     m_mfa_level = other->m_mfa_level;
     m_joined_at = other->m_joined_at;
@@ -82,8 +83,54 @@ namespace ModDiscord
     return m_name;
   }
 
+  std::vector<Emoji> Guild::emojis() const
+  {
+    return m_emojis;
+  }
+
+  void Guild::set_emojis(std::vector<Emoji> emojis)
+  {
+    m_emojis = emojis;
+  }
+
   void Guild::set_unavailable(bool value)
   {
     m_unavailable = true;
+  }
+
+  void Guild::add_member(Member member)
+  {
+    m_members.push_back(member);
+    m_member_count += 1;
+  }
+
+  void Guild::remove_member(Member member)
+  {
+    m_members.erase(std::remove_if(std::begin(m_members), std::end(m_members), 
+      [member](Member other) {
+        return member.user().id() == other.user().id();
+      })
+    );
+
+    m_member_count -= 1;
+  }
+
+  void Guild::update_member(std::vector<Snowflake> roles, User user, std::string nick)
+  {
+    auto member_itr = std::find_if(std::begin(m_members), std::end(m_members), 
+      [user](Member m) {
+        m.user().id() == user.id();
+      }
+    );
+
+    if (member_itr == std::end(m_members))
+    {
+      BOOST_LOG_TRIVIAL(error) << "Update member called with previously unseen member. Ignoring.";
+      return;
+    }
+
+    member_itr->set_roles(roles);
+    member_itr->set_user(user);
+    member_itr->set_nick(nick);
   }
 }

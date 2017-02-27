@@ -28,7 +28,7 @@ namespace ModDiscord
     uint32_t m_verification_level;
     uint32_t m_default_message_notifications;
     std::vector<Role> m_roles;
-    std::vector<Emoji> m_emoji;
+    std::vector<Emoji> m_emojis;
     std::vector<std::string> m_features;
     uint32_t m_mfa_level;
     std::string m_joined_at;
@@ -47,8 +47,14 @@ namespace ModDiscord
     void merge(std::shared_ptr<Guild> other);
 
     std::string name() const;
+    std::vector<Emoji> emojis() const;
 
+    void set_emojis(std::vector<Emoji> emojis);
     void set_unavailable(bool value);
+
+    void add_member(Member member);
+    void remove_member(Member member);
+    void update_member(std::vector<Snowflake> roles, User user, std::string nick);
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)
