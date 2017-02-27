@@ -17,6 +17,11 @@ public:
     m_id = std::stoull(s);
   }
 
+  bool operator==(const Snowflake& rhs) const
+  {
+    return m_id == rhs.m_id;
+  }
+
   bool operator<(const Snowflake& rhs) const
   {
     return m_id < rhs.m_id;
