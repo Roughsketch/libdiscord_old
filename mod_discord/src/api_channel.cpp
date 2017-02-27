@@ -54,7 +54,8 @@ namespace ModDiscord
           update_cache(chan);
           return chan;
         }
-        
+
+        BOOST_LOG_TRIVIAL(error) << "Could not get Channel object with id " << channel_id.to_string();
         return std::make_shared<ModDiscord::Channel>();
       }
 
