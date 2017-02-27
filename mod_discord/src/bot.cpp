@@ -12,6 +12,11 @@ namespace ModDiscord
   Bot::Bot()
   {
     m_is_user = false;
+
+    m_on_message = [](std::shared_ptr<Message>) {};
+    m_on_emoji_created = [](std::shared_ptr<Emoji>) {};
+    m_on_emoji_deleted = [](std::shared_ptr<Emoji>) {};
+    m_on_emoji_updated = [](std::shared_ptr<Emoji>) {};
   }
 
   std::shared_ptr<Bot> Bot::create(nlohmann::json settings)
@@ -103,7 +108,43 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
     {
-      
+      m_threads.push_back(std::async([&]() {
+        update_emojis(data);
+      }));
+    }
+    else if (event_name == "GUILD_INTEGRATIONS_UPDATE")
+    {
+      BOOST_LOG_TRIVIAL(info) << "Got a Guild Integrations Update, but left it unhandled.";
+    }
+    else if (event_name == "GUILD_MEMBER_ADD")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      guild->add_member(data);
+    }
+    else if (event_name == "GUILD_MEMBER_REMOVE")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      guild->remove_member(data);
+    }
+    else if (event_name == "GUILD_MEMBER_UPDATE")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+
+      auto roles = data["roles"].get<std::vector<Snowflake>>();
+      auto user = data["user"].get<User>();
+      auto nick = data["nick"].get<std::string>();
+
+      guild->update_member(roles, user, nick);
+    }
+    else if (event_name == "GUILD_MEMBERS_CHUNK")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto members = data["members"].get<std::vector<Member>>();
+
+      for (auto& member : members)
+      {
+        guild->add_member(member);
+      }
     }
     else if (event_name == "MESSAGE_CREATE")
     {
@@ -126,6 +167,72 @@ namespace ModDiscord
             using namespace std::chrono;
             return f.wait_until(system_clock::now() + 1ms) == std::future_status::ready;
       }), std::end(m_threads));
+    }
+  }
+
+  void Bot::update_emojis(nlohmann::json data)
+  {
+    auto guild = API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+    auto new_emojis = data["emojis"].get<std::vector<Emoji>>();
+    auto old_emojis = guild->emojis();
+
+    //  Must sort or set differences won't work properly.
+    std::sort(std::begin(new_emojis), std::end(new_emojis));
+    std::sort(std::begin(old_emojis), std::end(old_emojis));
+
+    guild->set_emojis(new_emojis);
+
+    std::vector<Emoji> added_emoji;
+    std::vector<Emoji> deleted_emoji;
+    std::vector<Emoji> updated_emoji;
+
+    std::set_difference(std::begin(new_emojis), std::end(new_emojis), std::begin(old_emojis), std::end(old_emojis), std::back_inserter(added_emoji));
+    std::set_difference(std::begin(old_emojis), std::end(old_emojis), std::begin(new_emojis), std::end(new_emojis), std::back_inserter(deleted_emoji));
+    std::set_intersection(std::begin(old_emojis), std::end(old_emojis), std::begin(new_emojis), std::end(new_emojis), std::back_inserter(updated_emoji));
+
+    updated_emoji.erase(std::remove_if(std::begin(updated_emoji), std::end(updated_emoji),
+      [old_emojis](Emoji e) {
+      auto other = std::find_if(std::begin(old_emojis), std::end(old_emojis),
+        [e](Emoji a) {
+        return a.id() == e.id();
+      });
+
+      if (other == std::end(old_emojis))
+      {
+        BOOST_LOG_TRIVIAL(error) << "Somehow a new emoji got into the updated list.";
+        return false;
+      }
+
+      //  Although data seems to be sent in sorted order, we need to be sure since vector compare requires sorted order to work.
+      auto e_roles = e.roles();
+      auto other_roles = other->roles();
+
+      std::sort(std::begin(e_roles), std::end(e_roles));
+      std::sort(std::begin(other_roles), std::end(other_roles));
+
+      return (e.name() == other->name() && e_roles == other_roles);
+    })
+    );
+
+    for (auto& emoji : added_emoji)
+    {
+      BOOST_LOG_TRIVIAL(trace) << "Sending Emoji Created event with emoji " << emoji.name();
+      auto ptr = std::make_shared<Emoji>(emoji);
+      m_on_emoji_created(ptr);
+    }
+
+    for (auto& emoji : deleted_emoji)
+    {
+      BOOST_LOG_TRIVIAL(trace) << "Sending Emoji Deleted event with emoji " << emoji.name();
+      auto ptr = std::make_shared<Emoji>(emoji);
+      m_on_emoji_deleted(ptr);
+    }
+
+    for (auto& emoji : updated_emoji)
+    {
+      BOOST_LOG_TRIVIAL(trace) << "Sending Emoji Updated event with emoji " << emoji.name();
+      auto ptr = std::make_shared<Emoji>(emoji);
+      m_on_emoji_updated(ptr);
     }
   }
 }

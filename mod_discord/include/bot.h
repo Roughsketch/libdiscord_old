@@ -27,7 +27,11 @@ namespace ModDiscord
 
     //  Callbacks for events
     typedef std::function<void(std::shared_ptr<Message>)> OnMessageCallback;
+    typedef std::function<void(std::shared_ptr<Emoji>)> OnEmojiChangedCallback;
     OnMessageCallback m_on_message;
+    OnEmojiChangedCallback m_on_emoji_created;
+    OnEmojiChangedCallback m_on_emoji_deleted;
+    OnEmojiChangedCallback m_on_emoji_updated;
   public:
     explicit Bot();
 
@@ -39,9 +43,26 @@ namespace ModDiscord
     std::string invite_url() const;
     void handle_dispatch(std::string event_name, nlohmann::json data);
 
+    void update_emojis(nlohmann::json data);
+
     void on_message(OnMessageCallback callback)
     {
       m_on_message = callback;
+    }
+
+    void on_emoji_created(OnEmojiChangedCallback callback)
+    {
+      m_on_emoji_created = callback;
+    }
+
+    void on_emoji_deleted(OnEmojiChangedCallback callback)
+    {
+      m_on_emoji_deleted = callback;
+    }
+
+    void on_emoji_updated(OnEmojiChangedCallback callback)
+    {
+      m_on_emoji_updated = callback;
     }
   };
 }
