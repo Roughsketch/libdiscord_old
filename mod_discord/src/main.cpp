@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
   {
     if (message->content() == ".info")
     {
-      message->respond("I am " + bot->profile()->distinct() + " (" + std::to_string(bot->profile()->id()) + ")");
+      message->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
     }
     else if (message->content() == ".modify")
     {

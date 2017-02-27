@@ -4,11 +4,8 @@ namespace ModDiscord
 {
   Guild::Guild()
   {
-    m_owner_id = 0;
-    m_afk_channel_id = 0;
     m_afk_timeout = 0;
     m_embed_enabled = false;
-    m_embed_channel_id = 0;
     m_verification_level = 0;
     m_default_message_notifications = 0;
     m_mfa_level = 0;
@@ -24,7 +21,7 @@ namespace ModDiscord
     for (auto& channel : data["channels"])
     {
       //  Set the guild_id member for each channel since it is missing.
-      channel["guild_id"] = std::to_string(m_id);
+      channel["guild_id"] = m_id;
     }
 
     set_from_json(m_name, "name", data);
@@ -78,6 +75,11 @@ namespace ModDiscord
     m_presences = other->m_presences;
 
     m_unavailable = other->m_unavailable;
+  }
+
+  std::string Guild::name() const
+  {
+    return m_name;
   }
 
   void Guild::set_unavailable(bool value)

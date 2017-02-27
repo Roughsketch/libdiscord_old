@@ -13,7 +13,7 @@ namespace ModDiscord
 
   class Bot
   {
-    snowflake m_client_id;
+    Snowflake m_client_id;
     bool m_is_user;
     User m_self;
 

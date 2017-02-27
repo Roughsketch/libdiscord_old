@@ -38,7 +38,7 @@ namespace ModDiscord
         }
       }
 
-      std::shared_ptr<ModDiscord::Channel> get_channel(snowflake channel_id)
+      std::shared_ptr<ModDiscord::Channel> get_channel(Snowflake channel_id)
       {
         if (ChannelCache.count(channel_id))
         {
@@ -46,7 +46,7 @@ namespace ModDiscord
           return ChannelCache[channel_id];
         }
 
-        auto json = request(GET, "channels/" + std::to_string(channel_id));
+        auto json = request(GET, "channels/" + channel_id.to_string());
 
         if (!json.empty())
         {
@@ -58,11 +58,11 @@ namespace ModDiscord
         return std::make_shared<ModDiscord::Channel>();
       }
 
-      std::shared_ptr<ModDiscord::Channel> modify_text_channel(snowflake channel_id, std::string name, uint32_t position, std::string topic)
+      std::shared_ptr<ModDiscord::Channel> modify_text_channel(Snowflake channel_id, std::string name, uint32_t position, std::string topic)
       {
         auto chan = get_channel(channel_id);
 
-        auto response = request(PATCH, "channels/" + std::to_string(channel_id), {
+        auto response = request(PATCH, "channels/" + channel_id.to_string(), {
           { "name", name },
           { "position", position },
           { "topic", topic }
@@ -76,11 +76,11 @@ namespace ModDiscord
         return chan;
       }
 
-      std::shared_ptr<ModDiscord::Channel> modify_voice_channel(snowflake channel_id, std::string name, uint32_t position, uint32_t bitrate, uint32_t user_limit)
+      std::shared_ptr<ModDiscord::Channel> modify_voice_channel(Snowflake channel_id, std::string name, uint32_t position, uint32_t bitrate, uint32_t user_limit)
       {
         auto chan = get_channel(channel_id);
 
-        auto response = request(PATCH, "channels/" + std::to_string(channel_id), {
+        auto response = request(PATCH, "channels/" + channel_id.to_string(), {
           { "name", name },
           { "position", position },
           { "bitrate", bitrate },
@@ -95,9 +95,9 @@ namespace ModDiscord
         return chan;
       }
 
-      std::shared_ptr<Message> create_message(snowflake channel_id, std::string content, bool tts)
+      std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts)
       {
-        auto response = request(POST, "channels/" + std::to_string(channel_id) + "/messages", {
+        auto response = request(POST, "channels/" + channel_id.to_string() + "/messages", {
           { "content", content },
           { "mentions", nlohmann::json::array() },
           { "tts", tts },
@@ -107,9 +107,9 @@ namespace ModDiscord
         return std::make_shared<Message>(response);
       }
 
-      bool delete_message(snowflake channel_id, snowflake message_id)
+      bool delete_message(Snowflake channel_id, Snowflake message_id)
       {
-        auto response = request(DELETE, "channels/" + std::to_string(channel_id) + "/messages/" + std::to_string(message_id));
+        auto response = request(DELETE, "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string());
         return response["response_status"].get<int>() == Status::NoContent;
       }
     }

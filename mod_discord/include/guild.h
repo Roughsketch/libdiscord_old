@@ -19,12 +19,12 @@ namespace ModDiscord
     std::string m_name;
     std::string m_icon;
     std::string m_splash;
-    snowflake m_owner_id;
+    Snowflake m_owner_id;
     std::string m_region;
-    snowflake m_afk_channel_id;
+    Snowflake m_afk_channel_id;
     uint32_t m_afk_timeout;
     bool m_embed_enabled;
-    snowflake m_embed_channel_id;
+    Snowflake m_embed_channel_id;
     uint32_t m_verification_level;
     uint32_t m_default_message_notifications;
     std::vector<Role> m_roles;
@@ -45,6 +45,8 @@ namespace ModDiscord
     explicit Guild(nlohmann::json data);
 
     void merge(std::shared_ptr<Guild> other);
+
+    std::string name() const;
 
     void set_unavailable(bool value);
   };

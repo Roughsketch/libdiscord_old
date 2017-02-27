@@ -9,7 +9,7 @@ namespace ModDiscord
   class Emoji : public Identifiable
   {
     std::string m_name;
-    std::vector<snowflake> m_roles;
+    std::vector<Snowflake> m_roles;
     bool m_require_colons;
     bool m_managed;
   public:

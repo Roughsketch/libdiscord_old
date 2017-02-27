@@ -12,7 +12,7 @@ namespace ModDiscord
 
   class Message : public Identifiable
   {
-    snowflake m_channel_id;
+    Snowflake m_channel_id;
     User m_author;
     std::string m_content;
     std::string m_timestamp;
@@ -24,14 +24,14 @@ namespace ModDiscord
     // std::vector<Attachment> m_attachments;
     // std::vector<Embed> m_embeds;
     // std::vector<Reaction> m_reactions;
-    snowflake m_nonce;
+    Snowflake m_nonce;
     bool m_pinned;
     std::string m_webhook_id;
   public:
     Message();
     explicit Message(nlohmann::json data);
 
-    snowflake channel_id() const;
+    Snowflake channel_id() const;
     User author() const;
     User user() const;
     std::string content() const;

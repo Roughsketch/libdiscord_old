@@ -21,12 +21,9 @@ namespace ModDiscord
 
   Channel::Channel()
   {
-    m_id = 0;
-    m_guild_id = 0;
     m_type = Text;
     m_position = 0;
     m_is_private = false;
-    m_last_message_id = 0;
     m_bitrate = 0;
     m_user_limit = 0;
     m_is_dm = false;
@@ -80,7 +77,7 @@ namespace ModDiscord
     return m_is_dm;
   }
 
-  snowflake Channel::guild_id() const
+  Snowflake Channel::guild_id() const
   {
     return m_guild_id;
   }

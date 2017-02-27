@@ -23,7 +23,7 @@ namespace ModDiscord
         }
       }
 
-      void remove_cache(snowflake guild_id)
+      void remove_cache(Snowflake guild_id)
       {
         auto itr = GuildCache.find(guild_id);
 
@@ -42,13 +42,13 @@ namespace ModDiscord
         remove_cache(guild->id());
       }
 
-      void mark_unavailable(snowflake guild_id)
+      void mark_unavailable(Snowflake guild_id)
       {
         auto guild = get_guild(guild_id);
         guild->set_unavailable(true);
       }
 
-      std::shared_ptr<ModDiscord::Guild> get_guild(snowflake guild_id)
+      std::shared_ptr<ModDiscord::Guild> get_guild(Snowflake guild_id)
       {
         if (GuildCache.count(guild_id))
         {
@@ -56,7 +56,7 @@ namespace ModDiscord
           return GuildCache[guild_id];
         }
 
-        auto json = request(GET, "channels/" + std::to_string(guild_id));
+        auto json = request(GET, "channels/" + guild_id.to_string());
 
         if (!json.empty())
         {

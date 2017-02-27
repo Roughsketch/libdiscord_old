@@ -13,7 +13,7 @@ namespace ModDiscord
   {
     User m_user;
     std::string m_nick;
-    std::vector<snowflake> m_roles;
+    std::vector<Snowflake> m_roles;
     std::string m_joined_at;
     bool m_deaf;
     bool m_mute;

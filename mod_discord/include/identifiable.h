@@ -7,11 +7,11 @@ namespace ModDiscord
   class Identifiable
   {
   protected:
-    snowflake m_id;
+    Snowflake m_id;
   public:
     Identifiable() : m_id(0) {}
 
-    explicit operator snowflake() const
+    explicit operator Snowflake() const
     {
       return m_id;
     }
@@ -22,12 +22,12 @@ namespace ModDiscord
       set_from_json(m_id, key, data);
     }
 
-    void set_id(snowflake id)
+    void set_id(Snowflake id)
     {
       m_id = id;
     }
 
-    snowflake id() const
+    Snowflake id() const
     {
       return m_id;
     }

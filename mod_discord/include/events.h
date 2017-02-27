@@ -21,9 +21,9 @@ namespace ModDiscord
   class PresenceUpdate
   {
     User m_user;
-    std::vector<snowflake> m_roles;
+    std::vector<Snowflake> m_roles;
     Game m_game;
-    snowflake m_guild_id;
+    Snowflake m_guild_id;
     std::string m_status;
   public:
     PresenceUpdate();

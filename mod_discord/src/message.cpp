@@ -5,10 +5,8 @@ namespace ModDiscord
 {
   Message::Message()
   {
-    m_channel_id = 0;
     m_tts = false;
     m_mention_everyone = false;
-    m_nonce = 0;
     m_pinned = false;
   }
 
@@ -32,7 +30,7 @@ namespace ModDiscord
     set_from_json(m_webhook_id, "webhook_id", data);
   }
 
-  snowflake Message::channel_id() const
+  Snowflake Message::channel_id() const
   {
     return m_channel_id;
   }

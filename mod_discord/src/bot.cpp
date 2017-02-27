@@ -6,14 +6,11 @@
 #include "plugin_container.h"
 
 #include <boost/log/trivial.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/range/iterator_range_core.hpp>
 
 namespace ModDiscord
 {
   Bot::Bot()
   {
-    m_client_id = 0;
     m_is_user = false;
   }
 
@@ -52,7 +49,7 @@ namespace ModDiscord
 
   std::string Bot::invite_url() const
   {
-    return "https://discordapp.com/oauth2/authorize?client_id=" + std::to_string(m_client_id) + "&scope=bot";
+    return "https://discordapp.com/oauth2/authorize?client_id=" + m_client_id.to_string() + "&scope=bot";
   }
 
   void Bot::handle_dispatch(std::string event_name, nlohmann::json data)
@@ -78,7 +75,7 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_DELETE")
     {
-      snowflake id;
+      Snowflake id;
       set_from_json(id, "id", data);
 
       if (data.count("unavailable"))
@@ -91,6 +88,22 @@ namespace ModDiscord
         //  The user was removed from the guild, remove it from our cache.
         ModDiscord::API::Guild::remove_cache(id);
       }
+    }
+    else if (event_name == "GUILD_BAN_ADD")
+    {
+      auto user = std::make_shared<User>(data);
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+      BOOST_LOG_TRIVIAL(info) << "User " << user->distinct() << " has been banned from " << guild->name();
+    }
+    else if (event_name == "GUILD_BAN_REMOVE")
+    {
+      auto user = std::make_shared<User>(data);
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+      BOOST_LOG_TRIVIAL(info) << "User " << user->distinct() << " has been unbanned from " << guild->name();
+    }
+    else if (event_name == "GUILD_EMOJIS_UPDATE")
+    {
+      
     }
     else if (event_name == "MESSAGE_CREATE")
     {

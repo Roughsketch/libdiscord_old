@@ -6,9 +6,9 @@ namespace ModDiscord
 {
   class VoiceState
   {
-    snowflake m_guild_id;
-    snowflake m_channel_id;
-    snowflake m_user_id;
+    Snowflake m_guild_id;
+    Snowflake m_channel_id;
+    Snowflake m_user_id;
     std::string m_session_id;
     bool m_deaf;
     bool m_mute;
