@@ -2,7 +2,6 @@
 #include "common.h"
 
 #include <future>
-#include <boost/log/trivial.hpp>
 #include <cpprest/http_client.h>
 
 namespace ModDiscord
@@ -23,16 +22,13 @@ namespace ModDiscord
           return web::http::methods::POST;
         case PUT:
           return web::http::methods::PUT;
-        case DELETE:
+        case DEL:
           return web::http::methods::DEL;
         case PATCH:
           return web::http::methods::PATCH;
         }
 
-        BOOST_LOG_TRIVIAL(error) 
-          << "Invalid RequestType sent to ModDiscord::API::detail::get_method (" 
-          << static_cast<int>(type) 
-          << ")";
+        Logger->error("Invalid RequestType sent to ModDiscord::API::detail::get_method ({})", static_cast<int>(type));
 
         return {};
       }
@@ -47,16 +43,13 @@ namespace ModDiscord
           return "POST";
         case PUT:
           return "PUT";
-        case DELETE:
+        case DEL:
           return "DEL";
         case PATCH:
           return "PATCH";
         }
 
-        BOOST_LOG_TRIVIAL(error)
-          << "Invalid RequestType sent to ModDiscord::API::detail::get_method_name ("
-          << static_cast<int>(type)
-          << ")";
+        Logger->error("Invalid RequestType sent to ModDiscord::API::detail::get_method_name ({})", static_cast<int>(type));
 
         return{};
       }
@@ -80,7 +73,7 @@ namespace ModDiscord
       
       if (!data.empty())
       {
-        BOOST_LOG_TRIVIAL(info) << "Setting request data: " << data.dump();
+        Logger->info("Setting request data: {}", data.dump());
         request.set_body(data.dump());
       }
 
@@ -104,7 +97,7 @@ namespace ModDiscord
         }
         else
         {
-          BOOST_LOG_TRIVIAL(error) << "Did not get proper response from API call (" << res.status_code() << ") - " << res.extract_string().get().c_str();
+          Logger->error("Did not get proper response from API call ({}) - {}", res.status_code(), utility::conversions::to_utf8string(res.extract_string().get()));
           return{ { "response_status", res.status_code() } };
         }
       });
@@ -115,7 +108,7 @@ namespace ModDiscord
 
     json request(RequestType type, std::string endpoint, nlohmann::json data)
     {
-      BOOST_LOG_TRIVIAL(debug) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
+      Logger->debug("Request: ({}) - {}", detail::get_method_name(type), endpoint);
       return raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
     }
 

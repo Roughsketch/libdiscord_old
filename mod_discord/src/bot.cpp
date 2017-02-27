@@ -3,9 +3,6 @@
 #include "api.h"
 #include "common.h"
 #include "gateway.h"
-#include "plugin_container.h"
-
-#include <boost/log/trivial.hpp>
 
 namespace ModDiscord
 {
@@ -59,7 +56,7 @@ namespace ModDiscord
 
   void Bot::handle_dispatch(std::string event_name, nlohmann::json data)
   {
-    BOOST_LOG_TRIVIAL(info) << "Bot.handle_dispatch entered with " << event_name.c_str() << ".";
+    Logger->info("Bot.handle_dispatch entered with {}.", event_name.c_str());
 
     if (event_name == "READY")
     {
@@ -98,13 +95,13 @@ namespace ModDiscord
     {
       auto user = std::make_shared<User>(data);
       auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
-      BOOST_LOG_TRIVIAL(info) << "User " << user->distinct() << " has been banned from " << guild->name();
+      Logger->info("User {} has been banned from {}", user->distinct(), guild->name());
     }
     else if (event_name == "GUILD_BAN_REMOVE")
     {
       auto user = std::make_shared<User>(data);
       auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
-      BOOST_LOG_TRIVIAL(info) << "User " << user->distinct() << " has been unbanned from " << guild->name();
+      Logger->info("User {} has been unbanned from {}", user->distinct(), guild->name());
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
     {
@@ -114,7 +111,7 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_INTEGRATIONS_UPDATE")
     {
-      BOOST_LOG_TRIVIAL(info) << "Got a Guild Integrations Update, but left it unhandled.";
+      Logger->info("Got a Guild Integrations Update, but left it unhandled.");
     }
     else if (event_name == "GUILD_MEMBER_ADD")
     {
@@ -150,7 +147,7 @@ namespace ModDiscord
     {
       m_threads.push_back(std::async([&]() {
         auto msg = std::make_shared<Message>(data);
-        BOOST_LOG_TRIVIAL(trace) << "Got message: " << msg->content();
+        Logger->trace("Got message: {}", msg->content());
         m_on_message(msg);
       }));
     }
@@ -199,7 +196,7 @@ namespace ModDiscord
 
       if (other == std::end(old_emojis))
       {
-        BOOST_LOG_TRIVIAL(error) << "Somehow a new emoji got into the updated list.";
+        Logger->error("Somehow a new emoji got into the updated list.");
         return false;
       }
 
@@ -216,21 +213,21 @@ namespace ModDiscord
 
     for (auto& emoji : added_emoji)
     {
-      BOOST_LOG_TRIVIAL(trace) << "Sending Emoji Created event with emoji " << emoji.name();
+      Logger->trace("Sending Emoji Created event with emoji {}", emoji.name());
       auto ptr = std::make_shared<Emoji>(emoji);
       m_on_emoji_created(ptr);
     }
 
     for (auto& emoji : deleted_emoji)
     {
-      BOOST_LOG_TRIVIAL(trace) << "Sending Emoji Deleted event with emoji " << emoji.name();
+      Logger->trace("Sending Emoji Deleted event with emoji {}", emoji.name());
       auto ptr = std::make_shared<Emoji>(emoji);
       m_on_emoji_deleted(ptr);
     }
 
     for (auto& emoji : updated_emoji)
     {
-      BOOST_LOG_TRIVIAL(trace) << "Sending Emoji Updated event with emoji " << emoji.name();
+      Logger->trace("Sending Emoji Updated event with emoji {}", emoji.name());
       auto ptr = std::make_shared<Emoji>(emoji);
       m_on_emoji_updated(ptr);
     }

@@ -1,5 +1,4 @@
 #include "guild.h"
-#include <boost/log/trivial.hpp>
 
 namespace ModDiscord
 {
@@ -119,13 +118,13 @@ namespace ModDiscord
   {
     auto member_itr = std::find_if(std::begin(m_members), std::end(m_members), 
       [user](Member m) {
-        m.user().id() == user.id();
+        return m.user().id() == user.id();
       }
     );
 
     if (member_itr == std::end(m_members))
     {
-      BOOST_LOG_TRIVIAL(error) << "Update member called with previously unseen member. Ignoring.";
+      Logger->error("Update member called with previously unseen member. Ignoring.");
       return;
     }
 

@@ -1,6 +1,5 @@
 #include "gateway.h"
 
-#include <boost/log/trivial.hpp>
 #include <zlib.h>
 
 namespace ModDiscord
@@ -35,12 +34,12 @@ namespace ModDiscord
     auto wss_url = utility::conversions::to_string_t(API::get_wss_url());
     wss_url += builder.to_string();
 
-    BOOST_LOG_TRIVIAL(info) << "WSS URL: " << wss_url.c_str();
+    Logger->info("WSS URL: " + utility::conversions::to_utf8string(wss_url));
 
     std::lock_guard<std::mutex> lock(m_client_mutex);
 
     m_client.connect(wss_url).then([]() {
-      BOOST_LOG_TRIVIAL(info) << "Gateway connected.";
+      Logger->info("Gateway connected.");
     });
 
     m_client.set_message_handler([this](web::websockets::client::websocket_incoming_message msg)
@@ -70,11 +69,11 @@ namespace ModDiscord
 
       if (inflateInit(&zs) != Z_OK)
       {
-        BOOST_LOG_TRIVIAL(error) << "Could not initialize zlib Inflate";
+        Logger->error("Could not initialize zlib Inflate");
       }
 
       zs.next_in = reinterpret_cast<Bytef *>(const_cast<char *>(compressed.data()));
-      zs.avail_in = compressed.size();
+      zs.avail_in = static_cast<uInt>(compressed.size());
 
       int ret;
       char buffer[32768];
@@ -96,7 +95,7 @@ namespace ModDiscord
 
       if (ret != Z_STREAM_END)
       {
-        BOOST_LOG_TRIVIAL(error) << "Error during zlib decompression: (" << ret << ")";
+        Logger->error("Error during zlib decompression: ({})", ret);
       }
 
       /*  This code worked, but Boost randomly throws left brace errors (C1075 in MSVS)
@@ -120,7 +119,7 @@ namespace ModDiscord
     //  Parse our payload as JSON.
     auto payload = nlohmann::json::parse(str.c_str());
 
-    BOOST_LOG_TRIVIAL(info) << "Got WS Payload: " << payload.dump(2);
+    Logger->info("Got WS Payload: {}", payload.dump(2));
 
     auto data = payload["d"]; //  Get the data for the event
 
@@ -135,7 +134,7 @@ namespace ModDiscord
       break;
     case Hello:
       m_heartbeat_interval = data["heartbeat_interval"].get<uint32_t>();
-      BOOST_LOG_TRIVIAL(info) << "Set heartbeat interval to " << m_heartbeat_interval;
+      Logger->info("Set heartbeat interval to {}", m_heartbeat_interval);
 
       m_heartbeat_thread = std::thread([this]() {
         for (;;)
@@ -148,21 +147,21 @@ namespace ModDiscord
       send_identify();
       break;
     case Heartbeat_ACK:
-      BOOST_LOG_TRIVIAL(trace) << "Recieved Heartbeat ACK.";
+      Logger->trace("Recieved Heartbeat ACK.");
       m_recieved_ack = true;
       break;
     default:
-      BOOST_LOG_TRIVIAL(warning) << "Unhandled WS Opcode (" << static_cast<int>(payload["op"].get<uint8_t>()) << ")";
+      Logger->warn("Unhandled WS Opcode ({})", static_cast<int>(payload["op"].get<uint8_t>()));
     }
   }
 
   void Gateway::handle_dispatch_event(std::string event_name, nlohmann::json data)
   {
-    BOOST_LOG_TRIVIAL(trace) << "Recieved " << event_name << " event.";
+    Logger->trace("Recieved {} event.", event_name);
 
     if (event_name == "READY")
     {
-      BOOST_LOG_TRIVIAL(info) << "Using gateway version " << data["v"];
+      Logger->info("Using gateway version {}", data["v"]);
       m_session_id = data["session_id"].get<std::string>();
 
       if (auto p = m_bot.lock())
@@ -171,12 +170,12 @@ namespace ModDiscord
       }
       else
       {
-        BOOST_LOG_TRIVIAL(error) << "Could not lock Bot pointer.";
+        Logger->error("Could not lock Bot pointer.");
       }
     }
     else if (event_name == "RESUMED")
     {
-      BOOST_LOG_TRIVIAL(info) << "Successfully resumed.";
+      Logger->info("Successfully resumed.");
     }
     else
     {
@@ -186,7 +185,7 @@ namespace ModDiscord
       }
       else
       {
-        BOOST_LOG_TRIVIAL(error) << "Could not lock Bot pointer.";
+        Logger->error("Could not lock Bot pointer.");
       }
     }
   }
@@ -201,7 +200,7 @@ namespace ModDiscord
     web::websockets::client::websocket_outgoing_message msg;
     msg.set_utf8_message(packet.dump());
 
-    BOOST_LOG_TRIVIAL(debug) << "Sending packet: " << packet.dump(2);
+    Logger->debug("Sending packet: {}", packet.dump(2));
 
     std::lock_guard<std::mutex> lock(m_client_mutex);
     m_client.send(msg);
@@ -211,17 +210,17 @@ namespace ModDiscord
   {
     if (!m_recieved_ack)
     {
-      BOOST_LOG_TRIVIAL(warning) << "Did not recieve a heartbeat ACK packet before this heartbeat.";
+      Logger->warn("Did not recieve a heartbeat ACK packet before this heartbeat.");
     }
 
-    BOOST_LOG_TRIVIAL(debug) << "Sending heartbeat packet.";
+    Logger->debug("Sending heartbeat packet.");
     send(Opcodes::Heartbeat, { m_last_seq });
     m_recieved_ack = false;
   }
 
   void Gateway::send_identify()
   {
-    BOOST_LOG_TRIVIAL(debug) << "Sending identify packet.";
+    Logger->debug("Sending identify packet.");
 
     send(Opcodes::Identify,
     {
@@ -244,7 +243,7 @@ namespace ModDiscord
 
   void Gateway::send_resume()
   {
-    BOOST_LOG_TRIVIAL(debug) << "Sending resume packet.";
+    Logger->debug("Sending resume packet.");
 
     send(Resume, 
     {

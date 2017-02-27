@@ -15,7 +15,7 @@ namespace ModDiscord
       GET,
       POST,
       PUT,
-      DELETE,
+      DEL,
       PATCH
     };
 

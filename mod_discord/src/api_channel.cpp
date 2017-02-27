@@ -1,7 +1,6 @@
 #include "api.h"
 #include "api/api_channel.h"
 
-#include <boost/log/trivial.hpp>
 #include <cpprest/http_msg.h>
 
 namespace ModDiscord
@@ -14,7 +13,7 @@ namespace ModDiscord
       {
         if (ChannelCache.count(channel->id()))
         {
-          BOOST_LOG_TRIVIAL(trace) << "Merging new channel information with cached value.";
+          Logger->trace("Merging new channel information with cached value.");
           auto old = get_channel(channel->id());
           old->merge(channel);
         }
@@ -34,7 +33,7 @@ namespace ModDiscord
         }
         else
         {
-          BOOST_LOG_TRIVIAL(error) << "Attempted to delete a channel that wasn't in the cache.";
+          Logger->error("Attempted to delete a channel that wasn't in the cache.");
         }
       }
 
@@ -42,7 +41,7 @@ namespace ModDiscord
       {
         if (ChannelCache.count(channel_id))
         {
-          BOOST_LOG_TRIVIAL(trace) << "Returning channel from cache.";
+          Logger->trace("Returning channel from cache.");
           return ChannelCache[channel_id];
         }
 
@@ -55,7 +54,7 @@ namespace ModDiscord
           return chan;
         }
 
-        BOOST_LOG_TRIVIAL(error) << "Could not get Channel object with id " << channel_id.to_string();
+        Logger->error("Could not get Channel object with id {}", channel_id.to_string());
         return std::make_shared<ModDiscord::Channel>();
       }
 
@@ -71,7 +70,7 @@ namespace ModDiscord
 
         if (response["response_status"].get<int>() != Status::OK)
         {
-          BOOST_LOG_TRIVIAL(error) << "Modify text channel returned bad response (" << response["response_status"].get<int>() << ")";
+          Logger->error("Modify text channel returned bad response ({})", response["response_status"].get<int>());
         }
 
         return chan;
@@ -90,7 +89,7 @@ namespace ModDiscord
 
         if (response["response_status"].get<int>() != Status::OK)
         {
-          BOOST_LOG_TRIVIAL(error) << "Modify voice channel returned bad response (" << response["response_status"].get<int>() << ")";
+          Logger->error("Modify voice channel returned bad response ({})", response["response_status"].get<int>());
         }
 
         return chan;
@@ -110,7 +109,7 @@ namespace ModDiscord
 
       bool delete_message(Snowflake channel_id, Snowflake message_id)
       {
-        auto response = request(DELETE, "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string());
+        auto response = request(DEL, "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string());
         return response["response_status"].get<int>() == Status::NoContent;
       }
     }

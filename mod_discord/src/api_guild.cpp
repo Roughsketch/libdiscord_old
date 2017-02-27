@@ -1,8 +1,6 @@
 #include "api.h"
 #include "api/api_guild.h"
 
-#include <boost/log/trivial.hpp>
-
 namespace ModDiscord
 {
   namespace API
@@ -13,7 +11,7 @@ namespace ModDiscord
       {
         if (GuildCache.count(guild->id()))
         {
-          BOOST_LOG_TRIVIAL(trace) << "Merging new guild information with cached value.";
+          Logger->trace("Merging new guild information with cached value.");
           auto old = get_guild(guild->id());
           old->merge(guild);
         }
@@ -33,7 +31,7 @@ namespace ModDiscord
         }
         else
         {
-          BOOST_LOG_TRIVIAL(error) << "Attempted to delete a channel that wasn't in the cache.";
+          Logger->error("Attempted to delete a channel that wasn't in the cache.");
         }
       }
 
@@ -52,7 +50,7 @@ namespace ModDiscord
       {
         if (GuildCache.count(guild_id))
         {
-          BOOST_LOG_TRIVIAL(trace) << "Returning channel from cache.";
+          Logger->trace("Returning channel from cache.");
           return GuildCache[guild_id];
         }
 
@@ -65,7 +63,7 @@ namespace ModDiscord
           return guild;
         }
 
-        BOOST_LOG_TRIVIAL(error) << "Could not get Guild object with id " << guild_id.to_string();
+        Logger->error("Could not get Guild object with id {}", guild_id.to_string());
         return std::make_shared<ModDiscord::Guild>();
       }
     }
