@@ -82,6 +82,11 @@ namespace ModDiscord
     return m_guild_id;
   }
 
+  std::shared_ptr<Guild> Channel::guild() const
+  {
+    return ModDiscord::API::Guild::get_guild(guild_id());
+  }
+
   std::string Channel::name() const
   {
     return m_name;
