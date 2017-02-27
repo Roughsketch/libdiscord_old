@@ -20,6 +20,15 @@ namespace ModDiscord
   public:
     Member();
     explicit Member(const nlohmann::json& data);
+
+    User user() const;
+    std::vector<Snowflake> roles() const;
+    std::string nick() const;
+    std::string nickname() const;
+
+    void set_user(User user);
+    void set_nick(std::string nick);
+    void set_roles(std::vector<Snowflake> role_ids);
   };
 
   inline void from_json(const nlohmann::json& json, Member& member)
