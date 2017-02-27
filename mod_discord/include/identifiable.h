@@ -11,6 +11,11 @@ namespace ModDiscord
   public:
     Identifiable() : m_id(0) {}
 
+    bool operator<(const Identifiable& rhs) const
+    {
+      return m_id < rhs.m_id;
+    }
+
     explicit operator Snowflake() const
     {
       return m_id;
