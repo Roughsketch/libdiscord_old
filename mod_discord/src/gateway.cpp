@@ -8,8 +8,8 @@
 namespace ModDiscord
 {
   const uint8_t Gateway::LARGE_SERVER = 100;
-  const utility::string_t Gateway::VERSION = L"6";
-  const utility::string_t Gateway::ENCODING = L"json";
+  const utility::string_t Gateway::VERSION = utility::string_t(U("6"));
+  const utility::string_t Gateway::ENCODING = utility::string_t(U("json"));
 
   Gateway::Gateway()
   {
@@ -30,9 +30,9 @@ namespace ModDiscord
 
   void Gateway::start()
   {
-    web::uri_builder builder(L"");
-    builder.append_query(L"v", VERSION);
-    builder.append_query(L"encoding", ENCODING);
+    web::uri_builder builder(U(""));
+    builder.append_query(U("v"), VERSION);
+    builder.append_query(U("encoding"), ENCODING);
 
     auto wss_url = utility::conversions::to_string_t(API::get_wss_url());
     wss_url += builder.to_string();

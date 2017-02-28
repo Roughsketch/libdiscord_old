@@ -31,7 +31,7 @@ namespace ModDiscord
   template <typename T, typename U>
   void set_from_json(T& var, U key, nlohmann::json data)
   {
-    var = (!data.count(key) || data[key].is_null()) ? T() : data[key].get<T>();
+    var = (!data.count(key) || data[key].is_null()) ? T() : data[key].template get<T>();
   }
 
   template<typename T>

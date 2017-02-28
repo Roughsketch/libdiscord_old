@@ -209,7 +209,7 @@ namespace ModDiscord
         @param tts Whether or not this message should be text to speech.
         @return A shared pointer to the message that was sent.
      */
-    void Channel::send_temp_message(std::string content, uint32_t timeout, bool tts = false) const;
+    void send_temp_message(std::string content, uint32_t timeout, bool tts = false) const;
   };
 
   inline void from_json(const nlohmann::json& json, Channel& channel)

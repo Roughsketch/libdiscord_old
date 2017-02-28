@@ -167,7 +167,7 @@ namespace ModDiscord
     }
     else if (event_name == "MESSAGE_CREATE")
     {
-      m_threads.push_back(std::async([&](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
+      m_threads.push_back(std::async(std::launch::async, [&](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
         LOG(DEBUG) << "Got message: " << msg->content();
         callback(msg);
       }, std::make_shared<MessageEvent>(data), m_on_message));

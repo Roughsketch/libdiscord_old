@@ -60,15 +60,15 @@ namespace ModDiscord
 
     using namespace nlohmann;
 
-    static const auto API_BASE = utility::string_t(L"https://discordapp.com/api/v6");
+    static const auto API_BASE = U("https://discordapp.com/api/v6");
 
     json raw_request(web::http::method type, utility::string_t endpoint, nlohmann::json data)
     {
       http_client client(API_BASE);
       http_request request(type);
       request.set_request_uri(endpoint);
-      request.headers().add(L"Authorization", Token);
-      request.headers().add(L"Content-Type", L"application/json");
+      request.headers().add(U("Authorization"), Token);
+      request.headers().add(U("Content-Type"), U("application/json"));
       
       if (!data.empty())
       {

@@ -7,12 +7,12 @@ void generate_default_settings()
   static nlohmann::json default_settings = R"(
   {
     "token": "",
-    "client_id": 0,
+    "client_id": "0",
     "logging": {
       "filename": "",
       "rotate_size": 10485760
     },
-    "owner_id": 0,
+    "owner_id": "0",
     "prefix": "",
     "plugin_dir": "",
     "global": {
@@ -81,6 +81,7 @@ int main(int argc, char* argv[])
 
   bot->on_message([bot](std::shared_ptr<ModDiscord::MessageEvent> event)
   {
+    LOG(INFO) << "Got into OnMessage handler.";
     if (event->content() == ".info")
     {
       event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
