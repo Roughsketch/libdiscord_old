@@ -16,7 +16,16 @@ namespace ModDiscord
     Emoji();
     explicit Emoji(const nlohmann::json& data);
 
+    /** Get the name of this emoji.
+     
+        @returns The name for this emoji.
+     */
     std::string name() const;
+
+    /** Get a vector of role ids that can use this emoji.
+
+        @returns A vector of role ids that can use this emoji.
+    */
     std::vector<Snowflake> roles() const;
   };
 

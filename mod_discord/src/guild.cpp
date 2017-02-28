@@ -138,6 +138,13 @@ namespace ModDiscord
     m_roles.push_back(role);
   }
 
+  void Guild::remove_role(Snowflake id)
+  {
+    m_roles.erase(
+      std::remove_if(std::begin(m_roles), std::end(m_roles),
+        [id](Role old) { return old.id() == id; }));
+  }
+
   void Guild::update_role(Role role)
   {
     auto old_role = std::find_if(std::begin(m_roles), std::end(m_roles), [role](Role old) { return old.id() == role.id(); });
@@ -149,12 +156,5 @@ namespace ModDiscord
     }
 
     *old_role = role;
-  }
-
-  void Guild::remove_role(Snowflake id)
-  {
-    m_roles.erase(
-      std::remove_if(std::begin(m_roles), std::end(m_roles), 
-        [id](Role old) { return old.id() == id; }));
   }
 }

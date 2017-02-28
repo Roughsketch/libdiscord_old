@@ -143,12 +143,63 @@ namespace ModDiscord
         guild->add_member(member);
       }
     }
+    else if (event_name == "GUILD_ROLE_CREATE")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      guild->add_role(data["role"].get<Role>());
+    }
+    else if (event_name == "GUILD_ROLE_UPDATE")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      guild->update_role(data["role"].get<Role>());
+    }
+    else if (event_name == "GUILD_ROLE_DELETE")
+    {
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      guild->remove_role(data["role"].get<Snowflake>());
+    }
     else if (event_name == "MESSAGE_CREATE")
     {
       m_threads.push_back(std::async([&](std::shared_ptr<Message> msg, OnMessageCallback callback) {
         LOG(DEBUG) << "Got message: " << msg->content();
         callback(msg);
       }, std::make_shared<Message>(data), m_on_message));
+    }
+    else if (event_name == "MESSAGE_UPDATE")
+    {
+      
+    }
+    else if (event_name == "MESSAGE_DELETE")
+    {
+
+    }
+    else if (event_name == "MESSAGE_DELETE_BULK")
+    {
+
+    }
+    else if (event_name == "PRESENCE_UPDATE")
+    {
+
+    }
+    else if (event_name == "TYPING_START")
+    {
+
+    }
+    else if (event_name == "USER_SETTINGS_UPDATE")
+    {
+
+    }
+    else if (event_name == "USER_UPDATE")
+    {
+
+    }
+    else if (event_name == "VOICE_STATE_UPDATE")
+    {
+
+    }
+    else if (event_name == "VOICE_SERVER_UPDATE")
+    {
+
     }
 
     //  If we can lock the thread array, then do so.

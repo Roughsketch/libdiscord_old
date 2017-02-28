@@ -66,7 +66,7 @@ namespace ModDiscord
         }
 
         LOG(ERROR) << "Could not get Guild object with id " << guild_id.to_string();
-        return std::make_shared<ModDiscord::Guild>();
+        return nullptr;
       }
     }
   }

@@ -46,4 +46,9 @@ namespace ModDiscord
   {
     return m_avatar;
   }
+
+  bool User::is_bot() const
+  {
+    return m_bot;
+  }
 }

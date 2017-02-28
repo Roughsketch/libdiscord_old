@@ -162,6 +162,8 @@ namespace ModDiscord
     if (event_name == "READY")
     {
       LOG(INFO) << "Using gateway version " << data["v"];
+
+      //  Save session id so we can restart a session
       m_session_id = data["session_id"].get<std::string>();
 
       if (auto p = m_bot.lock())

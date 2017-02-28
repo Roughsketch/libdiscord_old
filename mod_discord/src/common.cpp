@@ -12,9 +12,16 @@ namespace ModDiscord
     std::ifstream ifs(file);
     nlohmann::json json;
 
-    if (ifs.is_open())
+    try 
     {
-      ifs >> json;
+      if (ifs.is_open())
+      {
+        ifs >> json;
+      }
+    } 
+    catch(std::invalid_argument)
+    {
+      //  Do nothing and keep the json data empty.
     }
 
     return json;

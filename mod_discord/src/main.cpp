@@ -112,7 +112,6 @@ int main(int argc, char* argv[])
 
   bot->run(); //  Start the bot.
   
-
   std::cout << "Done.";
   std::cin.get();
 }
