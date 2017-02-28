@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "common.h"
+#include "event/event_message.h"
 #include "guild.h"
 #include "user.h"
 
@@ -26,7 +27,7 @@ namespace ModDiscord
     std::mutex m_thread_mutex;
 
     //  Callbacks for events
-    typedef std::function<void(std::shared_ptr<Message>)> OnMessageCallback;
+    typedef std::function<void(std::shared_ptr<MessageEvent>)> OnMessageCallback;
     typedef std::function<void(std::shared_ptr<Emoji>)> OnEmojiChangedCallback;
     OnMessageCallback m_on_message;
     OnEmojiChangedCallback m_on_emoji_created;
@@ -64,9 +65,9 @@ namespace ModDiscord
     /** Assign a callback for when a message is received. There may only be one callback at a time.
     
         @code
-        bot->on_message([](std::shared_ptr<Message> msg){
-            if (msg->content() == "Ping!") {
-                msg->respond("Pong!");
+        bot->on_message([](std::shared_ptr<MessageEvent> event){
+            if (event->content() == "Ping!") {
+                event->respond("Pong!");
             }
         });
         @endcode

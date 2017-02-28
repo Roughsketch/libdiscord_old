@@ -25,6 +25,12 @@
     <Filter Include="Source Files\external">
       <UniqueIdentifier>{cea97137-1105-4abd-9de8-0ba3d1d52d44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\event">
+      <UniqueIdentifier>{d420a048-6f47-4e22-88f6-91bb3bb6c5a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\event">
+      <UniqueIdentifier>{b92ee2ad-79b3-4a84-9309-0fe1744f3bb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\mod_discord\src\api.cpp">
@@ -74,6 +80,9 @@
     </ClCompile>
     <ClCompile Include="..\mod_discord\src\external\easylogging++.cc">
       <Filter>Source Files\external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mod_discord\src\event\event_message.cpp">
+      <Filter>Source Files\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="..\mod_discord\include\external\easylogging++.h">
       <Filter>Header Files\external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mod_discord\include\event\event_message.h">
+      <Filter>Header Files\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

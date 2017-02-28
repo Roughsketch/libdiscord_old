@@ -27,6 +27,7 @@
     <ClCompile Include="..\mod_discord\src\common.cpp" />
     <ClCompile Include="..\mod_discord\src\emoji.cpp" />
     <ClCompile Include="..\mod_discord\src\events.cpp" />
+    <ClCompile Include="..\mod_discord\src\event\event_message.cpp" />
     <ClCompile Include="..\mod_discord\src\external\easylogging++.cc" />
     <ClCompile Include="..\mod_discord\src\gateway.cpp" />
     <ClCompile Include="..\mod_discord\src\guild.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="..\mod_discord\include\common.h" />
     <ClInclude Include="..\mod_discord\include\emoji.h" />
     <ClInclude Include="..\mod_discord\include\events.h" />
+    <ClInclude Include="..\mod_discord\include\event\event_message.h" />
     <ClInclude Include="..\mod_discord\include\external\easylogging++.h" />
     <ClInclude Include="..\mod_discord\include\external\json.hpp" />
     <ClInclude Include="..\mod_discord\include\gateway.h" />

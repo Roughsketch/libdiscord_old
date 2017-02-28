@@ -79,15 +79,15 @@ int main(int argc, char* argv[])
 
   auto bot = ModDiscord::Bot::create(settings);
 
-  bot->on_message([bot](std::shared_ptr<ModDiscord::Message> message)
+  bot->on_message([bot](std::shared_ptr<ModDiscord::MessageEvent> event)
   {
-    if (message->content() == ".info")
+    if (event->content() == ".info")
     {
-      message->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
+      event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
     }
-    else if (message->content() == ".emoji")
+    else if (event->content() == ".emoji")
     {
-      auto emojis = message->channel()->guild()->emojis();
+      auto emojis = event->channel()->guild()->emojis();
       auto response = "There are " + std::to_string(emojis.size()) + " emojis";
 
       if (emojis.size() > 0)
@@ -99,11 +99,11 @@ int main(int argc, char* argv[])
       {
         response += emoji.name() + " ";
       }
-      message->respond(response);
+      event->respond(response);
     }
-    else if (message->content() == ".modify")
+    else if (event->content() == ".modify")
     {
-      message->channel()->modify([](std::shared_ptr<ModDiscord::Channel> chan)
+      event->channel()->modify([](std::shared_ptr<ModDiscord::Channel> chan)
       {
         chan->set_name("sandcastle");
       });

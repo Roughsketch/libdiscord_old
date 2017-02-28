@@ -10,7 +10,7 @@ namespace ModDiscord
   {
     m_is_user = false;
 
-    m_on_message = [](std::shared_ptr<Message>) {};
+    m_on_message = [](std::shared_ptr<MessageEvent>) {};
     m_on_emoji_created = [](std::shared_ptr<Emoji>) {};
     m_on_emoji_deleted = [](std::shared_ptr<Emoji>) {};
     m_on_emoji_updated = [](std::shared_ptr<Emoji>) {};
@@ -160,10 +160,10 @@ namespace ModDiscord
     }
     else if (event_name == "MESSAGE_CREATE")
     {
-      m_threads.push_back(std::async([&](std::shared_ptr<Message> msg, OnMessageCallback callback) {
+      m_threads.push_back(std::async([&](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
         LOG(DEBUG) << "Got message: " << msg->content();
         callback(msg);
-      }, std::make_shared<Message>(data), m_on_message));
+      }, std::make_shared<MessageEvent>(data), m_on_message));
     }
     else if (event_name == "MESSAGE_UPDATE")
     {
