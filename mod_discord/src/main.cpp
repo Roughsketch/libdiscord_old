@@ -112,6 +112,19 @@ int main(int argc, char* argv[])
     {
       event->respond("Invite me with this link: " + bot->invite_url());
     }
+    else if (event->content() == ".guilds")
+    {
+      std::string response = "I am currently in the following guilds:\n```";
+
+      for (auto& guild : bot->guilds())
+      {
+        response += guild->name() + ": " + std::to_string(guild->member_count()) + "\n";
+      }
+
+      response += "```";
+
+      event->respond(response);
+    }
   });
 
   bot->run(); //  Start the bot.
