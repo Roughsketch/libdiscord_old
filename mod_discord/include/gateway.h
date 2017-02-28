@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cpprest/ws_client.h>
+#include <thread>
 
 #include "common.h"
 
