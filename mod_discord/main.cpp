@@ -1,6 +1,8 @@
 #include "mod_discord.h"
 
 #include <external/easylogging++.h>
+#include <iostream>
+#include <memory>
 
 void generate_default_settings()
 {

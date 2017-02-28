@@ -33,124 +33,127 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\mod_discord\src\api.cpp">
+    <None Include="packages.config" />
+    <None Include="src\default.json">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\bot.cpp">
+    <ClCompile Include="src\bot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\channel.cpp">
+    <ClCompile Include="src\channel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\emoji.cpp">
+    <ClCompile Include="src\common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\events.cpp">
+    <ClCompile Include="src\emoji.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\gateway.cpp">
+    <ClCompile Include="src\events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\guild.cpp">
+    <ClCompile Include="src\gateway.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\member.cpp">
+    <ClCompile Include="src\guild.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\message.cpp">
+    <ClCompile Include="src\member.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\role.cpp">
+    <ClCompile Include="src\message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\user.cpp">
+    <ClCompile Include="src\role.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\voice.cpp">
+    <ClCompile Include="src\user.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\common.cpp">
+    <ClCompile Include="src\voice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\api_channel.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mod_discord\src\api_guild.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
-    <ClCompile Include="..\mod_discord\src\external\easylogging++.cc">
+    <ClCompile Include="src\external\easylogging++.cc">
       <Filter>Source Files\external</Filter>
     </ClCompile>
-    <ClCompile Include="..\mod_discord\src\event\event_message.cpp">
+    <ClCompile Include="src\api_channel.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api_guild.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\event\event_message.cpp">
       <Filter>Source Files\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\mod_discord\include\api.h">
+    <ClInclude Include="include\api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\bot.h">
+    <ClInclude Include="include\bot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\channel.h">
+    <ClInclude Include="include\channel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\common.h">
+    <ClInclude Include="include\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\emoji.h">
+    <ClInclude Include="include\emoji.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\events.h">
+    <ClInclude Include="include\events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\gateway.h">
+    <ClInclude Include="include\gateway.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\guild.h">
+    <ClInclude Include="include\guild.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\identifiable.h">
+    <ClInclude Include="include\identifiable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\member.h">
+    <ClInclude Include="include\member.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\message.h">
+    <ClInclude Include="include\message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\role.h">
+    <ClInclude Include="include\mod_discord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\user.h">
+    <ClInclude Include="include\role.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\voice.h">
+    <ClInclude Include="include\snowflake.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\external\json.hpp">
+    <ClInclude Include="include\user.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\voice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\external\easylogging++.h">
       <Filter>Header Files\external</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\api\api_channel.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mod_discord\include\api\api_guild.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mod_discord\include\snowflake.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\mod_discord\include\external\easylogging++.h">
+    <ClInclude Include="include\external\json.hpp">
       <Filter>Header Files\external</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\event\event_message.h">
+    <ClInclude Include="include\event\event_message.h">
       <Filter>Header Files\event</Filter>
     </ClInclude>
-    <ClInclude Include="..\mod_discord\include\mod_discord.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\api\api_channel.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="include\api\api_guild.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
