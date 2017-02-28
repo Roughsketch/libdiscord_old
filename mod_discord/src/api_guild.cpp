@@ -7,6 +7,8 @@ namespace ModDiscord
   {
     namespace Guild
     {
+      static std::map<Snowflake, std::shared_ptr<ModDiscord::Guild>> GuildCache;
+
       void update_cache(std::shared_ptr<ModDiscord::Guild> guild)
       {
         if (GuildCache.count(guild->id()))

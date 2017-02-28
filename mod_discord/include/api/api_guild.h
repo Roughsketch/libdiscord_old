@@ -10,8 +10,6 @@ namespace ModDiscord
   {
     namespace Guild
     {
-      static std::map<Snowflake, std::shared_ptr<ModDiscord::Guild>> GuildCache;
-
       void update_cache(std::shared_ptr<ModDiscord::Guild> guild);
       void remove_cache(Snowflake guild_id);
       void remove_cache(std::shared_ptr<ModDiscord::Guild> guild);

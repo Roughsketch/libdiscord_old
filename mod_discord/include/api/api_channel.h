@@ -9,8 +9,6 @@ namespace ModDiscord
   {
     namespace Channel
     {
-      static std::map<Snowflake, std::shared_ptr<ModDiscord::Channel>> ChannelCache;
-
       void update_cache(std::shared_ptr<ModDiscord::Channel> channel);
       void remove_cache(std::shared_ptr<ModDiscord::Channel> channel);
 
