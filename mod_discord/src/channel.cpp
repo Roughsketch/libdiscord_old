@@ -50,7 +50,7 @@ namespace ModDiscord
     if (data.count("recipient"))
     {
       m_is_dm = true;
-      m_recipient = std::make_shared<User>(data);
+      set_from_json(m_recipient, "recipient", data);
     }
   }
 

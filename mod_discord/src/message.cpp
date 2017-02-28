@@ -18,7 +18,7 @@ namespace ModDiscord
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_channel_id, "channel_id", data);
-    m_author = std::make_shared<User>(data);
+    set_from_json(m_author, "author", data);
     set_from_json(m_content, "content", data);
     set_from_json(m_timestamp, "timestamp", data);
     set_from_json(m_edited_timestamp, "edited_timestamp", data);

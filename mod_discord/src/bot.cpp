@@ -67,7 +67,7 @@ namespace ModDiscord
 
     if (event_name == "READY")
     {
-      m_self = std::make_shared<User>(data);
+      set_from_json(m_self, "user", data);
       set_from_json(m_private_channels, "private_channels", data);
     }
     else if (event_name == "CHANNEL_CREATE" || event_name == "CHANNEL_UPDATE")
