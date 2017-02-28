@@ -18,6 +18,7 @@ namespace ModDiscord
     m_is_user = false;
 
     m_on_message = [](std::shared_ptr<MessageEvent>) {};
+    m_on_message_edited = [](std::shared_ptr<MessageEvent>) {};
     m_on_emoji_created = [](std::shared_ptr<Emoji>) {};
     m_on_emoji_deleted = [](std::shared_ptr<Emoji>) {};
     m_on_emoji_updated = [](std::shared_ptr<Emoji>) {};
@@ -61,6 +62,11 @@ namespace ModDiscord
     return "https://discordapp.com/oauth2/authorize?client_id=" + profile()->id().to_string() + "&scope=bot";
   }
 
+  std::vector<std::shared_ptr<Guild>> Bot::guilds() const
+  {
+    return m_guilds;
+  }
+
   void Bot::handle_dispatch(std::string event_name, nlohmann::json data)
   {
     LOG(INFO) << "Bot.handle_dispatch entered with " << event_name.c_str() << ".";
@@ -78,9 +84,24 @@ namespace ModDiscord
     {
       ModDiscord::API::Channel::remove_cache(std::make_shared<Channel>(data));
     }
-    else if (event_name == "GUILD_CREATE" || event_name == "GUILD_UPDATE")
+    else if (event_name == "GUILD_CREATE")
     {
-      ModDiscord::API::Guild::update_cache(std::make_shared<Guild>(data));
+      auto guild = ModDiscord::API::Guild::update_cache(std::make_shared<Guild>(data));
+      m_guilds.push_back(guild);
+    }
+    else if (event_name == "GUILD_UPDATE")
+    {
+      auto guild = ModDiscord::API::Guild::update_cache(std::make_shared<Guild>(data));
+      auto itr = std::find_if(std::begin(m_guilds), std::end(m_guilds), [guild](std::shared_ptr<Guild> g) { return g->id() == guild->id(); });
+      
+      if (itr == std::end(m_guilds))
+      {
+        LOG(WARNING) << "Attempting to update a guild that doesn't exist. Simply adding it instead.";
+        m_guilds.push_back(guild);
+      }
+
+      auto old_guild = *itr;
+      old_guild->merge(guild);
     }
     else if (event_name == "GUILD_DELETE")
     {
@@ -174,15 +195,32 @@ namespace ModDiscord
     }
     else if (event_name == "MESSAGE_UPDATE")
     {
-      
+      m_threads.push_back(std::async([&](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
+        LOG(DEBUG) << "Got edited message: " << msg->content();
+        callback(msg);
+      }, std::make_shared<MessageEvent>(data), m_on_message_edited));
     }
     else if (event_name == "MESSAGE_DELETE")
     {
-
+      m_threads.push_back(std::async([&](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
+        LOG(DEBUG) << "Got deleted message: " << msg->id();
+        callback(msg);
+      }, std::make_shared<MessageDeletedEvent>(data), m_on_message_deleted));
     }
     else if (event_name == "MESSAGE_DELETE_BULK")
     {
+      auto ids = data["ids"].get<std::vector<Snowflake>>();
+      auto chan_id = data["channel_id"].get<Snowflake>();
 
+      LOG(INFO) << "Sending out " << ids.size() << " MessageDeletedEvents";
+
+      for (auto& id : ids)
+      {
+        m_threads.push_back(std::async([&](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
+          LOG(DEBUG) << "Got deleted message: " << msg->id();
+          callback(msg);
+        }, std::make_shared<MessageDeletedEvent>(id, chan_id), m_on_message_deleted));
+      }
     }
     else if (event_name == "PRESENCE_UPDATE")
     {

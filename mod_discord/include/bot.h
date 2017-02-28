@@ -12,6 +12,7 @@ namespace ModDiscord
   class Gateway;
   class Guild;
   class MessageEvent;
+  class MessageDeletedEvent;
   class User;
 
   class Bot
@@ -22,16 +23,19 @@ namespace ModDiscord
 
     std::shared_ptr<Gateway> m_gateway;
 
-    std::vector<Guild> m_guilds;
-    std::vector<Channel> m_private_channels;
+    std::vector<std::shared_ptr<Guild>> m_guilds;
+    std::vector<std::shared_ptr<Channel>> m_private_channels;
 
     std::vector<std::future<void>> m_threads;
     std::mutex m_thread_mutex;
 
     //  Callbacks for events
     typedef std::function<void(std::shared_ptr<MessageEvent>)> OnMessageCallback;
+    typedef std::function<void(std::shared_ptr<MessageDeletedEvent>)> OnMessageDeletedCallback;
     typedef std::function<void(std::shared_ptr<Emoji>)> OnEmojiChangedCallback;
     OnMessageCallback m_on_message;
+    OnMessageCallback m_on_message_edited;
+    OnMessageDeletedCallback m_on_message_deleted;
     OnEmojiChangedCallback m_on_emoji_created;
     OnEmojiChangedCallback m_on_emoji_deleted;
     OnEmojiChangedCallback m_on_emoji_updated;
@@ -61,6 +65,12 @@ namespace ModDiscord
      */
     std::string invite_url() const;
 
+    /** Get a Bot's current guilds.
+     
+        @return A list of guilds the bot is currently in.
+     */
+    std::vector<std::shared_ptr<Guild>> guilds() const;
+
     /** Called by the Gateway when an event occurs. Should not be called manually. */
     void handle_dispatch(std::string event_name, nlohmann::json data);
 
@@ -79,6 +89,36 @@ namespace ModDiscord
     void on_message(OnMessageCallback callback)
     {
       m_on_message = callback;
+    }
+
+    /** Assign a callback for when a message is edited. There may only be one callback at a time.
+
+    @code
+    bot->on_message_edited([](std::shared_ptr<MessageEvent> event){
+    event->respond("You can't hide your editing from me " + event->author()->distinct() + "!");
+    });
+    @endcode
+
+    @param callback The callback to call when a message is edited.
+    */
+    void on_message_edited(OnMessageCallback callback)
+    {
+      m_on_message_edited = callback;
+    }
+
+    /** Assign a callback for when a message is deleted. There may only be one callback at a time.
+
+        @code
+        bot->on_message_edited([](std::shared_ptr<MessageEvent> event){
+            event->respond("Message with id " + event->id().to_string() + " was deleted.");
+        });
+        @endcode
+
+        @param callback The callback to call when a message is deleted.
+    */
+    void on_message_deleted(OnMessageDeletedCallback callback)
+    {
+      m_on_message_deleted = callback;
     }
 
     /** Assign a callback for when an emoji is created. There may only be one callback at a time.

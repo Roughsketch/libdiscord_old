@@ -95,6 +95,11 @@ namespace ModDiscord
     return m_emojis;
   }
 
+  uint32_t Guild::member_count() const
+  {
+    return m_member_count;
+  }
+
   void Guild::set_emojis(std::vector<std::shared_ptr<Emoji>> emojis)
   {
     m_emojis = emojis;

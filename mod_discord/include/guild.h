@@ -64,6 +64,12 @@ namespace ModDiscord
     */
     std::vector<std::shared_ptr<Emoji>> emojis() const;
 
+    /** Get the member count of a guild.
+     
+        @return The amount of members in this guild.
+     */
+    uint32_t member_count() const;
+
     /** Update the list of emoji that are available on the guild.
 
         @param emojis A vector of Emoji that the server owns.

@@ -31,9 +31,14 @@ namespace ModDiscord
   template <typename T, typename U>
   void set_from_json(T& var, U key, nlohmann::json data)
   {
-    var = (!data.count(key) || data[key].is_null()) ? T() : data[key].get<T>();
+    var = (!data.count(key) || data[key].is_null()) ? T() : data[key].template get<T>();
   }
 
+  /** Allows loading of JSON data into a shared_ptr's underlying type.
+   
+      @param json The JSON data to read from.
+      @param ptr A shared_ptr that will be initialized with the JSON data.
+   */
   template<typename T>
   void from_json(const nlohmann::json& json, std::shared_ptr<T>& ptr)
   {
