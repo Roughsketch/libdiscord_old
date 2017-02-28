@@ -1,5 +1,6 @@
 #include "event/event_message.h"
 
+#include "api/api_channel.h"
 #include "channel.h"
 #include "guild.h"
 #include "message.h"
@@ -50,5 +51,31 @@ namespace ModDiscord
   std::shared_ptr<Message> MessageEvent::respond(std::string content, bool tts) const
   {
     return m_message->respond(content, tts);
+  }
+
+  MessageDeletedEvent::MessageDeletedEvent(Snowflake id, Snowflake channel_id) : Identifiable(id)
+  {
+    m_channel_id = channel_id;
+  }
+
+  MessageDeletedEvent::MessageDeletedEvent(nlohmann::json data)
+  {
+    set_id_from_json("id", data);
+    set_from_json(m_channel_id, "channel_id", data);
+  }
+
+  std::shared_ptr<Channel> MessageDeletedEvent::channel() const
+  {
+    return ModDiscord::API::Channel::get_channel(m_channel_id);
+  }
+
+  std::shared_ptr<Guild> MessageDeletedEvent::guild() const
+  {
+    return channel()->guild();
+  }
+
+  std::shared_ptr<Message> MessageDeletedEvent::respond(std::string content, bool tts) const
+  {
+    channel()->send_message(content, tts);
   }
 }

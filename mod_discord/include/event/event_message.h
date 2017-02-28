@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.h"
+#include "identifiable.h"
 
 namespace ModDiscord
 {
@@ -63,6 +64,32 @@ namespace ModDiscord
       
         @return The message that was sent.
      */
+    std::shared_ptr<Message> respond(std::string content, bool tts = false) const;
+  };
+
+  class MessageDeletedEvent : public Identifiable
+  {
+    Snowflake m_channel_id;
+  public:
+    explicit MessageDeletedEvent(Snowflake id, Snowflake channel_id);
+    explicit MessageDeletedEvent(nlohmann::json data);
+
+    /** Get the channel this message was deleted from.
+
+        @return The channel this message was deleted from.
+    */
+    std::shared_ptr<Channel> channel() const;
+
+    /** Get the guild this message was deleted from.
+
+        @return The guild this message was deleted from.
+    */
+    std::shared_ptr<Guild> guild() const;
+
+    /** Sends a message to the channel where this message was deleted.
+
+        @return The message that was sent.
+    */
     std::shared_ptr<Message> respond(std::string content, bool tts = false) const;
   };
 }

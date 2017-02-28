@@ -10,6 +10,7 @@ namespace ModDiscord
     Snowflake m_id;
   public:
     Identifiable() : m_id(0) {}
+    explicit Identifiable(Snowflake id) : m_id(id) {}
 
     bool operator<(const Identifiable& rhs) const
     {
