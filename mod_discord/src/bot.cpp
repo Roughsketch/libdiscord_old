@@ -58,7 +58,7 @@ namespace ModDiscord
 
   std::string Bot::invite_url() const
   {
-    return "https://discordapp.com/oauth2/authorize?client_id=" + m_client_id.to_string() + "&scope=bot";
+    return "https://discordapp.com/oauth2/authorize?client_id=" + profile()->id().to_string() + "&scope=bot";
   }
 
   void Bot::handle_dispatch(std::string event_name, nlohmann::json data)

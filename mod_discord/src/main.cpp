@@ -108,6 +108,10 @@ int main(int argc, char* argv[])
         chan->set_name("sandcastle");
       });
     }
+    else if (event->content() == ".invite")
+    {
+      event->respond("Invite me with this link: " + bot->invite_url());
+    }
   });
 
   bot->run(); //  Start the bot.
