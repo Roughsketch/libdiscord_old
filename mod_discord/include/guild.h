@@ -55,6 +55,10 @@ namespace ModDiscord
     void add_member(Member member);
     void remove_member(Member member);
     void update_member(std::vector<Snowflake> roles, User user, std::string nick);
+
+    void add_role(Role role);
+    void update_role(Role role);
+    void remove_role(Snowflake role);
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)

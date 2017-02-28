@@ -132,4 +132,29 @@ namespace ModDiscord
     member_itr->set_user(user);
     member_itr->set_nick(nick);
   }
+
+  void Guild::add_role(Role role)
+  {
+    m_roles.push_back(role);
+  }
+
+  void Guild::update_role(Role role)
+  {
+    auto old_role = std::find_if(std::begin(m_roles), std::end(m_roles), [role](Role old) { return old.id() == role.id(); });
+
+    if (old_role == std::end(m_roles))
+    {
+      LOG(ERROR) << "Update Role was called with previously unseen role. Ignoring.";
+      return;
+    }
+
+    *old_role = role;
+  }
+
+  void Guild::remove_role(Snowflake id)
+  {
+    m_roles.erase(
+      std::remove_if(std::begin(m_roles), std::end(m_roles), 
+        [id](Role old) { return old.id() == id; }));
+  }
 }
