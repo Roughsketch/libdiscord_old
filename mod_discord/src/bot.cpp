@@ -133,7 +133,7 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
     {
-      m_threads.push_back(std::async([&](nlohmann::json json) {
+      m_threads.push_back(std::async(std::launch::async, [&](nlohmann::json json) {
         update_emojis(json);
       }, data));
     }
@@ -195,15 +195,15 @@ namespace ModDiscord
     }
     else if (event_name == "MESSAGE_UPDATE")
     {
-      m_threads.push_back(std::async([&](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
+      m_threads.push_back(std::async(std::launch::async, [&](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
         LOG(DEBUG) << "Got edited message: " << msg->content();
         callback(msg);
       }, std::make_shared<MessageEvent>(data), m_on_message_edited));
     }
     else if (event_name == "MESSAGE_DELETE")
     {
-      m_threads.push_back(std::async([&](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
-        LOG(DEBUG) << "Got deleted message: " << msg->id();
+      m_threads.push_back(std::async(std::launch::async, [&](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
+        LOG(DEBUG) << "Got deleted message: " << msg->id().to_string();
         callback(msg);
       }, std::make_shared<MessageDeletedEvent>(data), m_on_message_deleted));
     }
@@ -216,8 +216,8 @@ namespace ModDiscord
 
       for (auto& id : ids)
       {
-        m_threads.push_back(std::async([&](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
-          LOG(DEBUG) << "Got deleted message: " << msg->id();
+        m_threads.push_back(std::async(std::launch::async, [&](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
+          LOG(DEBUG) << "Got deleted message: " << msg->id().to_string();
           callback(msg);
         }, std::make_shared<MessageDeletedEvent>(id, chan_id), m_on_message_deleted));
       }
