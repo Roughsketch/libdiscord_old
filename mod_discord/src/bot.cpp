@@ -1,8 +1,15 @@
 #include "bot.h"
 
 #include "api.h"
+#include "channel.h"
 #include "common.h"
+#include "emoji.h"
+#include "event/event_message.h"
 #include "gateway.h"
+#include "guild.h"
+#include "member.h"
+#include "role.h"
+#include "user.h"
 
 namespace ModDiscord
 {
@@ -46,7 +53,7 @@ namespace ModDiscord
 
   std::shared_ptr<User> Bot::profile() const
   {
-    return std::make_shared<User>(m_self);
+    return m_self;
   }
 
   std::string Bot::invite_url() const
@@ -60,7 +67,7 @@ namespace ModDiscord
 
     if (event_name == "READY")
     {
-      set_from_json(m_self, "user", data);
+      m_self = std::make_shared<User>(data);
       set_from_json(m_private_channels, "private_channels", data);
     }
     else if (event_name == "CHANNEL_CREATE" || event_name == "CHANNEL_UPDATE")
@@ -220,7 +227,7 @@ namespace ModDiscord
   void Bot::update_emojis(nlohmann::json data)
   {
     auto guild = API::Guild::get_guild(data["guild_id"].get<Snowflake>());
-    auto new_emojis = data["emojis"].get<std::vector<Emoji>>();
+    auto new_emojis = data["emojis"].get<std::vector<std::shared_ptr<Emoji>>>();
     auto old_emojis = guild->emojis();
 
     //  Must sort or set differences won't work properly.
@@ -229,19 +236,19 @@ namespace ModDiscord
 
     guild->set_emojis(new_emojis);
 
-    std::vector<Emoji> added_emoji;
-    std::vector<Emoji> deleted_emoji;
-    std::vector<Emoji> updated_emoji;
+    std::vector<std::shared_ptr<Emoji>> added_emoji;
+    std::vector<std::shared_ptr<Emoji>> deleted_emoji;
+    std::vector<std::shared_ptr<Emoji>> updated_emoji;
 
     std::set_difference(std::begin(new_emojis), std::end(new_emojis), std::begin(old_emojis), std::end(old_emojis), std::back_inserter(added_emoji));
     std::set_difference(std::begin(old_emojis), std::end(old_emojis), std::begin(new_emojis), std::end(new_emojis), std::back_inserter(deleted_emoji));
     std::set_intersection(std::begin(old_emojis), std::end(old_emojis), std::begin(new_emojis), std::end(new_emojis), std::back_inserter(updated_emoji));
 
     updated_emoji.erase(std::remove_if(std::begin(updated_emoji), std::end(updated_emoji),
-      [old_emojis](Emoji e) {
+      [old_emojis](std::shared_ptr<Emoji> e) {
       auto other = std::find_if(std::begin(old_emojis), std::end(old_emojis),
-        [e](Emoji a) {
-        return a.id() == e.id();
+        [e](std::shared_ptr<Emoji> a) {
+        return a->id() == e->id();
       });
 
       if (other == std::end(old_emojis))
@@ -250,36 +257,35 @@ namespace ModDiscord
         return false;
       }
 
+      auto other_val = *other;
+
       //  Although data seems to be sent in sorted order, we need to be sure since vector compare requires sorted order to work.
-      auto e_roles = e.roles();
-      auto other_roles = other->roles();
+      auto e_roles = e->roles();
+      auto other_roles = other_val->roles();
 
       std::sort(std::begin(e_roles), std::end(e_roles));
       std::sort(std::begin(other_roles), std::end(other_roles));
 
-      return (e.name() == other->name() && e_roles == other_roles);
+      return (e->name() == other_val->name() && e_roles == other_roles);
     })
     );
 
     for (auto& emoji : added_emoji)
     {
-      LOG(TRACE) << "Sending Emoji Created event with emoji " << emoji.name();
-      auto ptr = std::make_shared<Emoji>(emoji);
-      m_on_emoji_created(ptr);
+      LOG(TRACE) << "Sending Emoji Created event with emoji " << emoji->name();
+      m_on_emoji_created(emoji);
     }
 
     for (auto& emoji : deleted_emoji)
     {
-      LOG(TRACE) << "Sending Emoji Deleted event with emoji " << emoji.name();
-      auto ptr = std::make_shared<Emoji>(emoji);
-      m_on_emoji_deleted(ptr);
+      LOG(TRACE) << "Sending Emoji Deleted event with emoji " << emoji->name();
+      m_on_emoji_deleted(emoji);
     }
 
     for (auto& emoji : updated_emoji)
     {
-      LOG(TRACE) << "Sending Emoji Updated event with emoji " << emoji.name();
-      auto ptr = std::make_shared<Emoji>(emoji);
-      m_on_emoji_updated(ptr);
+      LOG(TRACE) << "Sending Emoji Updated event with emoji " << emoji->name();
+      m_on_emoji_updated(emoji);
     }
   }
 }

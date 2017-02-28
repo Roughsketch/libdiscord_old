@@ -1,11 +1,9 @@
 #pragma once
 
-#include <map>
-
-#include "guild.h"
-
 namespace ModDiscord
 {
+  class Guild;
+
   namespace API
   {
     namespace Guild

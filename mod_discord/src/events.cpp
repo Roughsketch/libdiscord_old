@@ -1,4 +1,5 @@
 #include "events.h"
+#include "user.h"
 
 namespace ModDiscord
 {
@@ -19,7 +20,7 @@ namespace ModDiscord
 
   PresenceUpdate::PresenceUpdate(const nlohmann::json& data)
   {
-    set_from_json(m_user, "user", data);
+    m_user = std::make_shared<User>(data);
     set_from_json(m_roles, "roles", data);
     set_from_json(m_game, "game", data);
     set_from_json(m_guild_id, "guild_id", data);

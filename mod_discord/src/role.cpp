@@ -23,4 +23,15 @@ namespace ModDiscord
     set_from_json(m_managed, "managed", data);
     set_from_json(m_mentionable, "mentionable", data);
   }
+
+  void Role::merge(Role other)
+  {
+    m_name = other.m_name;
+    m_color = other.m_color;
+    m_hoist = other.m_hoist;
+    m_position = other.m_position;
+    m_permissions = other.m_permissions;
+    m_managed = other.m_managed;
+    m_mentionable = other.m_mentionable;
+  }
 }

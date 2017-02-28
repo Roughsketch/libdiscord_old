@@ -33,4 +33,10 @@ namespace ModDiscord
   {
     var = (!data.count(key) || data[key].is_null()) ? T() : data[key].get<T>();
   }
+
+  template<typename T>
+  void from_json(const nlohmann::json& json, std::shared_ptr<T>& ptr)
+  {
+    ptr = std::make_shared<T>(json);
+  }
 }

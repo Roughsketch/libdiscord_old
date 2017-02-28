@@ -2,12 +2,13 @@
 
 #include "common.h"
 #include "identifiable.h"
-#include "message.h"
-#include "user.h"
-#include "guild.h"
 
 namespace ModDiscord
 {
+  class Guild;
+  class Message;
+  class User;
+
   class Overwrite
   {
     Snowflake m_id;
@@ -32,7 +33,6 @@ namespace ModDiscord
     Group
   };
 
-  class Guild;
   class Channel : public Identifiable
   {
     static const uint32_t MinNameSize = 2;
@@ -58,7 +58,7 @@ namespace ModDiscord
     uint32_t m_user_limit;
 
     //  DM Specific
-    User m_recipient;
+    std::shared_ptr<User> m_recipient;
 
     bool m_is_dm;
   public:

@@ -1,5 +1,8 @@
 #include "member.h"
 
+#include "role.h"
+#include "user.h"
+
 namespace ModDiscord
 {
   Member::Member()
@@ -18,7 +21,7 @@ namespace ModDiscord
     set_from_json(m_mute, "mute", data);
   }
 
-  User Member::user() const
+  std::shared_ptr<User> Member::user() const
   {
     return m_user;
   }
@@ -40,7 +43,7 @@ namespace ModDiscord
 
   void Member::set_user(User user)
   {
-    m_user = user;
+    m_user = std::make_shared<User>(user);
   }
 
   void Member::set_nick(std::string nick)

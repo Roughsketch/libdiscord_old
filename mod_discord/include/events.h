@@ -1,8 +1,11 @@
 #pragma once
-#include "user.h"
+
+#include "common.h"
 
 namespace ModDiscord
 {
+  class User;
+
   class Game
   {
     std::string m_name;
@@ -20,7 +23,7 @@ namespace ModDiscord
 
   class PresenceUpdate
   {
-    User m_user;
+    std::shared_ptr<User> m_user;
     std::vector<Snowflake> m_roles;
     Game m_game;
     Snowflake m_guild_id;
@@ -34,21 +37,4 @@ namespace ModDiscord
   {
     presence = PresenceUpdate(json);
   }
-  /*
-  void to_json(nlohmann::json& data, const Presense& p)
-  {
-    data = {
-      {"user", p.user},
-      {"roles", nlohmann::json::array({p.roles})},
-      {"game", p.game},
-      {"guild_id", p.guild_id},
-      {"status", p.status}
-    };
-  }
-
-  void from_json(const nlohmann::json& data, Presense& p)
-  {
-    p.user = data["user"].get<User>();
-  }
-  */
 }

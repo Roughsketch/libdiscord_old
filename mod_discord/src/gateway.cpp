@@ -1,5 +1,8 @@
 #include "gateway.h"
 
+#include "api.h"
+#include "bot.h"
+
 #include <zlib.h>
 
 namespace ModDiscord

@@ -2,13 +2,12 @@
 
 #include <cpprest/ws_client.h>
 
-#include "api.h"
-#include "bot.h"
 #include "common.h"
 
 namespace ModDiscord
 {
   class Bot;
+
   enum Opcodes : uint8_t
   {
     Dispatch = 0,
@@ -23,11 +22,6 @@ namespace ModDiscord
     Invalidate_Session,
     Hello,
     Heartbeat_ACK
-  };
-
-  class Session
-  {
-    
   };
 
   class Gateway

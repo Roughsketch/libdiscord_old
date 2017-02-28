@@ -48,6 +48,8 @@ namespace ModDiscord
   public:
     Role();
     explicit Role(const nlohmann::json& data);
+
+    void merge(Role other);
   };
 
   inline void from_json(const nlohmann::json& json, Role& role)

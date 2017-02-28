@@ -2,6 +2,9 @@
 
 #include "api.h"
 #include "channel.h"
+#include "message.h"
+#include "user.h"
+#include "guild.h"
 
 namespace ModDiscord
 {
@@ -47,7 +50,7 @@ namespace ModDiscord
     if (data.count("recipient"))
     {
       m_is_dm = true;
-      set_from_json(m_recipient, "recipient", data);
+      m_recipient = std::make_shared<User>(data);
     }
   }
 

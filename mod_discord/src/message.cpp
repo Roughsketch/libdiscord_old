@@ -1,5 +1,9 @@
-#include "api.h"
 #include "message.h"
+
+#include "api.h"
+#include "channel.h"
+#include "role.h"
+#include "user.h"
 
 namespace ModDiscord
 {
@@ -14,7 +18,7 @@ namespace ModDiscord
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_channel_id, "channel_id", data);
-    set_from_json(m_author, "author", data);
+    m_author = std::make_shared<User>(data);
     set_from_json(m_content, "content", data);
     set_from_json(m_timestamp, "timestamp", data);
     set_from_json(m_edited_timestamp, "edited_timestamp", data);
@@ -34,12 +38,13 @@ namespace ModDiscord
   {
     return m_channel_id;
   }
-  User Message::author() const
+
+  std::shared_ptr<User> Message::author() const
   {
     return m_author;
   }
 
-  User Message::user() const
+  std::shared_ptr<User> Message::user() const
   {
     return author();
   }
@@ -54,7 +59,7 @@ namespace ModDiscord
     return content();
   }
 
-  std::vector<User> Message::mentions() const
+  std::vector<std::shared_ptr<User>> Message::mentions() const
   {
     return m_mentions;
   }

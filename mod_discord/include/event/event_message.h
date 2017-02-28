@@ -1,22 +1,20 @@
 #pragma once
 
-#include "channel.h"
-#include "guild.h"
-#include "message.h"
-#include "user.h"
+#include "common.h"
 
 namespace ModDiscord
 {
+  class Channel;
+  class Guild;
+  class Message;
+  class User;
+
   /** An Event wrapper meant to provide convenient methods for handling messages. */
   class MessageEvent
   {
     std::shared_ptr<Message> m_message;
   public:
-    explicit MessageEvent(nlohmann::json data)
-    {
-      m_message = std::make_shared<Message>(data);
-    }
-
+    explicit MessageEvent(nlohmann::json data);
     explicit MessageEvent(std::shared_ptr<Message> msg) : m_message(msg) {};
 
     /** Get the user who posted this message.

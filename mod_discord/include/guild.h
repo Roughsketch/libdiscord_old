@@ -4,16 +4,18 @@
 #include <vector>
 
 #include "common.h"
-#include "channel.h"
-#include "emoji.h"
-#include "events.h"
 #include "identifiable.h"
-#include "member.h"
-#include "role.h"
-#include "voice.h"
 
 namespace ModDiscord
 {
+  class Channel;
+  class Emoji;
+  class Member;
+  class PresenceUpdate;
+  class Role;
+  class User;
+  class VoiceState;
+
   class Guild : public Identifiable
   {
     std::string m_name;
@@ -27,17 +29,17 @@ namespace ModDiscord
     Snowflake m_embed_channel_id;
     uint32_t m_verification_level;
     uint32_t m_default_message_notifications;
-    std::vector<Role> m_roles;
-    std::vector<Emoji> m_emojis;
+    std::vector<std::shared_ptr<Role>> m_roles;
+    std::vector<std::shared_ptr<Emoji>> m_emojis;
     std::vector<std::string> m_features;
     uint32_t m_mfa_level;
     std::string m_joined_at;
     bool m_large;
     uint32_t m_member_count;
-    std::vector<VoiceState> m_voice_states;
-    std::vector<Member> m_members;
-    std::vector<Channel> m_channels;
-    std::vector<PresenceUpdate> m_presences;
+    std::vector<std::shared_ptr<VoiceState>> m_voice_states;
+    std::vector<std::shared_ptr<Member>> m_members;
+    std::vector<std::shared_ptr<Channel>> m_channels;
+    std::vector<std::shared_ptr<PresenceUpdate>> m_presences;
 
     bool m_unavailable;
   public:
@@ -60,13 +62,13 @@ namespace ModDiscord
 
         @return A vector of Emoji that the guild owns.
     */
-    std::vector<Emoji> emojis() const;
+    std::vector<std::shared_ptr<Emoji>> emojis() const;
 
     /** Update the list of emoji that are available on the guild.
 
         @param emojis A vector of Emoji that the server owns.
     */
-    void set_emojis(std::vector<Emoji> emojis);
+    void set_emojis(std::vector<std::shared_ptr<Emoji>> emojis);
 
     /** Sets a guild as unavailable.
 

@@ -149,5 +149,8 @@
     <ClInclude Include="..\mod_discord\include\event\event_message.h">
       <Filter>Header Files\event</Filter>
     </ClInclude>
+    <ClInclude Include="..\mod_discord\include\mod_discord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

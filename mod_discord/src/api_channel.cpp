@@ -1,5 +1,7 @@
 #include "api.h"
 #include "api/api_channel.h"
+#include "channel.h"
+#include "message.h"
 
 #include <cpprest/http_msg.h>
 

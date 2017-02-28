@@ -4,14 +4,14 @@
 #include <vector>
 
 #include "common.h"
-#include "role.h"
-#include "user.h"
 
 namespace ModDiscord
 {
+  class User;
+
   class Member
   {
-    User m_user;
+    std::shared_ptr<User> m_user;
     std::string m_nick;
     std::vector<Snowflake> m_roles;
     std::string m_joined_at;
@@ -21,7 +21,7 @@ namespace ModDiscord
     Member();
     explicit Member(const nlohmann::json& data);
 
-    User user() const;
+    std::shared_ptr<User> user() const;
     std::vector<Snowflake> roles() const;
     std::string nick() const;
     std::string nickname() const;

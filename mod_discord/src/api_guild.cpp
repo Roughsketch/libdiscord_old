@@ -1,5 +1,8 @@
 #include "api.h"
 #include "api/api_guild.h"
+#include "guild.h"
+
+#include <map>
 
 namespace ModDiscord
 {

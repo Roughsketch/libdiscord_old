@@ -57,6 +57,7 @@
     <ClInclude Include="..\mod_discord\include\identifiable.h" />
     <ClInclude Include="..\mod_discord\include\member.h" />
     <ClInclude Include="..\mod_discord\include\message.h" />
+    <ClInclude Include="..\mod_discord\include\mod_discord.h" />
     <ClInclude Include="..\mod_discord\include\role.h" />
     <ClInclude Include="..\mod_discord\include\snowflake.h" />
     <ClInclude Include="..\mod_discord\include\user.h" />

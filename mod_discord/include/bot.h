@@ -4,19 +4,21 @@
 #include <memory>
 
 #include "common.h"
-#include "event/event_message.h"
-#include "guild.h"
-#include "user.h"
 
 namespace ModDiscord
 {
+  class Channel;
+  class Emoji;
   class Gateway;
+  class Guild;
+  class MessageEvent;
+  class User;
 
   class Bot
   {
     Snowflake m_client_id;
     bool m_is_user;
-    User m_self;
+    std::shared_ptr<User> m_self;
 
     std::shared_ptr<Gateway> m_gateway;
 

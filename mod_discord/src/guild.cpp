@@ -1,5 +1,13 @@
 #include "guild.h"
 
+#include "channel.h"
+#include "emoji.h"
+#include "events.h"
+#include "member.h"
+#include "role.h"
+#include "user.h"
+#include "voice.h"
+
 namespace ModDiscord
 {
   Guild::Guild()
@@ -82,12 +90,12 @@ namespace ModDiscord
     return m_name;
   }
 
-  std::vector<Emoji> Guild::emojis() const
+  std::vector<std::shared_ptr<Emoji>> Guild::emojis() const
   {
     return m_emojis;
   }
 
-  void Guild::set_emojis(std::vector<Emoji> emojis)
+  void Guild::set_emojis(std::vector<std::shared_ptr<Emoji>> emojis)
   {
     m_emojis = emojis;
   }
@@ -99,15 +107,15 @@ namespace ModDiscord
 
   void Guild::add_member(Member member)
   {
-    m_members.push_back(member);
+    m_members.push_back(std::make_shared<Member>(member));
     m_member_count += 1;
   }
 
   void Guild::remove_member(Member member)
   {
     m_members.erase(std::remove_if(std::begin(m_members), std::end(m_members), 
-      [member](Member other) {
-        return member.user().id() == other.user().id();
+      [member](std::shared_ptr<Member> other) {
+        return member.user()->id() == other->user()->id();
       })
     );
 
@@ -117,8 +125,8 @@ namespace ModDiscord
   void Guild::update_member(std::vector<Snowflake> roles, User user, std::string nick)
   {
     auto member_itr = std::find_if(std::begin(m_members), std::end(m_members), 
-      [user](Member m) {
-        return m.user().id() == user.id();
+      [user](std::shared_ptr<Member> m) {
+        return m->user()->id() == user.id();
       }
     );
 
@@ -128,26 +136,28 @@ namespace ModDiscord
       return;
     }
 
-    member_itr->set_roles(roles);
-    member_itr->set_user(user);
-    member_itr->set_nick(nick);
+    auto member = *member_itr;
+
+    member->set_roles(roles);
+    member->set_user(user);
+    member->set_nick(nick);
   }
 
   void Guild::add_role(Role role)
   {
-    m_roles.push_back(role);
+    m_roles.push_back(std::make_shared<Role>(role));
   }
 
   void Guild::remove_role(Snowflake id)
   {
     m_roles.erase(
       std::remove_if(std::begin(m_roles), std::end(m_roles),
-        [id](Role old) { return old.id() == id; }));
+        [id](std::shared_ptr<Role> old) { return old->id() == id; }));
   }
 
   void Guild::update_role(Role role)
   {
-    auto old_role = std::find_if(std::begin(m_roles), std::end(m_roles), [role](Role old) { return old.id() == role.id(); });
+    auto old_role = std::find_if(std::begin(m_roles), std::end(m_roles), [role](std::shared_ptr<Role> old) { return old->id() == role.id(); });
 
     if (old_role == std::end(m_roles))
     {
@@ -155,6 +165,7 @@ namespace ModDiscord
       return;
     }
 
-    *old_role = role;
+    auto old = *old_role;
+    old->merge(role);
   }
 }

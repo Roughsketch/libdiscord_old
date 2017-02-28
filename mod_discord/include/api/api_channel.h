@@ -1,10 +1,12 @@
 #pragma once
 
 #include "common.h"
-#include "channel.h"
 
 namespace ModDiscord
 {
+  class Channel;
+  class Message;
+
   namespace API
   {
     namespace Channel

@@ -1,10 +1,20 @@
 #include "event/event_message.h"
 
+#include "channel.h"
+#include "guild.h"
+#include "message.h"
+#include "user.h"
+
 namespace ModDiscord
 {
+  MessageEvent::MessageEvent(nlohmann::json data)
+  {
+    m_message = std::make_shared<Message>(data);
+  }
+
   std::shared_ptr<User> MessageEvent::author() const
   {
-    return std::make_shared<User>(m_message->author());
+    return m_message->author();
   }
 
   std::shared_ptr<User> MessageEvent::user() const
@@ -34,7 +44,7 @@ namespace ModDiscord
 
   bool MessageEvent::from_bot() const
   {
-    return m_message->author().is_bot();
+    return m_message->author()->is_bot();
   }
 
   std::shared_ptr<Message> MessageEvent::respond(std::string content, bool tts) const

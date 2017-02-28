@@ -1,4 +1,4 @@
-#include "bot.h"
+#include "mod_discord.h"
 
 #include <external/easylogging++.h>
 
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 
       for (auto& emoji : emojis)
       {
-        response += emoji.name() + " ";
+        response += emoji->name() + " ";
       }
       event->respond(response);
     }
