@@ -12,7 +12,7 @@ namespace ModDiscord
          
          @param guild A shared pointer to the guild to update.
        */
-      void update_cache(std::shared_ptr<ModDiscord::Guild> guild);
+      std::shared_ptr<ModDiscord::Guild> update_cache(std::shared_ptr<ModDiscord::Guild> guild);
 
       /** Removes a Guild from the cache given its id.
 
