@@ -51,10 +51,28 @@ namespace ModDiscord
     set_from_json(m_large, "large", data);
     set_from_json(m_member_count, "member_count", data);
     set_from_json(m_voice_states, "voice_states", data);
-    set_from_json(m_members, "members", data);
     set_from_json(m_channels, "channels", data);
-    set_from_json(m_presences, "presences", data);
     set_from_json(m_unavailable, "unavailable", data);
+
+    if (data.count("members"))
+    {
+      auto members = data["members"].get<std::vector<std::shared_ptr<Member>>>();
+      
+      for (auto& member : members)
+      {
+        m_members[member->user()->id()] = member;
+      }
+    }
+
+    if (data.count("presences"))
+    {
+      auto presences = data["presences"].get<std::vector<std::shared_ptr<PresenceUpdate>>>();
+
+      for (auto& presence : presences)
+      {
+        m_presences[presence->user()->id()] = presence;
+      }
+    }
   }
 
   void Guild::merge(std::shared_ptr<Guild> other)
@@ -202,7 +220,7 @@ namespace ModDiscord
     }
     else
     {
-      m_presences[presence->user()->id()] = (presence);
+      m_presences[presence->user()->id()] = presence;
     }
   }
 }
