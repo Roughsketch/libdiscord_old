@@ -70,6 +70,8 @@ namespace ModDiscord
      */
     uint32_t member_count() const;
 
+    std::shared_ptr<User> get_user(Snowflake user_id);
+
     /** Update the list of emoji that are available on the guild.
 
         @param emojis A vector of Emoji that the server owns.

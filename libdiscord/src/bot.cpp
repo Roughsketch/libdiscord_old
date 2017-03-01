@@ -256,14 +256,6 @@ namespace ModDiscord
         callback(event);
       }, std::make_shared<TypingEvent>(data), m_on_typing));
     }
-    else if (event_name == "USER_SETTINGS_UPDATE")
-    {
-
-    }
-    else if (event_name == "USER_UPDATE")
-    {
-
-    }
     else if (event_name == "VOICE_STATE_UPDATE")
     {
 

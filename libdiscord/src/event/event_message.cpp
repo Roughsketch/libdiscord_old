@@ -93,11 +93,12 @@ namespace ModDiscord
 
   std::shared_ptr<User> TypingEvent::author() const
   {
+    return guild()->get_user(m_user_id);
   }
 
   std::shared_ptr<User> TypingEvent::user() const
   {
-    return channel()->
+    return author();
   }
 
   std::shared_ptr<Channel> TypingEvent::channel() const

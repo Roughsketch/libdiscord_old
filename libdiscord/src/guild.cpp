@@ -100,6 +100,22 @@ namespace ModDiscord
     return m_member_count;
   }
 
+  std::shared_ptr<User> Guild::get_user(Snowflake user_id)
+  {
+    auto user_itr = std::find_if(std::begin(m_members), std::end(m_members), [user_id](const std::pair<Snowflake, std::shared_ptr<Member>>& elem)
+    {
+      return elem.second->user()->id() == user_id;
+    });
+
+    if (user_itr == std::end(m_members))
+    {
+      LOG(ERROR) << "Could not find user with id " << user_id.to_string();
+      return nullptr;
+    }
+
+    return user_itr->second->user();
+  }
+
   void Guild::set_emojis(std::vector<std::shared_ptr<Emoji>> emojis)
   {
     m_emojis = emojis;
