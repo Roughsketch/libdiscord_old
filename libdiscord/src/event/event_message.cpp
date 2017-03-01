@@ -76,7 +76,7 @@ namespace ModDiscord
 
   std::shared_ptr<Message> MessageDeletedEvent::respond(std::string content, bool tts) const
   {
-    channel()->send_message(content, tts);
+    return channel()->send_message(content, tts);
   }
 
   TypingEvent::TypingEvent()
