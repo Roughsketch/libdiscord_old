@@ -47,8 +47,31 @@ namespace ModDiscord
     /** Used to create a Bot. Should be used over constructor.
     
         @param settings The settings with which to load the Bot. Includes token and other miscellaneous data.
+        @return A shared pointer to the bot that was created.
      */
     static std::shared_ptr<Bot> create(nlohmann::json settings);
+
+    /** Used to create a Bot with just a token.
+     
+        @param token The token for this bot.
+        @return A shared pointer to the bot that was created.
+     */
+    static std::shared_ptr<Bot> create(std::string token);
+
+    /** Used to create a Bot using settings loaded from a JSON file.
+    
+        The only required field for this file is "token", which will be your bot's token.
+
+        @code
+        {
+          "token": "YOUR_TOKEN_HERE"
+        }
+        @endcode
+
+        @param filename The JSON file to load settings from.
+        @return A shared pointer to the bot that was created. If invalid settings are found it will return nullptr.
+     */
+    static std::shared_ptr<Bot> create_from_json(std::string filename);
 
     /** Starts the bot. */
     void run() const;

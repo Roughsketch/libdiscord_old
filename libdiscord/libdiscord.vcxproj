@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="src\default.json" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\api.cpp" />

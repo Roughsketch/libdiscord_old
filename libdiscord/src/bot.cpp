@@ -47,6 +47,24 @@ namespace ModDiscord
     return bot;
   }
 
+  std::shared_ptr<Bot> Bot::create(std::string token)
+  {
+    return create({ "token", token });
+  }
+
+  std::shared_ptr<Bot> Bot::create_from_json(std::string filename)
+  {
+    auto settings = ModDiscord::read_json_file(filename);
+
+    if (settings.empty())
+    {
+      LOG(ERROR) << "Settings file " << filename << " is either invalid JSON or empty.";
+      return nullptr;
+    }
+
+    return create(settings);
+  }
+
   void Bot::run() const
   {
     m_gateway->start();
