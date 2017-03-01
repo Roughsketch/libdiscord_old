@@ -13,6 +13,7 @@ namespace ModDiscord
   class Guild;
   class MessageEvent;
   class MessageDeletedEvent;
+  class TypingEvent;
   class User;
 
   class Bot
@@ -33,12 +34,15 @@ namespace ModDiscord
     typedef std::function<void(std::shared_ptr<MessageEvent>)> OnMessageCallback;
     typedef std::function<void(std::shared_ptr<MessageDeletedEvent>)> OnMessageDeletedCallback;
     typedef std::function<void(std::shared_ptr<Emoji>)> OnEmojiChangedCallback;
+    typedef std::function<void(std::shared_ptr<TypingEvent>)> OnTypingCallback;
+
     OnMessageCallback m_on_message;
     OnMessageCallback m_on_message_edited;
     OnMessageDeletedCallback m_on_message_deleted;
     OnEmojiChangedCallback m_on_emoji_created;
     OnEmojiChangedCallback m_on_emoji_deleted;
     OnEmojiChangedCallback m_on_emoji_updated;
+    OnTypingCallback m_on_typing;
 
     void update_emojis(nlohmann::json data);
   public:
@@ -109,10 +113,7 @@ namespace ModDiscord
 
         @param callback The callback to call when a message is received.
      */
-    void on_message(OnMessageCallback callback)
-    {
-      m_on_message = callback;
-    }
+    void on_message(OnMessageCallback callback);
 
     /** Assign a callback for when a message is edited. There may only be one callback at a time.
 
@@ -124,10 +125,7 @@ namespace ModDiscord
 
     @param callback The callback to call when a message is edited.
     */
-    void on_message_edited(OnMessageCallback callback)
-    {
-      m_on_message_edited = callback;
-    }
+    void on_message_edited(OnMessageCallback callback);
 
     /** Assign a callback for when a message is deleted. There may only be one callback at a time.
 
@@ -139,36 +137,30 @@ namespace ModDiscord
 
         @param callback The callback to call when a message is deleted.
     */
-    void on_message_deleted(OnMessageDeletedCallback callback)
-    {
-      m_on_message_deleted = callback;
-    }
+    void on_message_deleted(OnMessageDeletedCallback callback);
 
     /** Assign a callback for when an emoji is created. There may only be one callback at a time.
 
         @param callback The callback to call when an emoji is created.
     */
-    void on_emoji_created(OnEmojiChangedCallback callback)
-    {
-      m_on_emoji_created = callback;
-    }
+    void on_emoji_created(OnEmojiChangedCallback callback);
 
     /** Assign a callback for when an emoji is deleted. There may only be one callback at a time.
 
         @param callback The callback to call when an emoji is deleted.
     */
-    void on_emoji_deleted(OnEmojiChangedCallback callback)
-    {
-      m_on_emoji_deleted = callback;
-    }
+    void on_emoji_deleted(OnEmojiChangedCallback callback);
 
     /** Assign a callback for when an emoji is updated. There may only be one callback at a time.
 
         @param callback The callback to call when an emoji is updated.
     */
-    void on_emoji_updated(OnEmojiChangedCallback callback)
-    {
-      m_on_emoji_updated = callback;
-    }
+    void on_emoji_updated(OnEmojiChangedCallback callback);
+
+    /** Assign a callback that is called whenever a user starts typing.
+      
+        @param callback The callback to call when a typing event is raised.
+     */
+    void on_typing(OnTypingCallback callback);
   };
 }

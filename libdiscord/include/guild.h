@@ -37,9 +37,9 @@ namespace ModDiscord
     bool m_large;
     uint32_t m_member_count;
     std::vector<std::shared_ptr<VoiceState>> m_voice_states;
-    std::vector<std::shared_ptr<Member>> m_members;
+    std::map<Snowflake, std::shared_ptr<Member>> m_members;
     std::vector<std::shared_ptr<Channel>> m_channels;
-    std::vector<std::shared_ptr<PresenceUpdate>> m_presences;
+    std::map<Snowflake, std::shared_ptr<PresenceUpdate>> m_presences;
 
     bool m_unavailable;
   public:
@@ -86,13 +86,13 @@ namespace ModDiscord
 
         @param member The member that was added.
     */
-    void add_member(Member member);
+    void add_member(std::shared_ptr<Member> member);
 
     /** Removes a member to the guild's list of members.
 
         @param member The member that was removed.
     */
-    void remove_member(Member member);
+    void remove_member(std::shared_ptr<Member> member);
 
     /** Update the data of a member in the guild.
 
@@ -122,6 +122,12 @@ namespace ModDiscord
         @param role A Role object that already exists in the guild, but has updated values.
     */
     void update_role(Role role);
+
+    /** Updates a presence object in a guild.
+     
+        @param presence The presence to update.
+     */
+    void update_presence(std::shared_ptr<PresenceUpdate> presence);
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)

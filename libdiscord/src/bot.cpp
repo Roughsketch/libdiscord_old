@@ -4,6 +4,7 @@
 #include "channel.h"
 #include "common.h"
 #include "emoji.h"
+#include "events.h"
 #include "event/event_message.h"
 #include "gateway.h"
 #include "guild.h"
@@ -22,6 +23,7 @@ namespace ModDiscord
     m_on_emoji_created = [](std::shared_ptr<Emoji>) {};
     m_on_emoji_deleted = [](std::shared_ptr<Emoji>) {};
     m_on_emoji_updated = [](std::shared_ptr<Emoji>) {};
+    m_on_typing = [](std::shared_ptr<TypingEvent>) {};
   }
 
   std::shared_ptr<Bot> Bot::create(nlohmann::json settings)
@@ -182,7 +184,7 @@ namespace ModDiscord
     else if (event_name == "GUILD_MEMBERS_CHUNK")
     {
       auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
-      auto members = data["members"].get<std::vector<Member>>();
+      auto members = data["members"].get<std::vector<std::shared_ptr<Member>>>();
 
       for (auto& member : members)
       {
@@ -242,11 +244,17 @@ namespace ModDiscord
     }
     else if (event_name == "PRESENCE_UPDATE")
     {
+      auto presence = std::make_shared<PresenceUpdate>(data);
+      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
 
+      guild->update_presence(presence);
     }
     else if (event_name == "TYPING_START")
     {
-
+      m_threads.push_back(std::async(std::launch::async, [&](std::shared_ptr<TypingEvent> event, OnTypingCallback callback) {
+        LOG(DEBUG) << "Got typing event from " << event->author()->distinct();
+        callback(event);
+      }, std::make_shared<TypingEvent>(data), m_on_typing));
     }
     else if (event_name == "USER_SETTINGS_UPDATE")
     {
@@ -278,6 +286,41 @@ namespace ModDiscord
             return f.wait_until(system_clock::now() + 1ms) == std::future_status::ready;
       }), std::end(m_threads));
     }
+  }
+
+  void Bot::on_message(OnMessageCallback callback)
+  {
+    m_on_message = callback;
+  }
+
+  void Bot::on_message_edited(OnMessageCallback callback)
+  {
+    m_on_message_edited = callback;
+  }
+
+  void Bot::on_message_deleted(OnMessageDeletedCallback callback)
+  {
+    m_on_message_deleted = callback;
+  }
+
+  void Bot::on_emoji_created(OnEmojiChangedCallback callback)
+  {
+    m_on_emoji_created = callback;
+  }
+
+  void Bot::on_emoji_deleted(OnEmojiChangedCallback callback)
+  {
+    m_on_emoji_deleted = callback;
+  }
+
+  void Bot::on_emoji_updated(OnEmojiChangedCallback callback)
+  {
+    m_on_emoji_updated = callback;
+  }
+
+  void Bot::on_typing(OnTypingCallback callback)
+  {
+    m_on_typing = callback;
   }
 
   void Bot::update_emojis(nlohmann::json data)

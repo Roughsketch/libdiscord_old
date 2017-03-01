@@ -110,30 +110,34 @@ namespace ModDiscord
     m_unavailable = true;
   }
 
-  void Guild::add_member(Member member)
+  void Guild::add_member(std::shared_ptr<Member> member)
   {
-    m_members.push_back(std::make_shared<Member>(member));
+    if (m_members.count(member->user()->id()))
+    {
+      LOG(ERROR) << "Tried to add a user that already exists. Ignoring.";
+      return;
+    }
+
+    m_members[member->user()->id()] = member;
     m_member_count += 1;
   }
 
-  void Guild::remove_member(Member member)
+  void Guild::remove_member(std::shared_ptr<Member> member)
   {
-    m_members.erase(std::remove_if(std::begin(m_members), std::end(m_members), 
-      [member](std::shared_ptr<Member> other) {
-        return member.user()->id() == other->user()->id();
-      })
-    );
-
-    m_member_count -= 1;
+    if (m_members.count(member->user()->id()))
+    {
+      m_members.erase(member->user()->id());
+      m_member_count -= 1;
+    }
+    else
+    {
+      LOG(ERROR) << "Tried to remove a member that doesn't exist. Ignoring.";
+    }
   }
 
   void Guild::update_member(std::vector<Snowflake> roles, User user, std::string nick)
   {
-    auto member_itr = std::find_if(std::begin(m_members), std::end(m_members), 
-      [user](std::shared_ptr<Member> m) {
-        return m->user()->id() == user.id();
-      }
-    );
+    auto member_itr = m_members.find(user.id());
 
     if (member_itr == std::end(m_members))
     {
@@ -141,7 +145,7 @@ namespace ModDiscord
       return;
     }
 
-    auto member = *member_itr;
+    auto member = member_itr->second;
 
     member->set_roles(roles);
     member->set_user(user);
@@ -172,5 +176,17 @@ namespace ModDiscord
 
     auto old = *old_role;
     old->merge(role);
+  }
+
+  void Guild::update_presence(std::shared_ptr<PresenceUpdate> presence)
+  {
+    if (m_presences.count(presence->user()->id()))
+    {
+      m_presences[presence->user()->id()]->merge(presence);
+    }
+    else
+    {
+      m_presences[presence->user()->id()] = (presence);
+    }
   }
 }

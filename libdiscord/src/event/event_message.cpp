@@ -78,4 +78,35 @@ namespace ModDiscord
   {
     channel()->send_message(content, tts);
   }
+
+  TypingEvent::TypingEvent()
+  {
+    m_timestamp = 0;
+  }
+
+  TypingEvent::TypingEvent(nlohmann::json data)
+  {
+    set_from_json(m_channel_id, "channel_id", data);
+    set_from_json(m_user_id, "user_id", data);
+    set_from_json(m_timestamp, "timestamp", data);
+  }
+
+  std::shared_ptr<User> TypingEvent::author() const
+  {
+  }
+
+  std::shared_ptr<User> TypingEvent::user() const
+  {
+    return channel()->
+  }
+
+  std::shared_ptr<Channel> TypingEvent::channel() const
+  {
+    return ModDiscord::API::Channel::get_channel(m_channel_id);
+  }
+
+  std::shared_ptr<Guild> TypingEvent::guild() const
+  {
+    return channel()->guild();
+  }
 }

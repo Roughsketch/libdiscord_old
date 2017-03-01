@@ -26,4 +26,18 @@ namespace ModDiscord
     set_from_json(m_guild_id, "guild_id", data);
     set_from_json(m_status, "status", data);
   }
+
+  void PresenceUpdate::merge(std::shared_ptr<PresenceUpdate> other)
+  {
+    m_user = other->m_user;
+    m_roles = other->m_roles;
+    m_game = other->m_game;
+    m_guild_id = other->m_guild_id;
+    m_status = other->m_status;
+  }
+
+  std::shared_ptr<User> PresenceUpdate::user() const
+  {
+    return m_user;
+  }
 }

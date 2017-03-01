@@ -31,6 +31,18 @@ namespace ModDiscord
   public:
     PresenceUpdate();
     explicit PresenceUpdate(const nlohmann::json& data);
+
+    /** Overwrite data in this object with another.
+     
+        @param other The presence object to merge into this one.
+     */
+    void merge(std::shared_ptr<PresenceUpdate> other);
+
+    /** Get the user that this presence is about.
+        
+        @return A shared pointer to the user.
+      */
+    std::shared_ptr<User> user() const;
   };
 
   inline void from_json(const nlohmann::json& json, PresenceUpdate& presence)

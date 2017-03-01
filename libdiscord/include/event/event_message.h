@@ -92,4 +92,38 @@ namespace ModDiscord
     */
     std::shared_ptr<Message> respond(std::string content, bool tts = false) const;
   };
+
+  class TypingEvent
+  {
+    Snowflake m_channel_id;
+    Snowflake m_user_id;
+    uint32_t m_timestamp;
+  public:
+    TypingEvent();
+    explicit TypingEvent(nlohmann::json data);
+
+    /** Get the user that initiated this typing event.
+     
+        @return The user who started typing.
+     */
+    std::shared_ptr<User> author() const;
+
+    /** Get the user that initiated this typing event. Alias of author.
+
+        @return The user who started typing.
+    */
+    std::shared_ptr<User> user() const;
+
+    /** Get the channel that this event was raised from.
+
+        @return The channel where this typing started.
+    */
+    std::shared_ptr<Channel> channel() const;
+
+    /** Get the guild that this typing event was raised from.
+
+      @return The guild where this typing started.
+    */
+    std::shared_ptr<Guild> guild() const;
+  };
 }
