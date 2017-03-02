@@ -112,6 +112,8 @@ namespace ModDiscord
               payload["X-RateLimit-Reset"] = utility::conversions::to_utf8string(reset->second);
             }
 
+            payload["response_status"] = res.status_code();
+
             return payload;
           }).get();
         }
@@ -133,7 +135,10 @@ namespace ModDiscord
 
     nlohmann::json request(APIKey key, Snowflake major, RequestType type, std::string endpoint, nlohmann::json data)
     {
-      LOG(DEBUG) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
+      LOG(INFO) << "Request: (" 
+                << detail::get_method_name(type) 
+                << ") - " << endpoint 
+                << " " << data.dump(2);
 
       auto pair_key = std::make_pair(key, major);
       auto mutex_it = APIMutex.find(pair_key);
@@ -146,21 +151,28 @@ namespace ModDiscord
 
       auto mutex = APIMutex[pair_key].get();
 
-      std::unique_lock<std::mutex> api_lock(*mutex);
+      std::lock_guard<std::mutex> api_lock(*mutex);
 
-      //  If we can't lock the global mutex, then we might be rate limited.
-      //  Wait for the global mutex to become available again before continuing.
-      if (!GlobalMutex.try_lock())
+      if (GlobalMutex.try_lock())
       {
-        std::unique_lock<std::mutex> global_lock(GlobalMutex);
+        GlobalMutex.unlock();
+      }
+      else
+      {
+        //  If we can't lock the global mutex, then we might be rate limited.
+        //  Wait for the global mutex to become available again before continuing.
+        LOG(INFO) << "Could not lock global mutex. Waiting for it to unlock.";
+        std::lock_guard<std::mutex> global_lock(GlobalMutex);
+        LOG(INFO) << "Global mutex unlocked.";
       }
 
       auto response = raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
 
       if (response["response_status"].get<int>() == 429)
       {
+        LOG(INFO) << "Locking global mutex due to 429 response.";
         //  Lock the global mutex and wait until our rate limit is over.
-        std::unique_lock<std::mutex> global_lock(GlobalMutex);
+        std::lock_guard<std::mutex> global_lock(GlobalMutex);
         auto reset_time = response["X-RateLimit-Reset"].get<uint32_t>();
         auto end_time = std::chrono::system_clock::time_point(std::chrono::seconds(reset_time));
 
@@ -168,6 +180,8 @@ namespace ModDiscord
         LOG(WARNING) << "We hit the rate limit. Sleeping for " << total_time << " seconds.";
         std::this_thread::sleep_until(end_time);
       }
+
+      LOG(INFO) << "Returning response.";
 
       return response;
     }

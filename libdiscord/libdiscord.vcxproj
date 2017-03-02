@@ -37,6 +37,7 @@
     <ClCompile Include="src\invite.cpp" />
     <ClCompile Include="src\member.cpp" />
     <ClCompile Include="src\message.cpp" />
+    <ClCompile Include="src\permission.cpp" />
     <ClCompile Include="src\role.cpp" />
     <ClCompile Include="src\user.cpp" />
     <ClCompile Include="src\voice.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="include\member.h" />
     <ClInclude Include="include\message.h" />
     <ClInclude Include="include\mod_discord.h" />
+    <ClInclude Include="include\permission.h" />
     <ClInclude Include="include\role.h" />
     <ClInclude Include="include\snowflake.h" />
     <ClInclude Include="include\user.h" />
@@ -123,6 +125,9 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\libs\zlib128-dll\include;C:\libs\boost_1_63_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\Win32\$(Configuration)</AdditionalLibraryDirectories>
@@ -160,6 +165,8 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

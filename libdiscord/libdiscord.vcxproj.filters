@@ -90,6 +90,9 @@
     <ClCompile Include="src\external\easylogging++.cpp">
       <Filter>Source Files\external</Filter>
     </ClCompile>
+    <ClCompile Include="src\permission.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\api.h">
@@ -156,6 +159,9 @@
       <Filter>Header Files\api</Filter>
     </ClInclude>
     <ClInclude Include="include\invite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\permission.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
