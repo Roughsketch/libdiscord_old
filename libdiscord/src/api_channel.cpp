@@ -220,7 +220,7 @@ namespace ModDiscord
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
-      bool edit_member_permissions(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite, uint32_t allow, uint32_t deny, std::string type)
+      bool edit_permissions(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite, uint32_t allow, uint32_t deny, std::string type)
       {
         auto response = request(EditChannelPermissions, channel_id, PUT, 
           "channels/" + channel_id.to_string() + "/permissions/" + overwrite->id().to_string(), {
