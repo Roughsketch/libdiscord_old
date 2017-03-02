@@ -34,6 +34,7 @@
     <ClCompile Include="src\external\easylogging++.cc" />
     <ClCompile Include="src\gateway.cpp" />
     <ClCompile Include="src\guild.cpp" />
+    <ClCompile Include="src\invite.cpp" />
     <ClCompile Include="src\member.cpp" />
     <ClCompile Include="src\message.cpp" />
     <ClCompile Include="src\role.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="include\gateway.h" />
     <ClInclude Include="include\guild.h" />
     <ClInclude Include="include\identifiable.h" />
+    <ClInclude Include="include\invite.h" />
     <ClInclude Include="include\member.h" />
     <ClInclude Include="include\message.h" />
     <ClInclude Include="include\mod_discord.h" />

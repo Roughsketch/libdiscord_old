@@ -9,9 +9,8 @@ namespace ModDiscord
   class Message;
   class User;
 
-  class Overwrite
+  class Overwrite : public Identifiable
   {
-    Snowflake m_id;
     std::string m_type;
     uint32_t m_allow;
     uint32_t m_deny;
@@ -179,6 +178,15 @@ namespace ModDiscord
         @param user_limit The new user limit of the channel. Must be between 1 and 99 inclusive.
     */
     void set_user_limit(uint32_t user_limit);
+
+
+
+    /* *********************
+     * 
+     * API Calls start here.
+     * 
+     * ********************/
+
 
     /** Modify a channel.
 
