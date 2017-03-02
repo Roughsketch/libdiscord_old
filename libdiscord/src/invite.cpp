@@ -12,7 +12,7 @@ namespace ModDiscord
     m_max_age = 0;
     m_temporary = false;
     m_created_at = 0;
-    m_revoked = 0;
+    m_revoked = false;
   }
 
   InviteMetadata::InviteMetadata(nlohmann::json data)
