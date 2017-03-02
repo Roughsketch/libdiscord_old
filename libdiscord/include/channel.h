@@ -207,7 +207,7 @@ namespace ModDiscord
 
         @param modify_block The block to call before sending the modified data through the API.
     */
-    std::shared_ptr<Channel> modify(std::function<void(std::shared_ptr<Channel>)> modify_block);
+    std::shared_ptr<Channel> modify(std::function<void(std::shared_ptr<Channel>)> modify_block) const;
 
     /** Closes a channel. Cannot be undone.
      
@@ -225,7 +225,7 @@ namespace ModDiscord
         @param method The method to use when getting messages.
         @param message_id The id that the search will be based on if a search method was provided.
      */
-    std::vector<std::shared_ptr<Message>> get_messages(int32_t limit = 50, SearchCriteria method = None, Snowflake message_id = 0) const;
+    std::vector<std::shared_ptr<Message>> get_messages(int32_t limit = 50, SearchCriteria method = SearchCriteria::None, Snowflake message_id = 0) const;
 
     /** Get a particular message from a channel by its id.
      

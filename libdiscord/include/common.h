@@ -10,7 +10,7 @@
 
 namespace ModDiscord
 {
-  enum SearchCriteria
+  enum class SearchCriteria
   {
     None,
     Before,

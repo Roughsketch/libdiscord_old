@@ -182,10 +182,11 @@ namespace ModDiscord
   }
 
 
-  std::shared_ptr<Channel> Channel::modify(std::function<void(std::shared_ptr<Channel>)> modify_block)
+  std::shared_ptr<Channel> Channel::modify(std::function<void(std::shared_ptr<Channel>)> modify_block) const
   {
     auto channel = ModDiscord::API::Channel::get_channel(id());
     modify_block(channel);
+
     if (channel->type() == Text)
     {
       channel = ModDiscord::API::Channel::modify_text_channel(channel->id(), channel->name(), channel->position(), channel->topic());
@@ -194,6 +195,7 @@ namespace ModDiscord
     {
       channel = ModDiscord::API::Channel::modify_voice_channel(channel->id(), channel->name(), channel->position(), channel->bitrate(), channel->user_limit());
     }
+
     return channel;
   }
 
