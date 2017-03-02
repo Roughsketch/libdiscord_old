@@ -75,9 +75,6 @@
     <ClCompile Include="src\voice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\external\easylogging++.cc">
-      <Filter>Source Files\external</Filter>
-    </ClCompile>
     <ClCompile Include="src\api_channel.cpp">
       <Filter>Source Files\api</Filter>
     </ClCompile>
@@ -89,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="src\invite.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\external\easylogging++.cpp">
+      <Filter>Source Files\external</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

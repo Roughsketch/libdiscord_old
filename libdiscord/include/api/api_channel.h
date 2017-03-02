@@ -15,14 +15,6 @@ namespace ModDiscord
   {
     namespace Channel
     {
-      enum SearchCriteria
-      {
-        None,
-        Before,
-        After,
-        Around
-      };
-
       /** Add or update a Channel in the cache.
        
           @param channel The channel to add or update.

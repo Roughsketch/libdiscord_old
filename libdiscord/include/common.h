@@ -7,6 +7,14 @@
 
 namespace ModDiscord
 {
+  enum SearchCriteria
+  {
+    None,
+    Before,
+    After,
+    Around
+  };
+
   /** Reads JSON data from a file.
    
       @param file The file to read from.

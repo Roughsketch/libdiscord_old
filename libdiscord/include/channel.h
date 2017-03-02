@@ -5,14 +5,7 @@
 
 namespace ModDiscord
 {
-  enum SearchCriteria
-  {
-    None,
-    Before,
-    After,
-    Around
-  };
-
+  class Emoji;
   class Guild;
   class Message;
   class User;
