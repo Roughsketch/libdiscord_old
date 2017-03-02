@@ -1,5 +1,6 @@
 #include "guild.h"
 
+#include "api/api_guild.h"
 #include "channel.h"
 #include "emoji.h"
 #include "events.h"
@@ -14,8 +15,8 @@ namespace ModDiscord
   {
     m_afk_timeout = 0;
     m_embed_enabled = false;
-    m_verification_level = 0;
-    m_default_message_notifications = 0;
+    m_verification_level = VerificationLevel::None;
+    m_default_message_notifications = NotificationLevel::None;
     m_mfa_level = 0;
     m_large = false;
     m_member_count = 0;
@@ -108,6 +109,16 @@ namespace ModDiscord
     return m_name;
   }
 
+  std::string Guild::region() const
+  {
+    return m_region;
+  }
+
+  VerificationLevel Guild::verification_level() const
+  {
+    return m_verification_level;
+  }
+
   std::vector<std::shared_ptr<Emoji>> Guild::emojis() const
   {
     return m_emojis;
@@ -132,6 +143,41 @@ namespace ModDiscord
     }
 
     return user_itr->second->user();
+  }
+
+  void Guild::set_name(std::string name)
+  {
+    m_name = name;
+  }
+
+  void Guild::set_region(std::string region)
+  {
+    m_region = region;
+  }
+
+  void Guild::set_verification_level(VerificationLevel level)
+  {
+    m_verification_level = level;
+  }
+
+  void Guild::set_notification_level(NotificationLevel level)
+  {
+    m_default_message_notifications = level;
+  }
+
+  void Guild::set_afk_channel(Snowflake channel_id)
+  {
+    m_afk_channel_id = channel_id;
+  }
+
+  void Guild::set_afk_timeout(uint32_t timeout)
+  {
+    m_afk_timeout = timeout;
+  }
+
+  void Guild::set_owner(Snowflake user_id)
+  {
+    m_owner_id = user_id;
   }
 
   void Guild::set_emojis(std::vector<std::shared_ptr<Emoji>> emojis)
@@ -222,5 +268,14 @@ namespace ModDiscord
     {
       m_presences[presence->user()->id()] = presence;
     }
+  }
+
+  std::shared_ptr<Guild> Guild::modify(std::function<void(std::shared_ptr<Guild>)> modify_block)
+  {
+    auto guild = ModDiscord::API::Guild::get_guild(m_id);
+
+    modify_block(guild);
+
+    ModDiscord::API::Guild::modify_guild(m_id, guild);
   }
 }

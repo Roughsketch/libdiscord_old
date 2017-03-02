@@ -16,6 +16,20 @@ namespace ModDiscord
   class User;
   class VoiceState;
 
+  enum class VerificationLevel
+  {
+    None,
+    Low,
+    Medium,
+    High
+  };
+
+  enum class NotificationLevel
+  {
+    None,
+    MentionOnly
+  };
+
   class Guild : public Identifiable
   {
     std::string m_name;
@@ -27,8 +41,8 @@ namespace ModDiscord
     uint32_t m_afk_timeout;
     bool m_embed_enabled;
     Snowflake m_embed_channel_id;
-    uint32_t m_verification_level;
-    uint32_t m_default_message_notifications;
+    VerificationLevel m_verification_level;
+    NotificationLevel m_default_message_notifications;
     std::vector<std::shared_ptr<Role>> m_roles;
     std::vector<std::shared_ptr<Emoji>> m_emojis;
     std::vector<std::string> m_features;
@@ -58,6 +72,18 @@ namespace ModDiscord
      */
     std::string name() const;
 
+    /** Get the region of a guild.
+     
+        @return The region of a guild.
+     */
+    std::string region() const;
+
+    /** Get the verification level of a guild.
+     
+        @return The verification level of the guild.
+     */
+    VerificationLevel verification_level() const;
+
     /** Get the name of a Guild
 
         @return A vector of Emoji that the guild owns.
@@ -70,7 +96,69 @@ namespace ModDiscord
      */
     uint32_t member_count() const;
 
+    /** Get a user in this guild.
+     
+        @param user_id The id of the user to get.
+        @return The user that was found.
+     */
     std::shared_ptr<User> get_user(Snowflake user_id);
+
+    /** Set the name of this guild.
+
+    NOTE: This has no outside effect unless done within a modify callback.
+
+    @param name The new name of the guild.
+    */
+    void set_name(std::string name);
+
+    /** Set the region of this guild.
+
+        NOTE: This has no outside effect unless done within a modify callback.
+
+        @param region The new region of the guild.
+    */
+    void set_region(std::string region);
+
+    /** Set the verification level of this channel.
+
+    NOTE: This has no outside effect unless done within a modify callback.
+
+    @param level The new verification level of the guild.
+    */
+    void set_verification_level(VerificationLevel level);
+
+    /** Set the notification level of this guild.
+
+    NOTE: This has no outside effect unless done within a modify callback.
+
+    @param level The new notification level of the guild.
+    */
+    void set_notification_level(NotificationLevel level);
+
+    /** Set the afk channel for this guild.
+
+    NOTE: This has no outside effect unless done within a modify callback.
+
+    @param channel_id The new afk channel for the guild.
+    */
+    void set_afk_channel(Snowflake channel_id);
+
+    /** Set the afk timeout for this guild.
+
+        NOTE: This has no outside effect unless done within a modify callback.
+
+        @param timeout The new afk timeout for the guild in seconds.
+    */
+    void set_afk_timeout(uint32_t timeout);
+
+    /** Set the new owner of this guild. Must be the owner of the guild for this to have any effect.
+
+    NOTE: This has no outside effect unless done within a modify callback.
+
+    @param user_id The new owner of the guild.
+    */
+    void set_owner(Snowflake user_id);
+
 
     /** Update the list of emoji that are available on the guild.
 
@@ -130,6 +218,20 @@ namespace ModDiscord
         @param presence The presence to update.
      */
     void update_presence(std::shared_ptr<PresenceUpdate> presence);
+
+    /** Modify a guild's attributes. Attributes must be changed in the callback.
+     
+        @code
+        guild = guild->modify([](std::shared_ptr<Guild> old) {
+          old->set_name("C++ Fanboys");
+          old->set_verification_level(VerificationLevel::Low);
+        });
+        @endcode
+     
+        @param modify_block The block that will modify the contents of the guild.
+        @return The modified guild object.
+     */
+    std::shared_ptr<Guild> modify(std::function<void(std::shared_ptr<Guild>)> modify_block);
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)
