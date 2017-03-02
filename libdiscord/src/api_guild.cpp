@@ -73,6 +73,19 @@ namespace ModDiscord
         LOG(ERROR) << "Could not get Guild object with id " << guild_id.to_string();
         return nullptr;
       }
+
+      std::shared_ptr<ModDiscord::Guild> modify_guild(Snowflake guild_id, std::shared_ptr<ModDiscord::Guild> guild)
+      {
+        nlohmann::json payload = {
+          { "name", guild->name() },
+          { "region", guild->region() },
+          { "verification_level", guild->verification_level() },
+          { "default_message_notifications", guild->notification_level() },
+          { "afk_channel_id", guild->afk_channel() },
+          { "afk_timeout", guild->afk_timeout() },
+          { "owner_id", guild->owner_id() }
+        };
+      }
     }
   }
 }

@@ -38,6 +38,13 @@ namespace ModDiscord
           @return A shared pointer to the Guild or nullptr on failure.
       */
       std::shared_ptr<ModDiscord::Guild> get_guild(Snowflake guild_id);
+
+      /** Modify the attributes of a guild.
+       
+          @param guild_id The guild to modify
+          @return The modified guild object.
+       */
+      std::shared_ptr<ModDiscord::Guild> modify_guild(Snowflake guild_id, std::shared_ptr<ModDiscord::Guild> guild);
     }
   }
 }
