@@ -1,6 +1,9 @@
 #include "mod_discord.h"
 
-#include <external/easylogging++.h>
+#define ELPP_THREAD_SAFE
+#define ELPP_FORCE_USE_STD_THREAD
+#include "external/easylogging++.h"
+
 #include <iostream>
 #include <memory>
 
@@ -83,7 +86,7 @@ int main(int argc, char* argv[])
 
   bot->on_message([bot](std::shared_ptr<ModDiscord::MessageEvent> event)
   {
-    LOG(INFO) << "Got into OnMessage handler.";
+    LOG(INFO) << "Got into OnMessage handler with message " << event->content();
     if (event->content() == ".info")
     {
       event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
