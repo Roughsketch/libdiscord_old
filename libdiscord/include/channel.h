@@ -2,22 +2,28 @@
 
 #include "common.h"
 #include "identifiable.h"
+#include "permission.h"
 
 namespace ModDiscord
 {
   class Emoji;
   class Guild;
+  class Invite;
   class Message;
   class User;
 
   class Overwrite : public Identifiable
   {
     std::string m_type;
-    uint32_t m_allow;
-    uint32_t m_deny;
+    std::shared_ptr<Permission> m_allow;
+    std::shared_ptr<Permission> m_deny;
   public:
     Overwrite();
     explicit Overwrite(const nlohmann::json& data);
+
+    std::string type() const;
+    std::shared_ptr<Permission> allow() const;
+    std::shared_ptr<Permission> deny() const;
   };
 
   inline void from_json(const nlohmann::json& json, Overwrite& overwrite)
@@ -299,6 +305,86 @@ namespace ModDiscord
         @return Success status.
      */
     bool remove_messages(std::vector<Snowflake> message_ids) const;
+
+    /** Edit the permissions of a channel.
+     
+        @code
+        channel->edit_permissions(
+          [](std::shared_ptr<Permission> allow, std::shared_ptr<Permission> deny) {
+            allow.add(MANAGE_NICKNAMES);
+            allow.remove(KICK_MEMBERS);
+
+            deny.add(BAN_MEMBERS);
+            deny.remove(MANAGE_NICKNAMES);
+          });
+        @endcode
+
+        @param overwrite The overwrite whose permissions to edit.
+        @param callback A callback where permissions can be set.
+        @return Success status.
+     */
+    bool edit_permissions(std::shared_ptr<Overwrite> overwrite, 
+      std::function<void(std::shared_ptr<Permission>, std::shared_ptr<Permission>)> callback) const;
+
+    /** Edit permissions of a channel.
+     
+        @param overwrite The overwrite whose permissions to edit.
+        @param allow What permissions to allow.
+        @param deny What permissions to deny.
+        @return Success status.
+     */
+    bool edit_permissions(std::shared_ptr<Overwrite> overwrite, Permission allow, Permission deny) const;
+
+    /** Gets a list of invites to this channel.
+     
+        @return The list of invites to this channel.
+     */
+    std::vector<std::shared_ptr<Invite>> get_invites() const;
+
+    /** Creates an invite to this channel.
+     
+        @param max_age The maximum lifetime for this invite.
+        @param max_uses The maximum amount of uses for this invite.
+        @param temporary Whether or not this invite is temporary.
+        @param unique Whether or not this invite is unique.
+        @return The invite that was created.
+     */
+    std::shared_ptr<Invite> create_invite(uint32_t max_age, uint32_t max_uses, bool temporary = false, bool unique = false) const;
+
+    /** Deletes an overwrite permission from a channel.
+     
+        @param overwrite The permission overwrite to remove.
+        @return Success status.
+     */
+    bool delete_permission(std::shared_ptr<Overwrite> overwrite) const;
+
+    /** Trigger the typing indicator in this channel.
+     
+        @return Success status.
+     */
+    bool start_typing() const;
+
+    /** Gets a list of pinned messages.
+     
+        @return The list of pinned messages for this channel.
+     */
+    std::vector<std::shared_ptr<Message>> get_pinned() const;
+
+    /** Pins a message in this channel.
+     
+        @param message_id The message to pin.
+        @return Success status.
+     */
+    bool add_pin(Snowflake message_id) const;
+
+    /** Unpins a message in this channel.
+     
+        @param message_id The message to unpin.
+        @return Success status.
+     */
+    bool remove_pin(Snowflake message_id) const;
+
+    //  TODO: Add group DM methods.
   };
 
   inline void from_json(const nlohmann::json& json, Channel& channel)

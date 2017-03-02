@@ -22,6 +22,21 @@ namespace ModDiscord
     set_from_json(m_deny, "deny", data);
   }
 
+  std::string Overwrite::type() const
+  {
+    return m_type;
+  }
+
+  std::shared_ptr<Permission> Overwrite::allow() const
+  {
+    return m_allow;
+  }
+
+  std::shared_ptr<Permission> Overwrite::deny() const
+  {
+    return m_deny;
+  }
+
   Channel::Channel()
   {
     m_type = Text;
@@ -261,5 +276,53 @@ namespace ModDiscord
     }
 
     return ModDiscord::API::Channel::bulk_delete_messages(m_id, message_ids);
+  }
+
+  bool Channel::edit_permissions(std::shared_ptr<Overwrite> overwrite, 
+    std::function<void(std::shared_ptr<Permission>, std::shared_ptr<Permission>)> callback) const
+  {
+    callback(overwrite->allow(), overwrite->deny());
+    return ModDiscord::API::Channel::edit_permissions(m_id, overwrite,
+              overwrite->allow()->get(), overwrite->deny()->get(), overwrite->type());
+  }
+
+  bool Channel::edit_permissions(std::shared_ptr<Overwrite> overwrite, Permission allow, Permission deny) const
+  {
+    return ModDiscord::API::Channel::edit_permissions(m_id, overwrite, allow.get(), deny.get(), overwrite->type());
+  }
+
+  std::vector<std::shared_ptr<Invite>> Channel::get_invites() const
+  {
+    return ModDiscord::API::Channel::get_channel_invites(m_id);
+  }
+
+  std::shared_ptr<Invite> Channel::create_invite(uint32_t max_age, uint32_t max_uses, bool temporary, bool unique) const
+  {
+    return ModDiscord::API::Channel::create_channel_invite(m_id, max_age, max_uses, temporary, unique);
+  }
+
+  bool Channel::delete_permission(std::shared_ptr<Overwrite> overwrite) const
+  {
+    return ModDiscord::API::Channel::delete_permission(m_id, overwrite);
+  }
+
+  bool Channel::start_typing() const
+  {
+    return ModDiscord::API::Channel::trigger_typing_indicator(m_id);
+  }
+
+  std::vector<std::shared_ptr<Message>> Channel::get_pinned() const
+  {
+    return ModDiscord::API::Channel::get_pinned_messages(m_id);
+  }
+
+  bool Channel::add_pin(Snowflake message_id) const
+  {
+    return ModDiscord::API::Channel::add_pinned_message(m_id, message_id);
+  }
+
+  bool Channel::remove_pin(Snowflake message_id) const
+  {
+    return ModDiscord::API::Channel::delete_pinned_message(m_id, message_id);
   }
 }
