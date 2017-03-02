@@ -15,13 +15,18 @@ namespace ModDiscord
   {
     namespace Channel
     {
-      enum SearchCriteria
+      namespace enum_wrapper
       {
-        None,
-        Before,
-        After,
-        Around
-      };
+        enum SearchCriteria
+        {
+          None,
+          Before,
+          After,
+          Around
+        };
+      }
+
+      using namespace enum_wrapper;
 
       /** Add or update a Channel in the cache.
        
