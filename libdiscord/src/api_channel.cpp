@@ -4,6 +4,7 @@
 #include "emoji.h"
 #include "invite.h"
 #include "message.h"
+#include "user.h"
 
 #include <cpprest/http_msg.h>
 

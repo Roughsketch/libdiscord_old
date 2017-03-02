@@ -61,7 +61,7 @@ namespace ModDiscord
           return GuildCache[guild_id];
         }
 
-        auto json = request(GET, "channels/" + guild_id.to_string());
+        auto json = request(GetGuild, guild_id, GET, "channels/" + guild_id.to_string());
 
         if (!json.empty())
         {

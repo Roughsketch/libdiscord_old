@@ -6,7 +6,7 @@
 namespace ModDiscord
 {
   class User;
-  enum ChannelType;
+  enum ChannelType : uint8_t;
 
   class InviteMetadata
   {
