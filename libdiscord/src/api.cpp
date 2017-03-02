@@ -10,7 +10,7 @@ namespace ModDiscord
   {
     static utility::string_t Token;
     static std::mutex GlobalMutex;
-    static std::map<APIKey, std::mutex> APIMutex;
+    static std::map<std::pair<APIKey, Snowflake>, std::unique_ptr<std::mutex>> APIMutex;
 
     namespace detail
     {
@@ -87,13 +87,37 @@ namespace ModDiscord
           return bodyStream.read_to_end(inStringBuffer).then([inStringBuffer](size_t bytesRead)
           {
             return inStringBuffer.collection();
-          }).then([](std::string text)
+          }).then([res](std::string text)
           {
-            return json::parse(text.c_str());
+            auto payload = json::parse(text.c_str());
+
+            auto headers = res.headers();
+
+            auto limit = headers.find(U("X-RateLimit-Limit"));
+            auto remaining = headers.find(U("X-RateLimit-Remaining"));
+            auto reset = headers.find(U("X-RateLimit-Reset"));
+
+            if (limit != std::end(headers))
+            {
+              payload["X-RateLimit-Limit"] = utility::conversions::to_utf8string(limit->second);
+            }
+
+            if (remaining != std::end(headers))
+            {
+              payload["X-RateLimit-Remaining"] = utility::conversions::to_utf8string(remaining->second);
+            }
+
+            if (reset != std::end(headers))
+            {
+              payload["X-RateLimit-Reset"] = utility::conversions::to_utf8string(reset->second);
+            }
+
+            return payload;
           }).get();
         }
-        else if ((type == methods::DEL && res.status_code() == status_codes::NoContent))
+        else if ((type == methods::DEL || type == methods::PUT) && res.status_code() == status_codes::NoContent)
         {
+          //  NoContent is returned when a DELETE or PUT operation succeeds.
           return{ { "response_status", res.status_code() } };
         }
         else
@@ -110,7 +134,42 @@ namespace ModDiscord
     nlohmann::json request(APIKey key, Snowflake major, RequestType type, std::string endpoint, nlohmann::json data)
     {
       LOG(DEBUG) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
-      return raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
+
+      auto pair_key = std::make_pair(key, major);
+      auto mutex_it = APIMutex.find(pair_key);
+
+      //  If the cached mutex does not exist, create it.
+      if (mutex_it == std::end(APIMutex))
+      {
+        APIMutex[pair_key] = std::make_unique<std::mutex>();
+      }
+
+      auto mutex = APIMutex[pair_key].get();
+
+      std::unique_lock<std::mutex> api_lock(*mutex);
+
+      //  If we can't lock the global mutex, then we might be rate limited.
+      //  Wait for the global mutex to become available again before continuing.
+      if (!GlobalMutex.try_lock())
+      {
+        std::unique_lock<std::mutex> global_lock(GlobalMutex);
+      }
+
+      auto response = raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
+
+      if (response["response_status"].get<int>() == 429)
+      {
+        //  Lock the global mutex and wait until our rate limit is over.
+        std::unique_lock<std::mutex> global_lock(GlobalMutex);
+        auto reset_time = response["X-RateLimit-Reset"].get<uint32_t>();
+        auto end_time = std::chrono::system_clock::time_point(std::chrono::seconds(reset_time));
+
+        auto total_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - std::chrono::system_clock::from_time_t(0)).count();
+        LOG(WARNING) << "We hit the rate limit. Sleeping for " << total_time << " seconds.";
+        std::this_thread::sleep_until(end_time);
+      }
+
+      return response;
     }
 
     void set_token(std::string token)
