@@ -10,7 +10,7 @@ class Snowflake
   uint64_t m_id;
 public:
   Snowflake() : m_id(0) {};
-  explicit Snowflake(uint64_t id) : m_id(id) {};
+  Snowflake(uint64_t id) : m_id(id) {};
 
   explicit Snowflake(const std::string s)
   {
