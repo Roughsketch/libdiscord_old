@@ -41,7 +41,7 @@ namespace ModDiscord
       CreateReaction,
       DeleteOwnReaction,
       DeleteUserReaction,
-      GetReacions,
+      GetReactions,
       DeleteAllReactions,
       EditMessage,
       DeleteMessage,
