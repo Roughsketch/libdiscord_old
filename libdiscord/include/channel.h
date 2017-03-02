@@ -5,6 +5,14 @@
 
 namespace ModDiscord
 {
+  enum SearchCriteria
+  {
+    None,
+    Before,
+    After,
+    Around
+  };
+
   class Guild;
   class Message;
   class User;
@@ -202,6 +210,31 @@ namespace ModDiscord
     */
     std::shared_ptr<Channel> modify(std::function<void(std::shared_ptr<Channel>)> modify_block);
 
+    /** Closes a channel. Cannot be undone.
+     
+        @return The channel that was closed.
+     */
+    std::shared_ptr<Channel> close() const;
+
+    /** Get a list of messages from this channel.
+    
+        When using a search method with this method, it is required that a message id is passed in as well.
+        Leaving the message id blank with a search parameter will result in the function acting like no search
+        was passed in at all.
+
+        @param limit The amount of messages to get back. Max of 100.
+        @param method The method to use when getting messages.
+        @param message_id The id that the search will be based on if a search method was provided.
+     */
+    std::vector<std::shared_ptr<Message>> get_messages(int32_t limit = 50, SearchCriteria method = None, Snowflake message_id = 0) const;
+
+    /** Get a particular message from a channel by its id.
+     
+        @param message_id The id of the message to get.
+        @return The message that was retrieved.
+     */
+    std::shared_ptr<Message> get_message(Snowflake message_id) const;
+
     /** Send a message to a channel.
      
         @param content The message to send
@@ -218,6 +251,61 @@ namespace ModDiscord
         @return A shared pointer to the message that was sent.
      */
     void send_temp_message(std::string content, uint32_t timeout, bool tts = false) const;
+
+    /** React to a message with an emoji.
+     
+        @param message_id The id of the message to react to.
+        @param emoji The emoji to react with.
+        @return Success status.
+     */
+    bool add_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji) const;
+
+    /** Removes a reaction. If a user is specified, removes a reaction made by that user.
+     
+        @param message_id The id of the message to remove the reaction from.
+        @param emoji The emoji that will be removed.
+        @param user_id The user whose reaction will be removed.
+        @return Success status.
+     */
+    bool remove_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji, Snowflake user_id = 0) const;
+
+    /** Get a list of users who reacted to a message with a certain emoji.
+     
+        @param message_id The id of the message to get reactions from.
+        @param emoji The emoji to get the user list from.
+        @return A list of users who reacted to the message with the given emoji.
+     */
+    std::vector<std::shared_ptr<User>> get_reactions(Snowflake message_id, std::shared_ptr<Emoji> emoji) const;
+
+    /** Removes all reactions on a message.
+     
+        @param message_id The message that will have all reactions removed.
+     */
+    void remove_all_reactions(Snowflake message_id) const;
+
+    /** Edit a message with new content.
+     
+        @param message_id The message to edit.
+        @param new_content The content to edit into message.
+        @return The message that was edited.
+     */
+    std::shared_ptr<Message> edit_message(Snowflake message_id, std::string new_content) const;
+
+    /** Remove a message.
+     
+        @param message_id The message to delete.
+        @return Success status.
+     */
+    bool remove_message(Snowflake message_id) const;
+
+    /** Bulk remove messages.
+     
+        The list of ids must be of a length between 2 and 100 inclusive. If this isn't met, the command won't be invoked.
+
+        @param message_ids A list of messages to remove.
+        @return Success status.
+     */
+    bool remove_messages(std::vector<Snowflake> message_ids) const;
   };
 
   inline void from_json(const nlohmann::json& json, Channel& channel)

@@ -182,6 +182,26 @@ namespace ModDiscord
     return channel;
   }
 
+  std::shared_ptr<Channel> Channel::close() const
+  {
+    return ModDiscord::API::Channel::delete_channel(m_id);
+  }
+
+  std::vector<std::shared_ptr<Message>> Channel::get_messages(int32_t limit, SearchCriteria method, Snowflake message_id) const
+  {
+    if (method != None && message_id == 0)
+    {
+      //  Do not pass search methods if no message id was passed.
+      return ModDiscord::API::Channel::get_messages(m_id, limit);
+    }
+
+    return ModDiscord::API::Channel::get_messages(m_id, limit, method, message_id);
+  }
+
+  std::shared_ptr<Message> Channel::get_message(Snowflake message_id) const
+  {
+    return ModDiscord::API::Channel::get_message(m_id, message_id);
+  }
 
   std::shared_ptr<Message> Channel::send_message(std::string content, bool tts) const
   {
@@ -194,5 +214,52 @@ namespace ModDiscord
     auto message = ModDiscord::API::Channel::create_message(m_id, content);
     std::this_thread::sleep_for(10s);
     message->remove();
+  }
+
+  bool Channel::add_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji) const
+  {
+    return ModDiscord::API::Channel::create_reaction(m_id, message_id, emoji);
+  }
+
+  bool Channel::remove_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji, Snowflake user_id) const
+  {
+    if (user_id == 0)
+    {
+      //  If no user was specified, assume it's our own reaction
+      return ModDiscord::API::Channel::delete_own_reaction(m_id, message_id, emoji);
+    }
+
+    return ModDiscord::API::Channel::delete_user_reaction(m_id, message_id, emoji, user_id);
+  }
+
+  std::vector<std::shared_ptr<User>> Channel::get_reactions(Snowflake message_id, std::shared_ptr<Emoji> emoji) const
+  {
+    return ModDiscord::API::Channel::get_reactions(m_id, message_id, emoji);
+  }
+
+  void Channel::remove_all_reactions(Snowflake message_id) const
+  {
+    ModDiscord::API::Channel::delete_all_reactions(m_id, message_id);
+  }
+
+  std::shared_ptr<Message> Channel::edit_message(Snowflake message_id, std::string new_content) const
+  {
+    return ModDiscord::API::Channel::edit_message(m_id, message_id, new_content);
+  }
+
+  bool Channel::remove_message(Snowflake message_id) const
+  {
+    return ModDiscord::API::Channel::delete_message(m_id, message_id);
+  }
+
+  bool Channel::remove_messages(std::vector<Snowflake> message_ids) const
+  {
+    //  Can only currently bulk delete between 2 and 100 messages.
+    if (message_ids.size() < 2 || message_ids.size() > 100)
+    {
+      return false;
+    }
+
+    return ModDiscord::API::Channel::bulk_delete_messages(m_id, message_ids);
   }
 }
