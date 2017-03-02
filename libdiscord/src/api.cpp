@@ -9,6 +9,8 @@ namespace ModDiscord
   namespace API
   {
     static utility::string_t Token;
+    static std::mutex GlobalMutex;
+    static std::map<APIKey, std::mutex> APIMutex;
 
     namespace detail
     {
@@ -105,7 +107,7 @@ namespace ModDiscord
       return requestTask.get();
     }
 
-    json request(RequestType type, std::string endpoint, nlohmann::json data)
+    nlohmann::json request(APIKey key, Snowflake major, RequestType type, std::string endpoint, nlohmann::json data)
     {
       LOG(DEBUG) << "Request: (" << detail::get_method_name(type) << ") - " << endpoint;
       return raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
@@ -118,7 +120,7 @@ namespace ModDiscord
 
     std::string get_wss_url()
     {
-      auto response = request(RequestType::GET, "gateway");
+      auto response = request(GetGateway, 0, RequestType::GET, "gateway");
       return response["url"];
     }
   }
