@@ -2,8 +2,6 @@
 
 #include "external/json.hpp"
 
-#include "api/api_channel.h"
-#include "api/api_guild.h"
 #include "common.h"
 
 namespace Discord

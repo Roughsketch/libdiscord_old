@@ -1,6 +1,9 @@
 #include "bot.h"
 
 #include "api.h"
+#include "api/api_channel.h"
+#include "api/api_guild.h"
+#include "api/api_user.h"
 #include "channel.h"
 #include "common.h"
 #include "emoji.h"

@@ -1,6 +1,6 @@
 #include "message.h"
 
-#include "api.h"
+#include "api/api_channel.h"
 #include "channel.h"
 #include "role.h"
 #include "user.h"

@@ -1,6 +1,8 @@
 #include <thread>
 
 #include "api.h"
+#include "api/api_channel.h"
+#include "api/api_guild.h"
 #include "channel.h"
 #include "message.h"
 #include "user.h"
