@@ -1,6 +1,5 @@
 #pragma once
 
-#include <chrono>
 #include <vector>
 
 #include "common.h"
@@ -24,11 +23,31 @@ namespace Discord
     High
   };
 
+  inline void from_json(const nlohmann::json& json, VerificationLevel& level)
+  {
+    level = static_cast<VerificationLevel>(json.get<int>());
+  }
+
+  inline void to_json(nlohmann::json& json, const VerificationLevel& level)
+  {
+    json = static_cast<int>(level);
+  }
+
   enum class NotificationLevel
   {
     None,
     MentionOnly
   };
+
+  inline void from_json(const nlohmann::json& json, NotificationLevel& level)
+  {
+    level = static_cast<NotificationLevel>(json.get<int>());
+  }
+
+  inline void to_json(nlohmann::json& json, const NotificationLevel& level)
+  {
+    json = static_cast<int>(level);
+  }
 
   class Guild : public Identifiable
   {
@@ -84,9 +103,28 @@ namespace Discord
      */
     VerificationLevel verification_level() const;
 
+    /** Get the default notification level of a guild.
+     
+        @return The current default notification level of this guild.
+     */
     NotificationLevel notification_level() const;
+
+    /** Get the AFK channel's id.
+     
+        @return The guild's AFK channel id.
+     */
     Snowflake afk_channel() const;
+
+    /** Get the guild's AFK timeout.
+     
+        @return The guild's AFK timeout in seconds.
+     */
     uint32_t afk_timeout() const;
+
+    /** Get the guild's owner id.
+     
+        @return The guild's owner id.
+     */
     Snowflake owner_id() const;
 
     /** Get the name of a Guild
@@ -236,7 +274,7 @@ namespace Discord
         @param modify_block The block that will modify the contents of the guild.
         @return The modified guild object.
      */
-    std::shared_ptr<Guild> modify(std::function<void(std::shared_ptr<Guild>)> modify_block);
+    std::shared_ptr<Guild> modify(std::function<void(std::shared_ptr<Guild>)> modify_block) const;
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)

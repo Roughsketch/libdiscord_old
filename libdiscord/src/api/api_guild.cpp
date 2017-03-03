@@ -85,6 +85,10 @@ namespace Discord
           { "afk_timeout", guild->afk_timeout() },
           { "owner_id", guild->owner_id() }
         };
+
+        auto response = request(ModifyGuild, guild_id, PATCH, "guilds/" + guild->id().to_string(), payload);
+
+        return response;
       }
     }
   }

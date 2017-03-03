@@ -1,5 +1,5 @@
+#include "integration.h"
 #include "user.h"
-#include "external/json.hpp"
 
 namespace Discord
 {

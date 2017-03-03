@@ -119,6 +119,26 @@ namespace Discord
     return m_verification_level;
   }
 
+  NotificationLevel Guild::notification_level() const
+  {
+    return m_default_message_notifications;
+  }
+
+  Snowflake Guild::afk_channel() const
+  {
+    return m_afk_channel_id;
+  }
+
+  uint32_t Guild::afk_timeout() const
+  {
+    return m_afk_timeout;
+  }
+
+  Snowflake Guild::owner_id() const
+  {
+    return m_owner_id;
+  }
+
   std::vector<std::shared_ptr<Emoji>> Guild::emojis() const
   {
     return m_emojis;
@@ -270,12 +290,12 @@ namespace Discord
     }
   }
 
-  std::shared_ptr<Guild> Guild::modify(std::function<void(std::shared_ptr<Guild>)> modify_block)
+  std::shared_ptr<Guild> Guild::modify(std::function<void(std::shared_ptr<Guild>)> modify_block) const
   {
     auto guild = Discord::API::Guild::get_guild(m_id);
 
     modify_block(guild);
 
-    Discord::API::Guild::modify_guild(m_id, guild);
+    return Discord::API::Guild::modify_guild(m_id, guild);
   }
 }

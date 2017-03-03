@@ -55,4 +55,11 @@ namespace Discord
   {
     ptr = std::make_shared<T>(json);
   }
+
+  /** Allows loading of JSON data into the enum class SearchCriteria.
+   
+      @param json The JSON data to read from.
+      @param search The search variable to set.
+   */
+  void from_json(const nlohmann::json& json, SearchCriteria& search);
 }

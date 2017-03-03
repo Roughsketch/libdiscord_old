@@ -6,6 +6,10 @@ INITIALIZE_EASYLOGGINGPP
 
 namespace Discord
 {
+  void from_json(const nlohmann::json& json, SearchCriteria& search)
+  {
+    search = static_cast<SearchCriteria>(json.get<int>());
+  }
 
   nlohmann::json read_json_file(std::string file)
   {
