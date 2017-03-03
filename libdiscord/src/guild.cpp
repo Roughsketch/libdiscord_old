@@ -9,7 +9,7 @@
 #include "user.h"
 #include "voice.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Guild::Guild()
   {
@@ -272,10 +272,10 @@ namespace ModDiscord
 
   std::shared_ptr<Guild> Guild::modify(std::function<void(std::shared_ptr<Guild>)> modify_block)
   {
-    auto guild = ModDiscord::API::Guild::get_guild(m_id);
+    auto guild = Discord::API::Guild::get_guild(m_id);
 
     modify_block(guild);
 
-    ModDiscord::API::Guild::modify_guild(m_id, guild);
+    Discord::API::Guild::modify_guild(m_id, guild);
   }
 }

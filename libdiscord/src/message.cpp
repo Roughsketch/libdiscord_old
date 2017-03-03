@@ -5,7 +5,7 @@
 #include "role.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Message::Message()
   {
@@ -66,16 +66,16 @@ namespace ModDiscord
 
   std::shared_ptr<Channel> Message::channel() const
   {
-    return ModDiscord::API::Channel::get_channel(channel_id());
+    return Discord::API::Channel::get_channel(channel_id());
   }
 
   bool Message::remove() const
   {
-    return ModDiscord::API::Channel::delete_message(channel_id(), id());
+    return Discord::API::Channel::delete_message(channel_id(), id());
   }
 
   std::shared_ptr<Message> Message::respond(std::string message, bool tts) const
   {
-    return ModDiscord::API::Channel::create_message(channel_id(), message, tts);
+    return Discord::API::Channel::create_message(channel_id(), message, tts);
   }
 }

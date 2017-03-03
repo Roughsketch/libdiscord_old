@@ -3,27 +3,27 @@
 #include "channel.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   namespace API
   {
     namespace User
     {
-      std::shared_ptr<ModDiscord::User> get_current_user()
+      std::shared_ptr<Discord::User> get_current_user()
       {
         auto response = request(GetCurrentUser, 0, GET, "users/@me");
 
         return response;
       }
 
-      std::shared_ptr<ModDiscord::User> get_user(Snowflake user_id)
+      std::shared_ptr<Discord::User> get_user(Snowflake user_id)
       {
         auto response = request(GetUser, 0, GET, "users/" + user_id.to_string());
 
         return response;
       }
 
-      std::shared_ptr<ModDiscord::User> modify(std::string username, std::string avatar)
+      std::shared_ptr<Discord::User> modify(std::string username, std::string avatar)
       {
         nlohmann::json payload = {
           { "username", username }
@@ -41,18 +41,25 @@ namespace ModDiscord
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
-      std::vector<std::shared_ptr<ModDiscord::Channel>> get_dms()
+      std::vector<std::shared_ptr<Discord::Channel>> get_dms()
       {
         auto response = request(GetUserDMs, 0, GET, "users/@me/channels");
 
         return response;
       }
 
-      std::shared_ptr<ModDiscord::Channel> create_dm(Snowflake recipient_id)
+      std::shared_ptr<Discord::Channel> create_dm(Snowflake recipient_id)
       {
         auto response = request(CreateDM, 0, POST, "users/@me/channels", {
           { "recipient_id", recipient_id }
         });
+
+        return response;
+      }
+
+      std::vector<std::shared_ptr<Connection>> connections()
+      {
+        auto response = request(GetUsersConnections, 0, GET, "users/@me/connections");
 
         return response;
       }

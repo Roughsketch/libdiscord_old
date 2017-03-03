@@ -8,15 +8,15 @@
 
 #include <cpprest/http_msg.h>
 
-namespace ModDiscord
+namespace Discord
 {
   namespace API
   {
     namespace Channel
     {
-      static std::map<Snowflake, std::shared_ptr<ModDiscord::Channel>> ChannelCache;
+      static std::map<Snowflake, std::shared_ptr<Discord::Channel>> ChannelCache;
 
-      void update_cache(std::shared_ptr<ModDiscord::Channel> channel)
+      void update_cache(std::shared_ptr<Discord::Channel> channel)
       {
         if (ChannelCache.count(channel->id()))
         {
@@ -30,7 +30,7 @@ namespace ModDiscord
         }
       }
 
-      void remove_cache(std::shared_ptr<ModDiscord::Channel> channel)
+      void remove_cache(std::shared_ptr<Discord::Channel> channel)
       {
         auto itr = ChannelCache.find(channel->id());
 
@@ -44,7 +44,7 @@ namespace ModDiscord
         }
       }
 
-      std::shared_ptr<ModDiscord::Channel> get_channel(Snowflake channel_id)
+      std::shared_ptr<Discord::Channel> get_channel(Snowflake channel_id)
       {
         if (ChannelCache.count(channel_id))
         {
@@ -56,7 +56,7 @@ namespace ModDiscord
 
         if (!json.empty())
         {
-          auto chan = std::make_shared<ModDiscord::Channel>(json);
+          auto chan = std::make_shared<Discord::Channel>(json);
           update_cache(chan);
           return chan;
         }
@@ -65,7 +65,7 @@ namespace ModDiscord
         return nullptr;
       }
 
-      std::shared_ptr<ModDiscord::Channel> modify_text_channel(Snowflake channel_id, std::string name, uint32_t position, std::string topic)
+      std::shared_ptr<Discord::Channel> modify_text_channel(Snowflake channel_id, std::string name, uint32_t position, std::string topic)
       {
         auto chan = get_channel(channel_id);
 
@@ -83,7 +83,7 @@ namespace ModDiscord
         return chan;
       }
 
-      std::shared_ptr<ModDiscord::Channel> modify_voice_channel(Snowflake channel_id, std::string name, uint32_t position, uint32_t bitrate, uint32_t user_limit)
+      std::shared_ptr<Discord::Channel> modify_voice_channel(Snowflake channel_id, std::string name, uint32_t position, uint32_t bitrate, uint32_t user_limit)
       {
         auto chan = get_channel(channel_id);
 
@@ -102,18 +102,18 @@ namespace ModDiscord
         return chan;
       }
 
-      std::shared_ptr<ModDiscord::Channel> delete_channel(Snowflake channel_id)
+      std::shared_ptr<Discord::Channel> delete_channel(Snowflake channel_id)
       {
         auto response = request(DeleteChannel, channel_id, DEL, "channels/" + channel_id.to_string());
 
-        return std::make_shared<ModDiscord::Channel>(response);
+        return std::make_shared<Discord::Channel>(response);
       }
 
       std::vector<std::shared_ptr<Message>> get_messages(Snowflake channel_id, int32_t limit, SearchCriteria method, Snowflake pivot)
       {
         nlohmann::json payload = { { "limit", limit } };
 
-        if (method != None && pivot == 0)
+        if (method != SearchCriteria::None && pivot == 0)
         {
           LOG(ERROR) << "Search method passed to get_messages, but pivot id is zero.";
           return std::vector<std::shared_ptr<Message>>();
@@ -121,15 +121,15 @@ namespace ModDiscord
 
         switch (method)
         {
-        case None:
+        case SearchCriteria::None:
           break;
-        case Before:
+        case SearchCriteria::Before:
           payload["before"] = pivot;
           break;
-        case After:
+        case SearchCriteria::After:
           payload["after"] = pivot;
           break;
-        case Around:
+        case SearchCriteria::Around:
           payload["around"] = pivot;
           break;
         default:

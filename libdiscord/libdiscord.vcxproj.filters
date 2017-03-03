@@ -134,9 +134,6 @@
     <ClInclude Include="include\message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\mod_discord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\role.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
       <Filter>Header Files\api</Filter>
     </ClInclude>
     <ClInclude Include="include\integration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\discord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

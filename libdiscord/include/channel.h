@@ -4,7 +4,7 @@
 #include "identifiable.h"
 #include "permission.h"
 
-namespace ModDiscord
+namespace Discord
 {
   class Emoji;
   class Guild;

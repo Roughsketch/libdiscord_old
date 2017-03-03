@@ -8,7 +8,7 @@
 
 #include "snowflake.h"
 
-namespace ModDiscord
+namespace Discord
 {
   enum class SearchCriteria
   {

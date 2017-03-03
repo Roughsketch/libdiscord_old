@@ -1,6 +1,6 @@
 #include "integration.h"
 
-namespace ModDiscord
+namespace Discord
 {
   IntegrationAccount::IntegrationAccount(nlohmann::json data)
   {

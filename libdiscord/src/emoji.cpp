@@ -1,6 +1,6 @@
 #include "emoji.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Emoji::Emoji()
   {

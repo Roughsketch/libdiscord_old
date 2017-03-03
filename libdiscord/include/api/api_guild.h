@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ModDiscord
+namespace Discord
 {
   class Guild;
 
@@ -12,7 +12,7 @@ namespace ModDiscord
          
          @param guild A shared pointer to the guild to update.
        */
-      std::shared_ptr<ModDiscord::Guild> update_cache(std::shared_ptr<ModDiscord::Guild> guild);
+      std::shared_ptr<Discord::Guild> update_cache(std::shared_ptr<Discord::Guild> guild);
 
       /** Removes a Guild from the cache given its id.
 
@@ -24,7 +24,7 @@ namespace ModDiscord
 
           @param guild A shared pointer to the guild to remove.
       */
-      void remove_cache(std::shared_ptr<ModDiscord::Guild> guild);
+      void remove_cache(std::shared_ptr<Discord::Guild> guild);
 
       /** Sets a Guild's unavailable flag.
 
@@ -37,14 +37,14 @@ namespace ModDiscord
           @param guild_id A Snowflake set to the guild's id.
           @return A shared pointer to the Guild or nullptr on failure.
       */
-      std::shared_ptr<ModDiscord::Guild> get_guild(Snowflake guild_id);
+      std::shared_ptr<Discord::Guild> get_guild(Snowflake guild_id);
 
       /** Modify the attributes of a guild.
        
           @param guild_id The guild to modify
           @return The modified guild object.
        */
-      std::shared_ptr<ModDiscord::Guild> modify_guild(Snowflake guild_id, std::shared_ptr<ModDiscord::Guild> guild);
+      std::shared_ptr<Discord::Guild> modify_guild(Snowflake guild_id, std::shared_ptr<Discord::Guild> guild);
     }
   }
 }

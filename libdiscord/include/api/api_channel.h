@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-namespace ModDiscord
+namespace Discord
 {
   class Channel;
   class Emoji;
@@ -19,20 +19,20 @@ namespace ModDiscord
        
           @param channel The channel to add or update.
        */
-      void update_cache(std::shared_ptr<ModDiscord::Channel> channel);
+      void update_cache(std::shared_ptr<Discord::Channel> channel);
 
       /** Remove a Channel from the cache.
           
           @param channel The channel to remove.
        */
-      void remove_cache(std::shared_ptr<ModDiscord::Channel> channel);
+      void remove_cache(std::shared_ptr<Discord::Channel> channel);
 
       /** Get a channel from either the cache, or the API if it's not already cached.
        
           @param channel_id The id of the channel to retrieve.
           @return The channel object, or nullptr if it doesn't exist. 
        */
-      std::shared_ptr<ModDiscord::Channel> get_channel(Snowflake channel_id);
+      std::shared_ptr<Discord::Channel> get_channel(Snowflake channel_id);
 
       /** Modify a channel's attributes.
        
@@ -42,7 +42,7 @@ namespace ModDiscord
           @param topic The new topic of the channel. Must be 1024 characters or less.
           @return The channel that was modified.
        */
-      std::shared_ptr<ModDiscord::Channel> modify_text_channel(Snowflake channel_id, std::string name = "", uint32_t position = 0, std::string topic = "");
+      std::shared_ptr<Discord::Channel> modify_text_channel(Snowflake channel_id, std::string name = "", uint32_t position = 0, std::string topic = "");
 
       /** Modify a channe's attributes.
        
@@ -53,14 +53,14 @@ namespace ModDiscord
           @param user_limit The new user limit for the channel. Must be between 1 and 99 inclusive.
           @return The channel that was modified.
        */
-      std::shared_ptr<ModDiscord::Channel> modify_voice_channel(Snowflake channel_id, std::string name = "", uint32_t position = 0, uint32_t bitrate = 0, uint32_t user_limit = 0);
+      std::shared_ptr<Discord::Channel> modify_voice_channel(Snowflake channel_id, std::string name = "", uint32_t position = 0, uint32_t bitrate = 0, uint32_t user_limit = 0);
 
       /** Deletes a channel.
        
           @param channel_id The channel to delete
           @return The channel object that was deleted.
        */
-      std::shared_ptr<ModDiscord::Channel> delete_channel(Snowflake channel_id);
+      std::shared_ptr<Discord::Channel> delete_channel(Snowflake channel_id);
 
       /** Gets a list of messages from a channel. Optionally accepts a search criteria and message id to search around.
        
@@ -70,7 +70,7 @@ namespace ModDiscord
           @param pivot The message to base the search around.
           @return A vector of messages that were retrieved.
        */
-      std::vector<std::shared_ptr<Message>> get_messages(Snowflake channel_id, int32_t limit = 50, SearchCriteria method = None, Snowflake pivot = 0);
+      std::vector<std::shared_ptr<Message>> get_messages(Snowflake channel_id, int32_t limit = 50, SearchCriteria method = SearchCriteria::None, Snowflake pivot = 0);
 
       /** Get a single message from a channel.
        

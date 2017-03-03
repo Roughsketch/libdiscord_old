@@ -4,7 +4,7 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-namespace ModDiscord
+namespace Discord
 {
 
   nlohmann::json read_json_file(std::string file)

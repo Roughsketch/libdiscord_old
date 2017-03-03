@@ -3,7 +3,7 @@
 #include "channel.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   InviteMetadata::InviteMetadata()
   {

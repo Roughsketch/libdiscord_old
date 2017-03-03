@@ -1,7 +1,7 @@
 #include "events.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Game::Game() : m_type(0)
   {

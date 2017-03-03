@@ -3,7 +3,7 @@
 #include "common.h"
 #include "identifiable.h"
 
-namespace ModDiscord
+namespace Discord
 {
   class User;
   enum ChannelType : uint8_t;

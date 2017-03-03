@@ -64,7 +64,7 @@
     <ClInclude Include="include\invite.h" />
     <ClInclude Include="include\member.h" />
     <ClInclude Include="include\message.h" />
-    <ClInclude Include="include\mod_discord.h" />
+    <ClInclude Include="include\discord.h" />
     <ClInclude Include="include\permission.h" />
     <ClInclude Include="include\role.h" />
     <ClInclude Include="include\snowflake.h" />

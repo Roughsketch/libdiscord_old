@@ -1,4 +1,4 @@
-#include "mod_discord.h"
+#include <discord.h>
 
 #define ELPP_THREAD_SAFE
 #define ELPP_FORCE_USE_STD_THREAD
@@ -26,7 +26,7 @@ void generate_default_settings()
   }
   )"_json;
 
-  ModDiscord::write_json_file("default.json", default_settings, true);
+  Discord::write_json_file("default.json", default_settings, true);
 }
 
 bool valid_settings(nlohmann::json settings)
@@ -63,7 +63,7 @@ bool valid_settings(nlohmann::json settings)
 
 int main(int argc, char* argv[])
 {
-  auto settings = ModDiscord::read_json_file("default.json");
+  auto settings = Discord::read_json_file("default.json");
 
   if (settings.empty())
   {
@@ -82,9 +82,9 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  auto bot = ModDiscord::Bot::create(settings);
+  auto bot = Discord::Bot::create(settings);
 
-  bot->on_message([bot](std::shared_ptr<ModDiscord::MessageEvent> event)
+  bot->on_message([bot](std::shared_ptr<Discord::MessageEvent> event)
   {
     LOG(INFO) << "Got into OnMessage handler with message " << event->content();
     if (event->content() == ".info")
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
     }
     else if (event->content() == ".modify")
     {
-      event->channel()->modify([](std::shared_ptr<ModDiscord::Channel> chan)
+      event->channel()->modify([](std::shared_ptr<Discord::Channel> chan)
       {
         chan->set_name("sandcastle");
       });

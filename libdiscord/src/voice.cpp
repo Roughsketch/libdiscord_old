@@ -1,6 +1,6 @@
 #include "voice.h"
 
-namespace ModDiscord
+namespace Discord
 {
   VoiceState::VoiceState()
   {

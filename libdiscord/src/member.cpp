@@ -3,7 +3,7 @@
 #include "role.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Member::Member()
   {

@@ -1,6 +1,6 @@
 #include "role.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Role::Role()
   {

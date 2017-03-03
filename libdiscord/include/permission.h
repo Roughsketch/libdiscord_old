@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-namespace ModDiscord
+namespace Discord
 {
   enum Permissions : uint32_t
   {

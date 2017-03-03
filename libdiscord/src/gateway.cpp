@@ -5,7 +5,7 @@
 
 #include <zlib.h>
 
-namespace ModDiscord
+namespace Discord
 {
   const uint8_t Gateway::LARGE_SERVER = 100;
   const utility::string_t Gateway::VERSION = utility::string_t(U("6"));
@@ -222,8 +222,8 @@ namespace ModDiscord
         "properties",
         {
           { "$os", "windows" },
-          { "$browser", "ModDiscord" },
-          { "$device", "ModDiscord" },
+          { "$browser", "Discord" },
+          { "$device", "Discord" },
           { "$referrer", "" },
           { "$refferring_domain", "" }
         }

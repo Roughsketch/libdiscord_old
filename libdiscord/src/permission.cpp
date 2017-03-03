@@ -1,6 +1,6 @@
 #include "permission.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Permission::Permission()
   {

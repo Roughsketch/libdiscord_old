@@ -1,8 +1,47 @@
 #include "user.h"
 #include "external/json.hpp"
 
-namespace ModDiscord
+namespace Discord
 {
+  Connection::Connection()
+  {
+    m_revoked = false;
+  }
+
+  Connection::Connection(nlohmann::json data)
+  {
+    set_from_json(m_id, "id", data);
+    set_from_json(m_name, "name", data);
+    set_from_json(m_type, "type", data);
+    set_from_json(m_revoked, "revoked", data);
+    set_from_json(m_integrations, "integrations", data);
+  }
+
+  std::string Connection::id() const
+  {
+    return m_id;
+  }
+
+  std::string Connection::name() const
+  {
+    return m_name;
+  }
+
+  std::string Connection::type() const
+  {
+    return m_type;
+  }
+
+  bool Connection::revoked() const
+  {
+    return m_revoked;
+  }
+
+  std::vector<std::shared_ptr<Integration>> Connection::integrations() const
+  {
+    return m_integrations;
+  }
+
   User::User()
   {
     m_bot = false;

@@ -4,7 +4,7 @@
 #include <future>
 #include <cpprest/http_client.h>
 
-namespace ModDiscord
+namespace Discord
 {
   namespace API
   {
@@ -30,7 +30,7 @@ namespace ModDiscord
           return web::http::methods::PATCH;
         }
 
-        LOG(ERROR) << "Invalid RequestType sent to ModDiscord::API::detail::get_method (" << static_cast<int>(type) << ")";
+        LOG(ERROR) << "Invalid RequestType sent to Discord::API::detail::get_method (" << static_cast<int>(type) << ")";
 
         return {};
       }
@@ -51,7 +51,7 @@ namespace ModDiscord
           return "PATCH";
         }
 
-        LOG(ERROR) << "Invalid RequestType sent to ModDiscord::API::detail::get_method_name (" << static_cast<int>(type) << ")";
+        LOG(ERROR) << "Invalid RequestType sent to Discord::API::detail::get_method_name (" << static_cast<int>(type) << ")";
         return{};
       }
     }

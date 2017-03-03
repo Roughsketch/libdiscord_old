@@ -6,7 +6,7 @@
 #include "message.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   MessageEvent::MessageEvent(nlohmann::json data)
   {
@@ -66,7 +66,7 @@ namespace ModDiscord
 
   std::shared_ptr<Channel> MessageDeletedEvent::channel() const
   {
-    return ModDiscord::API::Channel::get_channel(m_channel_id);
+    return Discord::API::Channel::get_channel(m_channel_id);
   }
 
   std::shared_ptr<Guild> MessageDeletedEvent::guild() const
@@ -103,7 +103,7 @@ namespace ModDiscord
 
   std::shared_ptr<Channel> TypingEvent::channel() const
   {
-    return ModDiscord::API::Channel::get_channel(m_channel_id);
+    return Discord::API::Channel::get_channel(m_channel_id);
   }
 
   std::shared_ptr<Guild> TypingEvent::guild() const

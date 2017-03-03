@@ -6,7 +6,7 @@
 #include "common.h"
 #include "identifiable.h"
 
-namespace ModDiscord
+namespace Discord
 {
   class Channel;
   class Emoji;
@@ -83,6 +83,11 @@ namespace ModDiscord
         @return The verification level of the guild.
      */
     VerificationLevel verification_level() const;
+
+    NotificationLevel notification_level() const;
+    Snowflake afk_channel() const;
+    uint32_t afk_timeout() const;
+    Snowflake owner_id() const;
 
     /** Get the name of a Guild
 

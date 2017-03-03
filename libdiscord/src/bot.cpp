@@ -12,7 +12,7 @@
 #include "role.h"
 #include "user.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Bot::Bot()
   {
@@ -41,7 +41,7 @@ namespace ModDiscord
       token = "Bot " + token;
     }
 
-    ModDiscord::API::set_token(token);
+    Discord::API::set_token(token);
 
     bot->m_gateway = std::make_shared<Gateway>(token);
     bot->m_gateway->set_bot(bot); //  Let the gateway know about the bot so it can send events.
@@ -56,7 +56,7 @@ namespace ModDiscord
 
   std::shared_ptr<Bot> Bot::create_from_json(std::string filename)
   {
-    auto settings = ModDiscord::read_json_file(filename);
+    auto settings = Discord::read_json_file(filename);
 
     if (settings.empty())
     {
@@ -98,20 +98,20 @@ namespace ModDiscord
     }
     else if (event_name == "CHANNEL_CREATE" || event_name == "CHANNEL_UPDATE")
     {
-      ModDiscord::API::Channel::update_cache(std::make_shared<Channel>(data));
+      Discord::API::Channel::update_cache(std::make_shared<Channel>(data));
     }
     else if (event_name == "CHANNEL_DELETE")
     {
-      ModDiscord::API::Channel::remove_cache(std::make_shared<Channel>(data));
+      Discord::API::Channel::remove_cache(std::make_shared<Channel>(data));
     }
     else if (event_name == "GUILD_CREATE")
     {
-      auto guild = ModDiscord::API::Guild::update_cache(std::make_shared<Guild>(data));
+      auto guild = Discord::API::Guild::update_cache(std::make_shared<Guild>(data));
       m_guilds.push_back(guild);
     }
     else if (event_name == "GUILD_UPDATE")
     {
-      auto guild = ModDiscord::API::Guild::update_cache(std::make_shared<Guild>(data));
+      auto guild = Discord::API::Guild::update_cache(std::make_shared<Guild>(data));
       auto itr = std::find_if(std::begin(m_guilds), std::end(m_guilds), [guild](std::shared_ptr<Guild> g) { return g->id() == guild->id(); });
       
       if (itr == std::end(m_guilds))
@@ -131,24 +131,24 @@ namespace ModDiscord
       if (data.count("unavailable"))
       {
         //  The guild is just unavailable, mark it as such.
-        ModDiscord::API::Guild::mark_unavailable(id);
+        Discord::API::Guild::mark_unavailable(id);
       }
       else
       {
         //  The user was removed from the guild, remove it from our cache.
-        ModDiscord::API::Guild::remove_cache(id);
+        Discord::API::Guild::remove_cache(id);
       }
     }
     else if (event_name == "GUILD_BAN_ADD")
     {
       auto user = std::make_shared<User>(data);
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
       LOG(INFO) << "User " << user->distinct() << " has been banned from " << guild->name() << ".";
     }
     else if (event_name == "GUILD_BAN_REMOVE")
     {
       auto user = std::make_shared<User>(data);
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
       LOG(INFO) << "User " << user->distinct() << " has been unbanned from " << guild->name();
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
@@ -163,17 +163,17 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_MEMBER_ADD")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
       guild->add_member(data);
     }
     else if (event_name == "GUILD_MEMBER_REMOVE")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
       guild->remove_member(data);
     }
     else if (event_name == "GUILD_MEMBER_UPDATE")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
 
       auto roles = data["roles"].get<std::vector<Snowflake>>();
       auto user = data["user"].get<User>();
@@ -183,7 +183,7 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_MEMBERS_CHUNK")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
       auto members = data["members"].get<std::vector<std::shared_ptr<Member>>>();
 
       for (auto& member : members)
@@ -193,17 +193,17 @@ namespace ModDiscord
     }
     else if (event_name == "GUILD_ROLE_CREATE")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
       guild->add_role(data["role"].get<Role>());
     }
     else if (event_name == "GUILD_ROLE_UPDATE")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
       guild->update_role(data["role"].get<Role>());
     }
     else if (event_name == "GUILD_ROLE_DELETE")
     {
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
       guild->remove_role(data["role"].get<Snowflake>());
     }
     else if (event_name == "MESSAGE_CREATE")
@@ -245,7 +245,7 @@ namespace ModDiscord
     else if (event_name == "PRESENCE_UPDATE")
     {
       auto presence = std::make_shared<PresenceUpdate>(data);
-      auto guild = ModDiscord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
 
       guild->update_presence(presence);
     }

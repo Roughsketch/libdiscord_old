@@ -6,7 +6,7 @@
 #include "api/api_guild.h"
 #include "common.h"
 
-namespace ModDiscord
+namespace Discord
 {
   namespace API
   {

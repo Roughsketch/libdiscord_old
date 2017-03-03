@@ -4,15 +4,15 @@
 
 #include <map>
 
-namespace ModDiscord
+namespace Discord
 {
   namespace API
   {
     namespace Guild
     {
-      static std::map<Snowflake, std::shared_ptr<ModDiscord::Guild>> GuildCache;
+      static std::map<Snowflake, std::shared_ptr<Discord::Guild>> GuildCache;
 
-      std::shared_ptr<ModDiscord::Guild> update_cache(std::shared_ptr<ModDiscord::Guild> guild)
+      std::shared_ptr<Discord::Guild> update_cache(std::shared_ptr<Discord::Guild> guild)
       {
         if (GuildCache.count(guild->id()))
         {
@@ -42,7 +42,7 @@ namespace ModDiscord
         }
       }
 
-      void remove_cache(std::shared_ptr<ModDiscord::Guild> guild)
+      void remove_cache(std::shared_ptr<Discord::Guild> guild)
       {
         remove_cache(guild->id());
       }
@@ -53,7 +53,7 @@ namespace ModDiscord
         guild->set_unavailable(true);
       }
 
-      std::shared_ptr<ModDiscord::Guild> get_guild(Snowflake guild_id)
+      std::shared_ptr<Discord::Guild> get_guild(Snowflake guild_id)
       {
         if (GuildCache.count(guild_id))
         {
@@ -65,7 +65,7 @@ namespace ModDiscord
 
         if (!json.empty())
         {
-          auto guild = std::make_shared<ModDiscord::Guild>(json);
+          auto guild = std::make_shared<Discord::Guild>(json);
           update_cache(guild);
           return guild;
         }
@@ -74,7 +74,7 @@ namespace ModDiscord
         return nullptr;
       }
 
-      std::shared_ptr<ModDiscord::Guild> modify_guild(Snowflake guild_id, std::shared_ptr<ModDiscord::Guild> guild)
+      std::shared_ptr<Discord::Guild> modify_guild(Snowflake guild_id, std::shared_ptr<Discord::Guild> guild)
       {
         nlohmann::json payload = {
           { "name", guild->name() },

@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-namespace ModDiscord
+namespace Discord
 {
   class Identifiable
   {

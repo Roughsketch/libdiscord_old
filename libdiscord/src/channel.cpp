@@ -6,7 +6,7 @@
 #include "user.h"
 #include "guild.h"
 
-namespace ModDiscord
+namespace Discord
 {
   Overwrite::Overwrite()
   {
@@ -102,7 +102,7 @@ namespace ModDiscord
 
   std::shared_ptr<Guild> Channel::guild() const
   {
-    return ModDiscord::API::Guild::get_guild(guild_id());
+    return Discord::API::Guild::get_guild(guild_id());
   }
 
   std::string Channel::name() const
@@ -184,16 +184,16 @@ namespace ModDiscord
 
   std::shared_ptr<Channel> Channel::modify(std::function<void(std::shared_ptr<Channel>)> modify_block) const
   {
-    auto channel = ModDiscord::API::Channel::get_channel(id());
+    auto channel = Discord::API::Channel::get_channel(id());
     modify_block(channel);
 
     if (channel->type() == Text)
     {
-      channel = ModDiscord::API::Channel::modify_text_channel(channel->id(), channel->name(), channel->position(), channel->topic());
+      channel = Discord::API::Channel::modify_text_channel(channel->id(), channel->name(), channel->position(), channel->topic());
     }
     else if (channel->type() == Voice)
     {
-      channel = ModDiscord::API::Channel::modify_voice_channel(channel->id(), channel->name(), channel->position(), channel->bitrate(), channel->user_limit());
+      channel = Discord::API::Channel::modify_voice_channel(channel->id(), channel->name(), channel->position(), channel->bitrate(), channel->user_limit());
     }
 
     return channel;
@@ -201,41 +201,41 @@ namespace ModDiscord
 
   std::shared_ptr<Channel> Channel::close() const
   {
-    return ModDiscord::API::Channel::delete_channel(m_id);
+    return Discord::API::Channel::delete_channel(m_id);
   }
 
   std::vector<std::shared_ptr<Message>> Channel::get_messages(int32_t limit, SearchCriteria method, Snowflake message_id) const
   {
-    if (method != None && message_id == 0)
+    if (method != SearchCriteria::None && message_id == 0)
     {
       //  Do not pass search methods if no message id was passed.
-      return ModDiscord::API::Channel::get_messages(m_id, limit);
+      return Discord::API::Channel::get_messages(m_id, limit);
     }
 
-    return ModDiscord::API::Channel::get_messages(m_id, limit, method, message_id);
+    return Discord::API::Channel::get_messages(m_id, limit, method, message_id);
   }
 
   std::shared_ptr<Message> Channel::get_message(Snowflake message_id) const
   {
-    return ModDiscord::API::Channel::get_message(m_id, message_id);
+    return Discord::API::Channel::get_message(m_id, message_id);
   }
 
   std::shared_ptr<Message> Channel::send_message(std::string content, bool tts) const
   {
-    return ModDiscord::API::Channel::create_message(m_id, content);
+    return Discord::API::Channel::create_message(m_id, content);
   }
 
   void Channel::send_temp_message(std::string content, uint32_t timeout, bool tts) const
   {
     using namespace std::chrono;
-    auto message = ModDiscord::API::Channel::create_message(m_id, content);
+    auto message = Discord::API::Channel::create_message(m_id, content);
     std::this_thread::sleep_for(10s);
     message->remove();
   }
 
   bool Channel::add_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji) const
   {
-    return ModDiscord::API::Channel::create_reaction(m_id, message_id, emoji);
+    return Discord::API::Channel::create_reaction(m_id, message_id, emoji);
   }
 
   bool Channel::remove_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji, Snowflake user_id) const
@@ -243,30 +243,30 @@ namespace ModDiscord
     if (user_id == 0)
     {
       //  If no user was specified, assume it's our own reaction
-      return ModDiscord::API::Channel::delete_own_reaction(m_id, message_id, emoji);
+      return Discord::API::Channel::delete_own_reaction(m_id, message_id, emoji);
     }
 
-    return ModDiscord::API::Channel::delete_user_reaction(m_id, message_id, emoji, user_id);
+    return Discord::API::Channel::delete_user_reaction(m_id, message_id, emoji, user_id);
   }
 
   std::vector<std::shared_ptr<User>> Channel::get_reactions(Snowflake message_id, std::shared_ptr<Emoji> emoji) const
   {
-    return ModDiscord::API::Channel::get_reactions(m_id, message_id, emoji);
+    return Discord::API::Channel::get_reactions(m_id, message_id, emoji);
   }
 
   void Channel::remove_all_reactions(Snowflake message_id) const
   {
-    ModDiscord::API::Channel::delete_all_reactions(m_id, message_id);
+    Discord::API::Channel::delete_all_reactions(m_id, message_id);
   }
 
   std::shared_ptr<Message> Channel::edit_message(Snowflake message_id, std::string new_content) const
   {
-    return ModDiscord::API::Channel::edit_message(m_id, message_id, new_content);
+    return Discord::API::Channel::edit_message(m_id, message_id, new_content);
   }
 
   bool Channel::remove_message(Snowflake message_id) const
   {
-    return ModDiscord::API::Channel::delete_message(m_id, message_id);
+    return Discord::API::Channel::delete_message(m_id, message_id);
   }
 
   bool Channel::remove_messages(std::vector<Snowflake> message_ids) const
@@ -277,54 +277,54 @@ namespace ModDiscord
       return false;
     }
 
-    return ModDiscord::API::Channel::bulk_delete_messages(m_id, message_ids);
+    return Discord::API::Channel::bulk_delete_messages(m_id, message_ids);
   }
 
   bool Channel::edit_permissions(std::shared_ptr<Overwrite> overwrite, 
     std::function<void(std::shared_ptr<Permission>, std::shared_ptr<Permission>)> callback) const
   {
     callback(overwrite->allow(), overwrite->deny());
-    return ModDiscord::API::Channel::edit_permissions(m_id, overwrite,
+    return Discord::API::Channel::edit_permissions(m_id, overwrite,
               overwrite->allow()->get(), overwrite->deny()->get(), overwrite->type());
   }
 
   bool Channel::edit_permissions(std::shared_ptr<Overwrite> overwrite, Permission allow, Permission deny) const
   {
-    return ModDiscord::API::Channel::edit_permissions(m_id, overwrite, allow.get(), deny.get(), overwrite->type());
+    return Discord::API::Channel::edit_permissions(m_id, overwrite, allow.get(), deny.get(), overwrite->type());
   }
 
   std::vector<std::shared_ptr<Invite>> Channel::get_invites() const
   {
-    return ModDiscord::API::Channel::get_channel_invites(m_id);
+    return Discord::API::Channel::get_channel_invites(m_id);
   }
 
   std::shared_ptr<Invite> Channel::create_invite(uint32_t max_age, uint32_t max_uses, bool temporary, bool unique) const
   {
-    return ModDiscord::API::Channel::create_channel_invite(m_id, max_age, max_uses, temporary, unique);
+    return Discord::API::Channel::create_channel_invite(m_id, max_age, max_uses, temporary, unique);
   }
 
   bool Channel::delete_permission(std::shared_ptr<Overwrite> overwrite) const
   {
-    return ModDiscord::API::Channel::delete_permission(m_id, overwrite);
+    return Discord::API::Channel::delete_permission(m_id, overwrite);
   }
 
   bool Channel::start_typing() const
   {
-    return ModDiscord::API::Channel::trigger_typing_indicator(m_id);
+    return Discord::API::Channel::trigger_typing_indicator(m_id);
   }
 
   std::vector<std::shared_ptr<Message>> Channel::get_pinned() const
   {
-    return ModDiscord::API::Channel::get_pinned_messages(m_id);
+    return Discord::API::Channel::get_pinned_messages(m_id);
   }
 
   bool Channel::add_pin(Snowflake message_id) const
   {
-    return ModDiscord::API::Channel::add_pinned_message(m_id, message_id);
+    return Discord::API::Channel::add_pinned_message(m_id, message_id);
   }
 
   bool Channel::remove_pin(Snowflake message_id) const
   {
-    return ModDiscord::API::Channel::delete_pinned_message(m_id, message_id);
+    return Discord::API::Channel::delete_pinned_message(m_id, message_id);
   }
 }
