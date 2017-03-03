@@ -1,5 +1,6 @@
 #include "guild.h"
 
+#include "api/api_channel.h"
 #include "api/api_guild.h"
 #include "channel.h"
 #include "emoji.h"
@@ -54,6 +55,11 @@ namespace Discord
     set_from_json(m_voice_states, "voice_states", data);
     set_from_json(m_channels, "channels", data);
     set_from_json(m_unavailable, "unavailable", data);
+
+    for (auto& channel : m_channels)
+    {
+      Discord::API::Channel::update_cache(channel);
+    }
 
     if (data.count("members"))
     {
