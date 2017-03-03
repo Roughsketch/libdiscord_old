@@ -60,7 +60,7 @@ namespace Discord
           @param access_tokens Access tokens of users that have granted this user the gdm.join scope.
           @return The channel that was created for this group DM.
        */
-      //std::shared_ptr<Discord::Channel> create_group_dm(std::vector<std::string> access_tokens, std::map<Snowflake, std::string> user_nicknames);
+      std::shared_ptr<Discord::Channel> create_group_dm(std::vector<std::string> access_tokens, std::map<Snowflake, std::string> user_nicknames);
 
       /** Get a list of connections that this user has.
        

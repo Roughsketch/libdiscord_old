@@ -57,6 +57,16 @@ namespace Discord
         return response;
       }
 
+      std::shared_ptr<Discord::Channel> create_group_dm(std::vector<std::string> access_tokens, std::map<Snowflake, std::string> user_nicknames)
+      {
+        auto response = request(APICall() << "users/@me/channels", POST, {
+          { "access_tokens", access_tokens },
+          { "nicks", user_nicknames }
+        });
+
+        return response;
+      }
+
       std::vector<std::shared_ptr<Connection>> connections()
       {
         auto response = request(APICall() << "users/@me/connections", GET);

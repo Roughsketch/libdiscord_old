@@ -18,6 +18,7 @@ namespace Discord
 
       void update_cache(std::shared_ptr<Discord::Channel> channel)
       {
+        LOG(INFO) << "Adding channel " << channel->name() << " (" << channel->id().to_string() << ") to cache.";
         if (ChannelCache.count(channel->id()))
         {
           LOG(TRACE) << "Merging new channel information with cached value.";
