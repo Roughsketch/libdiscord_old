@@ -75,12 +75,6 @@
     <ClCompile Include="src\voice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\api_channel.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
-    <ClCompile Include="src\api_guild.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
     <ClCompile Include="src\event\event_message.cpp">
       <Filter>Source Files\event</Filter>
     </ClCompile>
@@ -91,6 +85,18 @@
       <Filter>Source Files\external</Filter>
     </ClCompile>
     <ClCompile Include="src\permission.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\api_user.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\api_channel.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\api_guild.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\integration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -162,6 +168,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\permission.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\api\api_user.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="include\integration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

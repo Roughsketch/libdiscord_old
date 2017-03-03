@@ -23,8 +23,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\api.cpp" />
-    <ClCompile Include="src\api_channel.cpp" />
-    <ClCompile Include="src\api_guild.cpp" />
+    <ClCompile Include="src\api\api_channel.cpp" />
+    <ClCompile Include="src\api\api_guild.cpp" />
+    <ClCompile Include="src\api\api_user.cpp" />
     <ClCompile Include="src\bot.cpp" />
     <ClCompile Include="src\channel.cpp" />
     <ClCompile Include="src\common.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="src\external\easylogging++.cpp" />
     <ClCompile Include="src\gateway.cpp" />
     <ClCompile Include="src\guild.cpp" />
+    <ClCompile Include="src\integration.cpp" />
     <ClCompile Include="src\invite.cpp" />
     <ClCompile Include="src\member.cpp" />
     <ClCompile Include="src\message.cpp" />
@@ -46,6 +48,7 @@
     <ClInclude Include="include\api.h" />
     <ClInclude Include="include\api\api_channel.h" />
     <ClInclude Include="include\api\api_guild.h" />
+    <ClInclude Include="include\api\api_user.h" />
     <ClInclude Include="include\bot.h" />
     <ClInclude Include="include\channel.h" />
     <ClInclude Include="include\common.h" />
@@ -57,6 +60,7 @@
     <ClInclude Include="include\gateway.h" />
     <ClInclude Include="include\guild.h" />
     <ClInclude Include="include\identifiable.h" />
+    <ClInclude Include="include\integration.h" />
     <ClInclude Include="include\invite.h" />
     <ClInclude Include="include\member.h" />
     <ClInclude Include="include\message.h" />
