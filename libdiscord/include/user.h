@@ -5,6 +5,18 @@
 
 namespace ModDiscord
 {
+  class Integration;
+
+  class Connection
+  {
+    std::string m_id;
+    std::string m_name;
+    std::string m_type;
+    bool m_revoked;
+    std::vector<std::shared_ptr<Integration>> m_integrations;
+  public:
+  };
+
   class User : public Identifiable
   {
     std::string m_username;
