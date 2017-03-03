@@ -11,14 +11,14 @@ namespace Discord
     {
       std::shared_ptr<Discord::User> get_current_user()
       {
-        auto response = request(GetCurrentUser, 0, GET, "users/@me");
+        auto response = request(APICall() << "users/@me", GET);
 
         return response;
       }
 
       std::shared_ptr<Discord::User> get_user(Snowflake user_id)
       {
-        auto response = request(GetUser, 0, GET, "users/" + user_id.to_string());
+        auto response = request(APICall() << "users/" << user_id, GET);
 
         return response;
       }
@@ -29,28 +29,28 @@ namespace Discord
           { "username", username }
         };
 
-        auto response = request(ModifyCurrentUser, 0, PATCH, "users/@me", payload);
+        auto response = request(APICall() << "users/@me", PATCH, payload);
 
         return response;
       }
 
       bool leave_guild(Snowflake guild_id)
       {
-        auto response = request(LeaveGuild, 0, DEL, "users/@me/guilds/" + guild_id.to_string());
+        auto response = request(APICall() << "users/@me/guilds/" << guild_id, DEL);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       std::vector<std::shared_ptr<Discord::Channel>> get_dms()
       {
-        auto response = request(GetUserDMs, 0, GET, "users/@me/channels");
+        auto response = request(APICall() << "users/@me/channels", GET);
 
         return response;
       }
 
       std::shared_ptr<Discord::Channel> create_dm(Snowflake recipient_id)
       {
-        auto response = request(CreateDM, 0, POST, "users/@me/channels", {
+        auto response = request(APICall() << "users/@me/channels", POST, {
           { "recipient_id", recipient_id }
         });
 
@@ -59,7 +59,7 @@ namespace Discord
 
       std::vector<std::shared_ptr<Connection>> connections()
       {
-        auto response = request(GetUsersConnections, 0, GET, "users/@me/connections");
+        auto response = request(APICall() << "users/@me/connections", GET);
 
         return response;
       }

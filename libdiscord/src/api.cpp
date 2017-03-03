@@ -10,7 +10,7 @@ namespace Discord
   {
     static utility::string_t Token;
     static std::mutex GlobalMutex;
-    static std::map<std::pair<APIKey, Snowflake>, std::unique_ptr<std::mutex>> APIMutex;
+    static std::map<size_t, std::unique_ptr<std::mutex>> APIMutex;
 
     namespace detail
     {
@@ -133,23 +133,23 @@ namespace Discord
       return requestTask.get();
     }
 
-    nlohmann::json request(APIKey key, Snowflake major, RequestType type, std::string endpoint, nlohmann::json data)
+    nlohmann::json request(APICall& key, RequestType type, nlohmann::json data)
     {
       LOG(INFO) << "Request: (" 
                 << detail::get_method_name(type) 
-                << ") - " << endpoint 
+                << ") - " << key.endpoint() 
                 << " " << data.dump(2);
 
-      auto pair_key = std::make_pair(key, major);
-      auto mutex_it = APIMutex.find(pair_key);
+      auto map_key = key.hash();
+      auto mutex_it = APIMutex.find(map_key);
 
       //  If the cached mutex does not exist, create it.
       if (mutex_it == std::end(APIMutex))
       {
-        APIMutex[pair_key] = std::make_unique<std::mutex>();
+        APIMutex[map_key] = std::make_unique<std::mutex>();
       }
 
-      auto mutex = APIMutex[pair_key].get();
+      auto mutex = APIMutex[map_key].get();
 
       std::lock_guard<std::mutex> api_lock(*mutex);
 
@@ -166,7 +166,7 @@ namespace Discord
         LOG(INFO) << "Global mutex unlocked.";
       }
 
-      auto response = raw_request(detail::get_method(type), utility::conversions::to_string_t(endpoint), data);
+      auto response = raw_request(detail::get_method(type), utility::conversions::to_string_t(key.endpoint()), data);
 
       if (response["response_status"].get<int>() == 429)
       {
@@ -193,7 +193,7 @@ namespace Discord
 
     std::string get_wss_url()
     {
-      auto response = request(GetGateway, 0, RequestType::GET, "gateway");
+      auto response = request(APICall() << "gateway", GET);
       return response["url"];
     }
   }

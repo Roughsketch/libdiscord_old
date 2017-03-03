@@ -61,11 +61,12 @@ namespace Discord
           return GuildCache[guild_id];
         }
 
-        auto json = request(GetGuild, guild_id, GET, "channels/" + guild_id.to_string());
+        //auto json = request(Guilds, guild_id, GET, "guilds/" + guild_id.to_string());
+        auto response = request(APICall(guild_id) << "guilds" << guild_id, GET);
 
-        if (!json.empty())
+        if (!response.empty())
         {
-          auto guild = std::make_shared<Discord::Guild>(json);
+          auto guild = std::make_shared<Discord::Guild>(response);
           update_cache(guild);
           return guild;
         }
@@ -86,7 +87,8 @@ namespace Discord
           { "owner_id", guild->owner_id() }
         };
 
-        auto response = request(ModifyGuild, guild_id, PATCH, "guilds/" + guild->id().to_string(), payload);
+        //auto response = request(Guilds, guild_id, PATCH, "guilds/" + guild->id().to_string(), payload);
+        auto response = request(APICall(guild_id) << "guilds" << guild->id(), PATCH, payload);
 
         return response;
       }

@@ -52,7 +52,7 @@ namespace Discord
           return ChannelCache[channel_id];
         }
 
-        auto json = request(GetChannel, channel_id, GET, "channels/" + channel_id.to_string());
+        auto json = request(APICall(channel_id) << "channels" << channel_id, GET);
 
         if (!json.empty())
         {
@@ -69,7 +69,7 @@ namespace Discord
       {
         auto chan = get_channel(channel_id);
 
-        auto response = request(ModifyChannel, channel_id, PATCH, "channels/" + channel_id.to_string(), {
+        auto response = request(APICall(channel_id) << "channels" << channel_id, PATCH, {
           { "name", name },
           { "position", position },
           { "topic", topic }
@@ -87,7 +87,7 @@ namespace Discord
       {
         auto chan = get_channel(channel_id);
 
-        auto response = request(ModifyChannel, channel_id, PATCH, "channels/" + channel_id.to_string(), {
+        auto response = request(APICall(channel_id) << "channels" << channel_id, PATCH, {
           { "name", name },
           { "position", position },
           { "bitrate", bitrate },
@@ -104,7 +104,7 @@ namespace Discord
 
       std::shared_ptr<Discord::Channel> delete_channel(Snowflake channel_id)
       {
-        auto response = request(DeleteChannel, channel_id, DEL, "channels/" + channel_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id, DEL);
 
         return std::make_shared<Discord::Channel>(response);
       }
@@ -137,21 +137,21 @@ namespace Discord
           return std::vector<std::shared_ptr<Message>>();
         }
 
-        auto response = request(GetChannelMessages, channel_id, GET, "channels/" + channel_id.to_string() + "/messages", payload);
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages", GET, payload);
 
         return response.get<std::vector<std::shared_ptr<Message>>>();
       }
 
       std::shared_ptr<Message> get_message(Snowflake channel_id, Snowflake message_id)
       {
-        auto response = request(GetChannelMessage, channel_id, GET, "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages" << message_id, GET);
 
         return std::make_shared<Message>(response);
       }
 
       std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts)
       {
-        auto response = request(CreateMessage, channel_id, POST, "channels/" + channel_id.to_string() + "/messages", {
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages", POST, {
           { "content", content },
           { "mentions", nlohmann::json::array() },
           { "tts", tts },
@@ -163,58 +163,63 @@ namespace Discord
 
       bool create_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji)
       {
-        auto response = request(CreateReaction, channel_id, PUT, 
-          "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string() + "/reactions/" + emoji->name());
+        auto response = request(APICall(channel_id) << "channels" << channel_id 
+                                          << "messages" << message_id 
+                                          << "reactions" << emoji->name(), PUT);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       bool delete_own_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji)
       {
-        auto response = request(DeleteOwnReaction, channel_id, DEL, 
-          "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string() + "/reactions/" + emoji->name() + "/@me");
+        auto response = request(APICall(channel_id) << "channels" << channel_id 
+                                          << "messages" << message_id 
+                                          << "reactions" << emoji->name()
+                                          << "@me", DEL);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       bool delete_user_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji, Snowflake user_id)
       {
-        auto response = request(DeleteUserReaction, channel_id, DEL,
-          "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string() + "/reactions/" + emoji->name() + "/" + user_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id 
+                                          << "messages" << message_id 
+                                          << "reactions" << emoji->name()
+                                          << user_id, DEL);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       std::vector<std::shared_ptr<User>> get_reactions(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji)
       {
-        auto response = request(GetReactions, channel_id, GET,
-          "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string() + "/reactions/" + emoji->name());
+        auto response = request(APICall(channel_id) << "channels" << channel_id 
+                                          << "messages" << message_id 
+                                          << "reactions" << emoji->name(), GET);
 
         return response.get<std::vector<std::shared_ptr<User>>>();
       }
 
       void delete_all_reactions(Snowflake channel_id, Snowflake message_id)
       {
-        request(DeleteAllReactions, channel_id, DEL, 
-          "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string() + "/reactions");
+        request(APICall(channel_id) << "channels" << channel_id << "messages" << message_id << "reactions", DEL);
       }
 
       std::shared_ptr<Message> edit_message(Snowflake channel_id, Snowflake message_id, std::string new_content)
       {
-        auto response = request(EditMessage, channel_id, PATCH, "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages" << message_id, PATCH);
 
         return response.get<std::shared_ptr<Message>>();
       }
 
       bool delete_message(Snowflake channel_id, Snowflake message_id)
       {
-        auto response = request(DeleteMessage, channel_id, DEL, "channels/" + channel_id.to_string() + "/messages/" + message_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages" << message_id, DEL);
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       bool bulk_delete_messages(Snowflake channel_id, std::vector<Snowflake> message_ids)
       {
-        auto response = request(DeleteMessage, channel_id, POST, "channels/" + channel_id.to_string() + "/messages/bulk-delete", {
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages/bulk-delete", POST, {
           { "messages", message_ids }
         });
 
@@ -223,8 +228,7 @@ namespace Discord
 
       bool edit_permissions(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite, uint32_t allow, uint32_t deny, std::string type)
       {
-        auto response = request(EditChannelPermissions, channel_id, PUT, 
-          "channels/" + channel_id.to_string() + "/permissions/" + overwrite->id().to_string(), {
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "permissions" << overwrite->id(), PUT, {
             { "allow", allow },
             { "deny", deny },
             { "type", type }
@@ -234,14 +238,14 @@ namespace Discord
 
       std::vector<std::shared_ptr<Invite>> get_channel_invites(Snowflake channel_id)
       {
-        auto response = request(GetChannelInvites, channel_id, GET, "channels/" + channel_id.to_string() + "/invites");
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "invites", GET);
 
         return response.get<std::vector<std::shared_ptr<Invite>>>();
       }
 
       std::shared_ptr<Invite> create_channel_invite(Snowflake channel_id, uint32_t max_age, uint32_t max_uses, bool temporary, bool unique)
       {
-        auto response = request(CreateChannelInvite, channel_id, POST, "channels/" + channel_id.to_string() + "/invites", {
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "/invites", POST, {
           { "max_age", max_age },
           { "max_uses", max_uses },
           { "temporary", temporary},
@@ -253,43 +257,42 @@ namespace Discord
 
       bool delete_permission(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite)
       {
-        auto response = request(DeleteChannelPermission, channel_id, DEL, 
-          "channels/" + channel_id.to_string() + "/permissions/" + overwrite->id().to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "permissions" << overwrite->id(), DEL);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       bool trigger_typing_indicator(Snowflake channel_id)
       {
-        auto response = request(TriggerTypingIndicator, channel_id, POST, "channels/" + channel_id.to_string() + "/typing");
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "typing", POST);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       std::vector<std::shared_ptr<Message>> get_pinned_messages(Snowflake channel_id)
       {
-        auto response = request(GetPinnedMessages, channel_id, GET, "channels/" + channel_id.to_string() + "/pins");
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "pins", GET);
 
         return response.get<std::vector<std::shared_ptr<Message>>>();
       }
 
       bool add_pinned_message(Snowflake channel_id, Snowflake message_id)
       {
-        auto response = request(AddPinnedChannelMessage, channel_id, POST, "channels/" + channel_id.to_string() + "/pins/" + message_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "pins" << message_id, POST);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       bool delete_pinned_message(Snowflake channel_id, Snowflake message_id)
       {
-        auto response = request(DeletePinnedChannelMessage, channel_id, DEL, "channels/" + channel_id.to_string() + "/pins/" + message_id.to_string());
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "pins" << message_id, DEL);
 
         return response["response_status"].get<int>() == Status::NoContent;
       }
 
       void group_dm_add_recipient(Snowflake channel_id, Snowflake user_id, std::string access_token, std::string nickname)
       {
-        request(GroupDMAddRecipient, channel_id, PUT, "channels/" + channel_id.to_string() + "/recipients/" + user_id.to_string(), {
+        request(APICall(channel_id) << "channels/" << channel_id << "/recipients/" << user_id, PUT, {
           { "access_token", access_token },
           { "nick", nickname }
         });
@@ -297,7 +300,7 @@ namespace Discord
 
       void group_dm_remove_recipient(Snowflake channel_id, Snowflake user_id)
       {
-        request(GroupDMAddRecipient, channel_id, DEL, "channels/" + channel_id.to_string() + "/recipients/" + user_id.to_string());
+        request(APICall(channel_id) << "channels" << channel_id << "recipients" << user_id, DEL);
       }
     }
   }

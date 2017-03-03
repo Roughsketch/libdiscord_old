@@ -10,8 +10,6 @@ namespace Discord
 {
   Overwrite::Overwrite()
   {
-    m_allow = false;
-    m_deny = false;
   }
 
   Overwrite::Overwrite(const nlohmann::json& data)

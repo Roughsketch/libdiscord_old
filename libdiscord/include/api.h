@@ -25,112 +25,42 @@ namespace Discord
       NoContent = 204
     };
 
-    enum APIKey : uint16_t
+    class APICall
     {
-      //  Gateway API Calls
-      GetGateway,
-      GetGatewayBot,
+      Snowflake m_major;
+      std::string m_key;
+      std::string m_endpoint;
+    public:
+      APICall() {};
+      APICall(Snowflake major) : m_major(major) {};
+      APICall& operator<<(const Snowflake& id)
+      {
+        m_endpoint += "/" + id.to_string();
+        m_key += "id";
 
-      //  Channel API Calls
-      GetChannel,
-      ModifyChannel,
-      DeleteChannel,
-      GetChannelMessages,
-      GetChannelMessage,
-      CreateMessage,
-      CreateReaction,
-      DeleteOwnReaction,
-      DeleteUserReaction,
-      GetReactions,
-      DeleteAllReactions,
-      EditMessage,
-      DeleteMessage,
-      BulkDeleteMessage,
-      EditChannelPermissions,
-      GetChannelInvites,
-      CreateChannelInvite,
-      DeleteChannelPermission,
-      TriggerTypingIndicator,
-      GetPinnedMessages,
-      AddPinnedChannelMessage,
-      DeletePinnedChannelMessage,
-      GroupDMAddRecipient,
-      GroupDMRemoveRecipient,
+        return *this;
+      }
 
-      //  Guild API Calls
-      CreateGuild,
-      GetGuild,
-      ModifyGuild,
-      DeleteGuild,
-      GetGuildChannels,
-      CreateGuildChannel,
-      ModifyGuildChannelPositions,
-      GetGuildMember,
-      ListGuildMembers,
-      AddGuildMember,
-      ModifyGuildMember,
-      ModifyCurrentUsersNick,
-      AddGuildMemberRole,
-      RemoveGuildMemberRole,
-      RemoveGuildMember,
-      GetGuildBans,
-      CreateGuildBan,
-      RemoveGuildBan,
-      GetGuildRoles,
-      CreateGuildRole,
-      ModifyGuildRolePositions,
-      ModifyGuildRole,
-      DeleteGuildRole,
-      GetGuildPruneCount,
-      BeginGuildPrune,
-      GetGuildVoiceRegions,
-      GetGuildInvites,
-      GetGuildIntegrations,
-      CreateGuildIntegration,
-      ModifyGuildIntegration,
-      DeleteGuildIntegration,
-      SyncGuildIntegration,
-      GetGuildEmbed,
-      ModifyGuildEmbed,
+      APICall& operator<<(const std::string& value)
+      {
+        m_endpoint += "/" + value;
+        m_key += value;
+        return *this;
+      }
 
-      //  Invite API Calls
-      GetInvite,
-      DeleteInvite,
-      AcceptInvite,
+      std::string endpoint() const
+      {
+        return m_endpoint;
+      }
 
-      //  User API Calls
-      GetCurrentUser,
-      GetUser,
-      ModifyCurrentUser,
-      GetCurrentUserGuilds,
-      LeaveGuild,
-      GetUserDMs,
-      CreateDM,
-      CreateGroupDM,
-      GetUsersConnections,
-
-      //  Voice API Calls
-      ListVoiceRegions,
-
-      //  Webhook API Calls
-      CreateWebhook,
-      GetChannelWebhook,
-      GetGuildWebhooks,
-      GetWebhook,
-      GetWebhookWithToken,
-      ModifyWebhook,
-      ModifyWebhookWithToken,
-      DeleteWebhook,
-      DeleteWebhookWithToken,
-      ExecuteWebhook,
-      ExecuteSlackCompatibleWebhook,
-      ExecuteGithubCompatibleWebhook
+      size_t hash() const
+      {
+        return std::hash<std::string>()(m_key + m_major.to_string());
+      }
     };
-
-
 
     void set_token(std::string token);
     std::string get_wss_url();
-    nlohmann::json request(APIKey key, Snowflake major, RequestType type, std::string endpoint, nlohmann::json data = {});
+    nlohmann::json request(APICall& key, RequestType type, nlohmann::json data = {});
   }
 }
