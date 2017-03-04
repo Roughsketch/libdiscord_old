@@ -1,7 +1,10 @@
 #include "message.h"
 
 #include "api/api_channel.h"
+#include "attachment.h"
 #include "channel.h"
+#include "embed.h"
+#include "emoji.h"
 #include "role.h"
 #include "user.h"
 
@@ -26,9 +29,9 @@ namespace Discord
     set_from_json(m_mention_everyone, "mention_everyone", data);
     set_from_json(m_mentions, "mentions", data);
     set_from_json(m_mention_roles, "mention_roles", data);
-    // set_from_json(m_attachments, "attachments", data);
-    // set_from_json(m_embeds, "embeds", data);
-    // set_from_json(m_reactions, "reactions", data);
+    set_from_json(m_attachments, "attachments", data);
+    set_from_json(m_embeds, "embeds", data);
+    set_from_json(m_reactions, "reactions", data);
     set_from_json(m_nonce, "nonce", data);
     set_from_json(m_pinned, "pinned", data);
     set_from_json(m_webhook_id, "webhook_id", data);

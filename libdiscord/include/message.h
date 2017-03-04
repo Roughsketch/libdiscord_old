@@ -5,7 +5,10 @@
 
 namespace Discord
 {
+  class Attachment;
   class Channel;
+  class Embed;
+  class Reaction;
   class Role;
   class User;
 
@@ -20,9 +23,9 @@ namespace Discord
     bool m_mention_everyone;
     std::vector<std::shared_ptr<User>> m_mentions;
     std::vector<std::shared_ptr<Role>> m_mention_roles;
-    // std::vector<Attachment> m_attachments;
-    // std::vector<Embed> m_embeds;
-    // std::vector<Reaction> m_reactions;
+    std::vector<std::shared_ptr<Attachment>> m_attachments;
+    std::vector<std::shared_ptr<Embed>> m_embeds;
+    std::vector<std::shared_ptr<Reaction>> m_reactions;
     Snowflake m_nonce;
     bool m_pinned;
     std::string m_webhook_id;
