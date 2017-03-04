@@ -31,6 +31,14 @@ namespace Discord
     overwrite = Overwrite(json);
   }
 
+  inline void to_json(nlohmann::json& json, const Overwrite& overwrite)
+  {
+    json["id"] = overwrite.id();
+    json["type"] = overwrite.type();
+    json["allow"] = overwrite.allow();
+    json["deny"] = overwrite.deny();
+  }
+
   enum ChannelType : uint8_t
   {
     Text = 0,
