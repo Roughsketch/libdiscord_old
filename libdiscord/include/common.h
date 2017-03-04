@@ -46,14 +46,25 @@ namespace Discord
   }
 
   /** Allows loading of JSON data into a shared_ptr's underlying type.
-   
-      @param json The JSON data to read from.
-      @param ptr A shared_ptr that will be initialized with the JSON data.
-   */
+
+  @param json The JSON data to read from.
+  @param ptr A shared_ptr that will be initialized with the JSON data.
+  */
   template<typename T>
   void from_json(const nlohmann::json& json, std::shared_ptr<T>& ptr)
   {
     ptr = std::make_shared<T>(json);
+  }
+
+  /** Allows setting of JSON data from a shared_ptr's underlying type.
+
+  @param json The JSON data to set.
+  @param ptr A shared_ptr that will be read into the JSON object.
+  */
+  template<typename T>
+  void to_json(nlohmann::json& json, const std::shared_ptr<T>& ptr)
+  {
+    json = *ptr;
   }
 
   /** Allows loading of JSON data into the enum class SearchCriteria.
