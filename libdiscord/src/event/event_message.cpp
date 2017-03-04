@@ -66,7 +66,7 @@ namespace Discord
 
   std::shared_ptr<Channel> MessageDeletedEvent::channel() const
   {
-    return Discord::API::Channel::get_channel(m_channel_id);
+    return Discord::API::Channel::get(m_channel_id);
   }
 
   std::shared_ptr<Guild> MessageDeletedEvent::guild() const
@@ -103,7 +103,7 @@ namespace Discord
 
   std::shared_ptr<Channel> TypingEvent::channel() const
   {
-    return Discord::API::Channel::get_channel(m_channel_id);
+    return Discord::API::Channel::get(m_channel_id);
   }
 
   std::shared_ptr<Guild> TypingEvent::guild() const

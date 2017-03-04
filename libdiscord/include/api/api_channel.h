@@ -32,7 +32,7 @@ namespace Discord
           @param channel_id The id of the channel to retrieve.
           @return The channel object, or nullptr if it doesn't exist. 
        */
-      std::shared_ptr<Discord::Channel> get_channel(Snowflake channel_id);
+      std::shared_ptr<Discord::Channel> get(Snowflake channel_id);
 
       /** Modify a channel's attributes.
        
@@ -60,7 +60,7 @@ namespace Discord
           @param channel_id The channel to delete
           @return The channel object that was deleted.
        */
-      std::shared_ptr<Discord::Channel> delete_channel(Snowflake channel_id);
+      std::shared_ptr<Discord::Channel> remove(Snowflake channel_id);
 
       /** Gets a list of messages from a channel. Optionally accepts a search criteria and message id to search around.
        
@@ -105,7 +105,7 @@ namespace Discord
           @param emoji The emoji to remove from the reaction list.
           @return Success status.
        */
-      bool delete_own_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji);
+      bool remove_own_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji);
 
       /** Deletes a reaction that a user has made.
        
@@ -115,7 +115,7 @@ namespace Discord
           @param user_id The id of the user whose reaction will be removed.
           @return Success status.
        */
-      bool delete_user_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji, Snowflake user_id);
+      bool remove_user_reaction(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji, Snowflake user_id);
 
       /** Get a list of users who reacted with a particular emoji.
        
@@ -131,7 +131,7 @@ namespace Discord
           @param channel_id The channel where the message was reacted to.
           @param message_id The message to delete all reactions on.
        */
-      void delete_all_reactions(Snowflake channel_id, Snowflake message_id);
+      void remove_all_reactions(Snowflake channel_id, Snowflake message_id);
 
       /** Edits a message with new information.
        
@@ -148,7 +148,7 @@ namespace Discord
           @param message_id The message to delete.
           @return Success status.
        */
-      bool delete_message(Snowflake channel_id, Snowflake message_id);
+      bool remove_message(Snowflake channel_id, Snowflake message_id);
 
       /** Delete a list of messages all at once.
        
@@ -156,7 +156,7 @@ namespace Discord
           @param message_ids A list of message ids to delete. Must be 100 or fewer.
           @return Success status.
        */
-      bool bulk_delete_messages(Snowflake channel_id, std::vector<Snowflake> message_ids);
+      bool bulk_remove_messages(Snowflake channel_id, std::vector<Snowflake> message_ids);
       
       /** Edits the permissions of either a member or a role.
        
@@ -173,7 +173,7 @@ namespace Discord
           @param channel_id The channel to get invites to.
           @return A list of invites to the given channel.
        */
-      std::vector<std::shared_ptr<Invite>> get_channel_invites(Snowflake channel_id);
+      std::vector<std::shared_ptr<Invite>> get_invites(Snowflake channel_id);
 
       /** Create a channel invite.
        
@@ -183,14 +183,14 @@ namespace Discord
           @param temporary Whether or not this invite should be temporary. Defaults to false.
           @param unique Whether or not this invite is unique. Defaults to false.
        */
-      std::shared_ptr<Invite> create_channel_invite(Snowflake channel_id, uint32_t max_age, uint32_t max_uses, bool temporary = false, bool unique = false);
+      std::shared_ptr<Invite> create_invite(Snowflake channel_id, uint32_t max_age, uint32_t max_uses, bool temporary = false, bool unique = false);
 
       /** Delete permissions from a channel.
        
           @param channel_id The channel whose permissions to delete
           @param overwrite The permissions to delete.
        */
-      bool delete_permission(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite);
+      bool remove_permission(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite);
 
       /** Triggers a typing indicator for the current user.
        
@@ -220,7 +220,7 @@ namespace Discord
           @param message_id The message to unpin.
           @return Success status.
        */
-      bool delete_pinned_message(Snowflake channel_id, Snowflake message_id);
+      bool remove_pinned_message(Snowflake channel_id, Snowflake message_id);
       
       /** Add a user to a group DM.
        

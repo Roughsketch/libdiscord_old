@@ -145,13 +145,13 @@ namespace Discord
     else if (event_name == "GUILD_BAN_ADD")
     {
       auto user = std::make_shared<User>(data);
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+      auto guild = Discord::API::Guild::get(data["guild_id"].get<Snowflake>());
       LOG(INFO) << "User " << user->distinct() << " has been banned from " << guild->name() << ".";
     }
     else if (event_name == "GUILD_BAN_REMOVE")
     {
       auto user = std::make_shared<User>(data);
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+      auto guild = Discord::API::Guild::get(data["guild_id"].get<Snowflake>());
       LOG(INFO) << "User " << user->distinct() << " has been unbanned from " << guild->name();
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
@@ -166,17 +166,17 @@ namespace Discord
     }
     else if (event_name == "GUILD_MEMBER_ADD")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
       guild->add_member(data);
     }
     else if (event_name == "GUILD_MEMBER_REMOVE")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
       guild->remove_member(data);
     }
     else if (event_name == "GUILD_MEMBER_UPDATE")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
 
       auto roles = data["roles"].get<std::vector<Snowflake>>();
       auto user = data["user"].get<User>();
@@ -186,7 +186,7 @@ namespace Discord
     }
     else if (event_name == "GUILD_MEMBERS_CHUNK")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
       auto members = data["members"].get<std::vector<std::shared_ptr<Member>>>();
 
       for (auto& member : members)
@@ -196,17 +196,17 @@ namespace Discord
     }
     else if (event_name == "GUILD_ROLE_CREATE")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
       guild->add_role(data["role"].get<Role>());
     }
     else if (event_name == "GUILD_ROLE_UPDATE")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
       guild->update_role(data["role"].get<Role>());
     }
     else if (event_name == "GUILD_ROLE_DELETE")
     {
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
       guild->remove_role(data["role"].get<Snowflake>());
     }
     else if (event_name == "MESSAGE_CREATE")
@@ -248,7 +248,7 @@ namespace Discord
     else if (event_name == "PRESENCE_UPDATE")
     {
       auto presence = std::make_shared<PresenceUpdate>(data);
-      auto guild = Discord::API::Guild::get_guild(data["guild_id"]);
+      auto guild = Discord::API::Guild::get(data["guild_id"]);
 
       guild->update_presence(presence);
     }
@@ -320,7 +320,7 @@ namespace Discord
 
   void Bot::update_emojis(nlohmann::json data)
   {
-    auto guild = API::Guild::get_guild(data["guild_id"].get<Snowflake>());
+    auto guild = API::Guild::get(data["guild_id"].get<Snowflake>());
     auto new_emojis = data["emojis"].get<std::vector<std::shared_ptr<Emoji>>>();
     auto old_emojis = guild->emojis();
 

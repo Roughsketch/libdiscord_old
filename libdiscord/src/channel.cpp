@@ -102,7 +102,7 @@ namespace Discord
 
   std::shared_ptr<Guild> Channel::guild() const
   {
-    return Discord::API::Guild::get_guild(guild_id());
+    return Discord::API::Guild::get(guild_id());
   }
 
   std::string Channel::name() const
@@ -184,7 +184,7 @@ namespace Discord
 
   std::shared_ptr<Channel> Channel::modify(std::function<void(std::shared_ptr<Channel>)> modify_block) const
   {
-    auto channel = Discord::API::Channel::get_channel(id());
+    auto channel = Discord::API::Channel::get(id());
     modify_block(channel);
 
     if (channel->type() == Text)
@@ -201,7 +201,7 @@ namespace Discord
 
   std::shared_ptr<Channel> Channel::close() const
   {
-    return Discord::API::Channel::delete_channel(m_id);
+    return Discord::API::Channel::remove(m_id);
   }
 
   std::vector<std::shared_ptr<Message>> Channel::get_messages(int32_t limit, SearchCriteria method, Snowflake message_id) const
@@ -243,10 +243,10 @@ namespace Discord
     if (user_id == 0)
     {
       //  If no user was specified, assume it's our own reaction
-      return Discord::API::Channel::delete_own_reaction(m_id, message_id, emoji);
+      return Discord::API::Channel::remove_own_reaction(m_id, message_id, emoji);
     }
 
-    return Discord::API::Channel::delete_user_reaction(m_id, message_id, emoji, user_id);
+    return Discord::API::Channel::remove_user_reaction(m_id, message_id, emoji, user_id);
   }
 
   std::vector<std::shared_ptr<User>> Channel::get_reactions(Snowflake message_id, std::shared_ptr<Emoji> emoji) const
@@ -256,7 +256,7 @@ namespace Discord
 
   void Channel::remove_all_reactions(Snowflake message_id) const
   {
-    Discord::API::Channel::delete_all_reactions(m_id, message_id);
+    Discord::API::Channel::remove_all_reactions(m_id, message_id);
   }
 
   std::shared_ptr<Message> Channel::edit_message(Snowflake message_id, std::string new_content) const
@@ -266,7 +266,7 @@ namespace Discord
 
   bool Channel::remove_message(Snowflake message_id) const
   {
-    return Discord::API::Channel::delete_message(m_id, message_id);
+    return Discord::API::Channel::remove_message(m_id, message_id);
   }
 
   bool Channel::remove_messages(std::vector<Snowflake> message_ids) const
@@ -277,7 +277,7 @@ namespace Discord
       return false;
     }
 
-    return Discord::API::Channel::bulk_delete_messages(m_id, message_ids);
+    return Discord::API::Channel::bulk_remove_messages(m_id, message_ids);
   }
 
   bool Channel::edit_permissions(std::shared_ptr<Overwrite> overwrite, 
@@ -295,17 +295,17 @@ namespace Discord
 
   std::vector<std::shared_ptr<Invite>> Channel::get_invites() const
   {
-    return Discord::API::Channel::get_channel_invites(m_id);
+    return Discord::API::Channel::get_invites(m_id);
   }
 
   std::shared_ptr<Invite> Channel::create_invite(uint32_t max_age, uint32_t max_uses, bool temporary, bool unique) const
   {
-    return Discord::API::Channel::create_channel_invite(m_id, max_age, max_uses, temporary, unique);
+    return Discord::API::Channel::create_invite(m_id, max_age, max_uses, temporary, unique);
   }
 
   bool Channel::delete_permission(std::shared_ptr<Overwrite> overwrite) const
   {
-    return Discord::API::Channel::delete_permission(m_id, overwrite);
+    return Discord::API::Channel::remove_permission(m_id, overwrite);
   }
 
   bool Channel::start_typing() const
@@ -325,6 +325,6 @@ namespace Discord
 
   bool Channel::remove_pin(Snowflake message_id) const
   {
-    return Discord::API::Channel::delete_pinned_message(m_id, message_id);
+    return Discord::API::Channel::remove_pinned_message(m_id, message_id);
   }
 }

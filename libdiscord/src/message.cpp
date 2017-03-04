@@ -66,12 +66,12 @@ namespace Discord
 
   std::shared_ptr<Channel> Message::channel() const
   {
-    return Discord::API::Channel::get_channel(channel_id());
+    return Discord::API::Channel::get(channel_id());
   }
 
   bool Message::remove() const
   {
-    return Discord::API::Channel::delete_message(channel_id(), id());
+    return Discord::API::Channel::remove_message(channel_id(), id());
   }
 
   std::shared_ptr<Message> Message::respond(std::string message, bool tts) const
