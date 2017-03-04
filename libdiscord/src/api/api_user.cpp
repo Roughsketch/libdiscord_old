@@ -1,6 +1,7 @@
 #include "api.h"
 #include "api/api_user.h"
 #include "channel.h"
+#include "guild.h"
 #include "user.h"
 
 namespace Discord
