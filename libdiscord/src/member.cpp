@@ -1,5 +1,6 @@
 #include "member.h"
 
+#include "permission.h"
 #include "role.h"
 #include "user.h"
 
