@@ -32,4 +32,24 @@ namespace Discord
   {
     emoji = Emoji(json);
   }
+
+  class Reaction
+  {
+    uint32_t m_count;
+    bool m_me;
+    std::shared_ptr<Emoji> m_emoji;
+  public:
+    Reaction();
+    explicit Reaction(nlohmann::json data);
+
+    uint32_t count() const;
+    bool me() const;
+    std::string name() const;
+    Snowflake id() const;
+  };
+
+  inline void from_json(const nlohmann::json& json, Reaction& reaction)
+  {
+    reaction = Reaction(json);
+  }
 }

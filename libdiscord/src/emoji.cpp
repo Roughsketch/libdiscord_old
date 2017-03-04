@@ -26,4 +26,37 @@ namespace Discord
   {
     return m_roles;
   }
+
+  Reaction::Reaction()
+  {
+    m_count = 0;
+    m_me = false;
+  }
+
+  Reaction::Reaction(nlohmann::json data)
+  {
+    set_from_json(m_count, "count", data);
+    set_from_json(m_me, "me", data);
+    set_from_json(m_emoji, "emoji", data);
+  }
+
+  uint32_t Reaction::count() const
+  {
+    return m_count;
+  }
+
+  bool Reaction::me() const
+  {
+    return m_me;
+  }
+
+  std::string Reaction::name() const
+  {
+    return m_emoji->name();
+  }
+
+  Snowflake Reaction::id() const
+  {
+    return m_emoji->id();
+  }
 }
