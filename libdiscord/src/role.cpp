@@ -1,3 +1,4 @@
+#include "permission.h"
 #include "role.h"
 
 namespace Discord
@@ -33,5 +34,40 @@ namespace Discord
     m_permissions = other.m_permissions;
     m_managed = other.m_managed;
     m_mentionable = other.m_mentionable;
+  }
+
+  std::string Role::name() const
+  {
+    return m_name;
+  }
+
+  uint32_t Role::color() const
+  {
+    return m_color;
+  }
+
+  bool Role::hoisted() const
+  {
+    return m_hoist;
+  }
+
+  uint32_t Role::position() const
+  {
+    return m_position;
+  }
+
+  std::shared_ptr<Permission> Role::permissions() const
+  {
+    return m_permissions;
+  }
+
+  bool Role::managed() const
+  {
+    return m_managed;
+  }
+
+  bool Role::mentionable() const
+  {
+    return m_mentionable;
   }
 }
