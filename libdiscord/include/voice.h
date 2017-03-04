@@ -17,11 +17,26 @@ namespace Discord
     bool m_suppress;
   public:
     VoiceState();
-    explicit VoiceState(const nlohmann::json& data);
+    explicit VoiceState(nlohmann::json data);
   };
 
   inline void from_json(const nlohmann::json& json, VoiceState& state)
   {
     state = VoiceState(json);
   }
+
+  class VoiceRegion
+  {
+    std::string m_id;
+    std::string m_name;
+    std::string m_sample_hostname;
+    uint32_t m_sample_port;
+    bool m_vip;
+    bool m_optimal;
+    bool m_deprecated;
+    bool m_custom;
+  public:
+    VoiceRegion();
+    explicit VoiceRegion(nlohmann::json data);
+  };
 }

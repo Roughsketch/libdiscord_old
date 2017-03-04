@@ -19,7 +19,7 @@ namespace Discord
     std::shared_ptr<Permission> m_deny;
   public:
     Overwrite();
-    explicit Overwrite(const nlohmann::json& data);
+    explicit Overwrite(nlohmann::json data);
 
     std::string type() const;
     std::shared_ptr<Permission> allow() const;
@@ -69,7 +69,7 @@ namespace Discord
     bool m_is_dm;
   public:
     Channel();
-    explicit Channel(const nlohmann::json& data);
+    explicit Channel(nlohmann::json data);
 
     /** Merge the values of another channel object into this one.
 

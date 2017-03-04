@@ -19,7 +19,7 @@ namespace Discord
     bool m_mute;
   public:
     Member();
-    explicit Member(const nlohmann::json& data);
+    explicit Member(nlohmann::json data);
 
     std::shared_ptr<User> user() const;
     std::vector<Snowflake> roles() const;

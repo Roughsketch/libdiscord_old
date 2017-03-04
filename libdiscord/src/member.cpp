@@ -11,7 +11,7 @@ namespace Discord
     m_mute = false;
   }
 
-  Member::Member(const nlohmann::json& data)
+  Member::Member(nlohmann::json data)
   {
     set_from_json(m_user, "user", data);
     set_from_json(m_nick, "nick", data);

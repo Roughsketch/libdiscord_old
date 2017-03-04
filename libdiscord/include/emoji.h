@@ -13,7 +13,7 @@ namespace Discord
     bool m_managed;
   public:
     Emoji();
-    explicit Emoji(const nlohmann::json& data);
+    explicit Emoji(nlohmann::json data);
 
     /** Get the name of this emoji.
      

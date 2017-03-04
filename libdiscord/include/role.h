@@ -16,7 +16,7 @@ namespace Discord
     bool m_mentionable;
   public:
     Role();
-    explicit Role(const nlohmann::json& data);
+    explicit Role(nlohmann::json data);
 
     void merge(Role other);
   };

@@ -14,7 +14,7 @@ namespace Discord
   {
   }
 
-  Overwrite::Overwrite(const nlohmann::json& data)
+  Overwrite::Overwrite(nlohmann::json data)
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_type, "type", data);
@@ -47,7 +47,7 @@ namespace Discord
     m_is_dm = false;
   }
 
-  Channel::Channel(const nlohmann::json& data)
+  Channel::Channel(nlohmann::json data)
   {
     set_id_from_json("id", data);
     set_from_json(m_is_private, "is_private", data);

@@ -8,7 +8,7 @@ namespace Discord
     m_managed = false;
   }
 
-  Emoji::Emoji(const nlohmann::json& data)
+  Emoji::Emoji(nlohmann::json data)
   {
     set_id_from_json("id", data);
     set_from_json(m_name, "name", data);

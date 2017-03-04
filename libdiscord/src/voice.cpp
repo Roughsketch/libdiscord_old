@@ -11,7 +11,7 @@ namespace Discord
     m_suppress = false;
   }
 
-  VoiceState::VoiceState(const nlohmann::json& data)
+  VoiceState::VoiceState(nlohmann::json data)
   {
     set_from_json(m_guild_id, "guild_id", data);
     set_from_json(m_channel_id, "channel_id", data);
