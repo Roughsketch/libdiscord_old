@@ -1,6 +1,8 @@
 #include "api.h"
 #include "api/api_channel.h"
+#include "attachment.h"
 #include "channel.h"
+#include "embed.h"
 #include "emoji.h"
 #include "invite.h"
 #include "message.h"

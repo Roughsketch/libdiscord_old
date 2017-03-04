@@ -99,6 +99,12 @@
     <ClCompile Include="src\integration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\embed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\attachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\api.h">
@@ -174,6 +180,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\discord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\embed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\attachment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
