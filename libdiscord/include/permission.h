@@ -60,4 +60,14 @@ namespace Discord
     */
     void remove(Permissions permission);
   };
+
+  inline void from_json(const nlohmann::json& json, Permission& permission)
+  {
+    permission = Permission(json);
+  }
+
+  inline void to_json(nlohmann::json& json, const Permission& permission)
+  {
+    json = permission.get();
+  }
 }
