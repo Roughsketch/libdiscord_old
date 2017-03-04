@@ -34,6 +34,37 @@ namespace Discord
         return response;
       }
 
+      std::vector<std::shared_ptr<UserGuild>> guilds(uint32_t limit, SearchCriteria method, Snowflake guild_id)
+      {
+        nlohmann::json payload = {};
+
+        if (limit == 0)
+        {
+          return std::vector<std::shared_ptr<UserGuild>>();
+        }
+        
+        payload["limit"] = (limit > 100) ? 100 : limit;
+
+        if (guild_id != 0)
+        {
+          switch (method)
+          {
+          case SearchCriteria::After:
+            payload["after"] = guild_id;
+            break;
+          case SearchCriteria::Before:
+            payload["before"] = guild_id;
+            break;
+          default:
+            break;
+          }
+        }
+
+        auto response = request(APICall() << "users/@me/guilds/", GET, payload);
+
+        return response;
+      }
+
       bool leave_guild(Snowflake guild_id)
       {
         auto response = request(APICall() << "users/@me/guilds/" << guild_id, DEL);

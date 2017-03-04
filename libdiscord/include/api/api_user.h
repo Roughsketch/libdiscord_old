@@ -7,6 +7,7 @@ namespace Discord
   class Channel;
   class Connection;
   class User;
+  class UserGuild;
 
   namespace API
   {
@@ -33,7 +34,11 @@ namespace Discord
        */
       std::shared_ptr<Discord::User> modify(std::string username, std::string avatar = "");
 
-      //std::vector<std::shared_ptr<UserGuild>> guilds();
+      /** Get the guilds this user is currently in.
+       
+          @return A list of UserGuild objects that identify the guilds this user is in.
+       */
+      std::vector<std::shared_ptr<UserGuild>> guilds(uint32_t limit = 100, SearchCriteria method = SearchCriteria::None, Snowflake guild_id = 0);
 
       /** Leaves a guild.
        
