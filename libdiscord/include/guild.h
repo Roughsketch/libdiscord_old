@@ -10,6 +10,7 @@ namespace Discord
   class Channel;
   class Emoji;
   class Member;
+  class Permission;
   class PresenceUpdate;
   class Role;
   class User;
@@ -281,4 +282,60 @@ namespace Discord
   {
     guild = Guild(json);
   }
+
+  class UserGuild : public Identifiable
+  {
+    std::string m_name;
+    std::string m_icon;
+    bool m_owner;
+    std::shared_ptr<Permission> m_permissions;
+  public:
+    UserGuild();
+    explicit UserGuild(nlohmann::json data);
+    
+    /** Get the name of this guild.
+     
+        @return The name of this guild object.
+     */
+    std::string name() const;
+
+    /** Get the icon hash of this guild.
+     
+        @return The icon hash of this guild.
+     */
+    std::string icon() const;
+
+    /** Get owner status of this guild.
+     
+        @return True if the current user is the owner of this guild.
+     */
+    bool owner() const;
+    
+    /** Get the permissions set for this user on this guild.
+     
+        @return Current user's permissions in this guild.
+     */
+    std::shared_ptr<Permission> permissions() const;
+  };
+  
+  class GuildEmbed
+  {
+    bool m_enabled;
+    Snowflake m_channel_id;
+  public:
+    GuildEmbed();
+    explicit GuildEmbed(nlohmann::json data);
+
+    /** Get whether this embed is enabled or not.
+    
+        @return Whether this embed is enabled.
+     */
+    bool enabled() const;
+
+    /** Get the channel id for this embed.
+     
+        @return The channel id for this embed.
+     */
+    Snowflake channel_id() const;
+  };
 }

@@ -298,10 +298,65 @@ namespace Discord
 
   std::shared_ptr<Guild> Guild::modify(std::function<void(std::shared_ptr<Guild>)> modify_block) const
   {
-    auto guild = Discord::API::Guild::get_guild(m_id);
+    auto guild = Discord::API::Guild::get(m_id);
 
     modify_block(guild);
 
-    return Discord::API::Guild::modify_guild(m_id, guild);
+    return Discord::API::Guild::modify(m_id, guild);
+  }
+
+  UserGuild::UserGuild()
+  {
+    m_owner = false;
+  }
+
+  UserGuild::UserGuild(nlohmann::json data)
+  {
+    set_id_from_json("id", data);
+    set_from_json(m_name, "name", data);
+    set_from_json(m_icon, "icon", data);
+    set_from_json(m_owner, "owner", data);
+    set_from_json(m_permissions, "permissions", data);
+  }
+
+  std::string UserGuild::name() const
+  {
+    return m_name;
+  }
+
+  std::string UserGuild::icon() const
+  {
+    return m_icon;
+  }
+
+  bool UserGuild::owner() const
+  {
+    return m_owner;
+  }
+
+  std::shared_ptr<Permission> UserGuild::permissions() const
+  {
+    return m_permissions;
+  }
+
+  GuildEmbed::GuildEmbed()
+  {
+    m_enabled = false;
+  }
+
+  GuildEmbed::GuildEmbed(nlohmann::json data)
+  {
+    set_from_json(m_enabled, "enabled", data);
+    set_from_json(m_channel_id, "channel_id", data);
+  }
+
+  bool GuildEmbed::enabled() const
+  {
+    return m_enabled;
+  }
+
+  Snowflake GuildEmbed::channel_id() const
+  {
+    return m_channel_id;
   }
 }
