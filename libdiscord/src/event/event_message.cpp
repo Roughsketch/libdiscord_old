@@ -53,6 +53,11 @@ namespace Discord
     return m_message->respond(content, tts);
   }
 
+  Respondable<MessageEvent> MessageEvent::respond()
+  {
+    return Respondable<MessageEvent>(*this);
+  }
+
   MessageDeletedEvent::MessageDeletedEvent(Snowflake id, Snowflake channel_id) : Identifiable(id)
   {
     m_channel_id = channel_id;
