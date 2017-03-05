@@ -3,6 +3,7 @@
 #define ELPP_THREAD_SAFE
 #define ELPP_FORCE_USE_STD_THREAD
 #include "external/easylogging++.h"
+#include "external/getRSS.h"
 
 #include <iostream>
 #include <memory>
@@ -87,7 +88,7 @@ int main(int argc, char* argv[])
   bot->on_message([bot](std::shared_ptr<Discord::MessageEvent> event)
   {
     LOG(INFO) << "Got into OnMessage handler with message " << event->content();
-    if (event->content() == ".info")
+    if (event->content() == "md.info")
     {
       event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
     }
@@ -107,18 +108,18 @@ int main(int argc, char* argv[])
       }
       event->respond(response);
     }
-    else if (event->content() == ".modify")
+    else if (event->content() == "md.modify")
     {
       event->channel()->modify([](std::shared_ptr<Discord::Channel> chan)
       {
         chan->set_name("sandcastle");
       });
     }
-    else if (event->content() == ".invite")
+    else if (event->content() == "md.invite")
     {
       event->respond("Invite me with this link: " + bot->invite_url());
     }
-    else if (event->content() == ".guilds")
+    else if (event->content() == "md.guilds")
     {
       std::string response = "I am currently in the following guilds:\n```";
 
@@ -127,6 +128,23 @@ int main(int argc, char* argv[])
         response += guild->name() + ": " + std::to_string(guild->member_count()) + "\n";
       }
 
+      response += "```";
+
+      event->respond(response);
+    }
+    else if (event->content() == "md.mem")
+    {
+      auto current_mb = std::round(RSS::current() / 1000.0) / 1000.0;
+      auto peak_mb = std::round(RSS::peak() / 1000.0) / 1000.0;
+      event->respond("```Current memory usage: " + std::to_string(current_mb) + "MB\nPeak memory usage:    " + std::to_string(peak_mb) + "MB```");
+    }
+    else if (event->content() == "md.layout")
+    {
+      std::string response = "```Channel: ";
+
+      response += event->channel()->name() + " (" + event->channel()->id().to_string() + ")\n";
+      response += "Guild: " + event->guild()->name() + " (" + event->guild()->id().to_string() + ")\n";
+      response += "User: " + event->guild()->get_user(event->author()->id())->distinct() + " (" + event->author()->id().to_string() + ")\n";
       response += "```";
 
       event->respond(response);

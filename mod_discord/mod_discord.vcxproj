@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\easylogging++.cpp" />
+    <ClCompile Include="external\getRSS.h" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
