@@ -92,7 +92,7 @@ int main() {
 ```
 
 ### Respond as a Stream
-You may also respond to events with a stream format.
+You may also respond to events similar to how you would use `std::cout`.
 ```cpp
 bot->add_command("hello", [](std::shared_ptr<Discord::MessageEvent> event) {
   event->respond() << "Hello " << event->author()->distinct() << "!";
