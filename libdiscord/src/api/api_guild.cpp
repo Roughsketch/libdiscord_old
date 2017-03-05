@@ -67,7 +67,7 @@ namespace Discord
           return GuildCache[guild_id];
         }
 
-        LOG(INFO) << "Returning guild from cache.";
+        LOG(DEBUG) << "Could not return guild from cache, calling API.";
 
         //auto json = request(Guilds, guild_id, GET, "guilds/" + guild_id.to_string());
         auto response = request(APICall(guild_id) << "guilds" << guild_id, GET);
@@ -138,7 +138,7 @@ namespace Discord
         return response;
       }
 
-      std::vector<std::shared_ptr<Discord::Channel>> modify_channel_positions(Snowflake guild_id, std::map<Snowflake, uint32_t> positions)
+      std::vector<std::shared_ptr<Discord::Channel>> modify_channel_positions(Snowflake guild_id, const std::map<Snowflake, uint32_t>& positions)
       {
         auto response = request(APICall() << "guilds" << guild_id << "channels", PATCH, { positions });
 

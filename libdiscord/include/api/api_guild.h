@@ -99,7 +99,7 @@ namespace Discord
           @param positions A mapping of channel ids to positions which will be set.
           @return The list of channels in the guild.
        */
-      std::vector<std::shared_ptr<Discord::Channel>> modify_channel_positions(Snowflake guild_id, std::map<Snowflake, uint32_t> positions);
+      std::vector<std::shared_ptr<Discord::Channel>> modify_channel_positions(Snowflake guild_id, const std::map<Snowflake, uint32_t>& positions);
 
       /** Get a member of a guild.
        
