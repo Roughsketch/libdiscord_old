@@ -8,7 +8,7 @@ namespace Discord
     m_managed = false;
   }
 
-  Emoji::Emoji(nlohmann::json data)
+  Emoji::Emoji(const nlohmann::json& data)
   {
     set_id_from_json("id", data);
     set_from_json(m_name, "name", data);
@@ -33,7 +33,7 @@ namespace Discord
     m_me = false;
   }
 
-  Reaction::Reaction(nlohmann::json data)
+  Reaction::Reaction(const nlohmann::json& data)
   {
     set_from_json(m_count, "count", data);
     set_from_json(m_me, "me", data);

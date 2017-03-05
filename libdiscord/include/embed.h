@@ -10,7 +10,7 @@ namespace Discord
     std::string m_icon_url;
     std::string m_proxy_icon_url;
   public:
-    explicit EmbedFooter(nlohmann::json data);
+    explicit EmbedFooter(const nlohmann::json& data);
     explicit EmbedFooter(std::string text = "", std::string icon_url = "", std::string proxy_icon_url = "");
 
     /** Get the text from this footer.
@@ -43,7 +43,7 @@ namespace Discord
     uint32_t m_width;
   public:
     EmbedImage();
-    explicit EmbedImage(nlohmann::json data);
+    explicit EmbedImage(const nlohmann::json& data);
     explicit EmbedImage(std::string url = "", uint32_t width = 0, uint32_t height = 0, std::string proxy_url = "");
 
     std::string url() const;
@@ -65,7 +65,7 @@ namespace Discord
     uint32_t m_width;
   public:
     EmbedVideo();
-    explicit EmbedVideo(nlohmann::json data);
+    explicit EmbedVideo(const nlohmann::json& data);
     explicit EmbedVideo(std::string url = "", uint32_t width = 0, uint32_t height = 0);
 
     std::string url() const;
@@ -81,7 +81,7 @@ namespace Discord
     std::string m_name;
     std::string m_url;
   public:
-    explicit EmbedProvider(nlohmann::json data);
+    explicit EmbedProvider(const nlohmann::json& data);
     explicit EmbedProvider(std::string name = "", std::string url = "");
 
     std::string name() const;
@@ -98,7 +98,7 @@ namespace Discord
     std::string m_icon_url;
     std::string m_proxy_icon_url;
   public:
-    explicit EmbedAuthor(nlohmann::json data);
+    explicit EmbedAuthor(const nlohmann::json& data);
     explicit EmbedAuthor(std::string name = "", std::string url = "", std::string icon_url = "", std::string proxy_icon_url = "");
 
     std::string name() const;
@@ -117,7 +117,7 @@ namespace Discord
     bool m_inline;
   public:
     EmbedField();
-    explicit EmbedField(nlohmann::json data);
+    explicit EmbedField(const nlohmann::json& data);
     explicit EmbedField(std::string name = "", std::string value = "", bool is_inline = false);
 
     std::string name() const;
@@ -145,7 +145,7 @@ namespace Discord
     std::vector<std::shared_ptr<EmbedField>> m_fields;
   public:
     Embed();
-    explicit Embed(nlohmann::json data);
+    explicit Embed(const nlohmann::json& data);
     
     /** Used to create an Embed.
      

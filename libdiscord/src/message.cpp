@@ -17,7 +17,7 @@ namespace Discord
     m_pinned = false;
   }
 
-  Message::Message(nlohmann::json data)
+  Message::Message(const nlohmann::json& data)
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_channel_id, "channel_id", data);

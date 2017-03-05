@@ -8,7 +8,7 @@ namespace Discord
     m_revoked = false;
   }
 
-  Connection::Connection(nlohmann::json data)
+  Connection::Connection(const nlohmann::json& data)
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_name, "name", data);
@@ -49,7 +49,7 @@ namespace Discord
     m_verified = false;
   }
 
-  User::User(nlohmann::json data)
+  User::User(const nlohmann::json& data)
   {
     set_id_from_json("id", data);
     set_from_json(m_username, "username", data);

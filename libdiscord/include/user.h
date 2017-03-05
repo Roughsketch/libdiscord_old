@@ -18,7 +18,7 @@ namespace Discord
     std::string m_email;
   public:
     User();
-    explicit User(nlohmann::json data);
+    explicit User(const nlohmann::json& data);
 
     /** Get the user's name.
      
@@ -71,7 +71,7 @@ namespace Discord
     std::vector<std::shared_ptr<Integration>> m_integrations;
   public:
     Connection();
-    explicit Connection(nlohmann::json data);
+    explicit Connection(const nlohmann::json& data);
 
     /** Gets the id for this connection.
      

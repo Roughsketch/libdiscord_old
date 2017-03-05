@@ -14,7 +14,7 @@ namespace Discord
   {
   }
 
-  Overwrite::Overwrite(nlohmann::json data)
+  Overwrite::Overwrite(const nlohmann::json& data)
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_type, "type", data);
@@ -47,7 +47,7 @@ namespace Discord
     m_is_dm = false;
   }
 
-  Channel::Channel(nlohmann::json data)
+  Channel::Channel(const nlohmann::json& data)
   {
     set_id_from_json("id", data);
     set_from_json(m_is_private, "is_private", data);
@@ -67,6 +67,11 @@ namespace Discord
       m_is_dm = true;
       set_from_json(m_recipient, "recipient", data);
     }
+  }
+
+  void Channel::set_guild_id(Snowflake guild_id)
+  {
+    m_guild_id = guild_id;
   }
 
   void Channel::merge(std::shared_ptr<Channel> other)

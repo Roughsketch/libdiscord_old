@@ -78,7 +78,7 @@ namespace Discord
     bool m_unavailable;
   public:
     Guild();
-    explicit Guild(nlohmann::json data);
+    explicit Guild(const nlohmann::json& data);
 
     /** Merge the values of another guild object into this one.
      
@@ -234,7 +234,7 @@ namespace Discord
         @param user A User object that describes the user.
         @param nick The user's current nickname.
     */
-    void update_member(std::vector<Snowflake> roles, User user, std::string nick);
+    void update_member(std::vector<Snowflake> roles, std::shared_ptr<User> user, std::string nick);
 
     /** Adds a role to the guild's list of roles.
 
@@ -291,7 +291,7 @@ namespace Discord
     std::shared_ptr<Permission> m_permissions;
   public:
     UserGuild();
-    explicit UserGuild(nlohmann::json data);
+    explicit UserGuild(const nlohmann::json& data);
     
     /** Get the name of this guild.
      
@@ -324,7 +324,7 @@ namespace Discord
     Snowflake m_channel_id;
   public:
     GuildEmbed();
-    explicit GuildEmbed(nlohmann::json data);
+    explicit GuildEmbed(const nlohmann::json& data);
 
     /** Get whether this embed is enabled or not.
     

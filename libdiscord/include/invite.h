@@ -19,7 +19,7 @@ namespace Discord
     bool m_revoked;
   public:
     InviteMetadata();
-    explicit InviteMetadata(nlohmann::json data);
+    explicit InviteMetadata(const nlohmann::json& data);
   };
 
   class InviteGuild : public Identifiable
@@ -29,7 +29,7 @@ namespace Discord
     std::string m_icon;
   public:
     InviteGuild();
-    explicit InviteGuild(nlohmann::json data);
+    explicit InviteGuild(const nlohmann::json& data);
   };
 
   class InviteChannel : public Identifiable
@@ -38,7 +38,7 @@ namespace Discord
     ChannelType m_type;
   public:
     InviteChannel();
-    explicit InviteChannel(nlohmann::json data);
+    explicit InviteChannel(const nlohmann::json& data);
   };
 
   class Invite
@@ -48,6 +48,6 @@ namespace Discord
     std::shared_ptr<InviteChannel> m_channel;
   public:
     Invite();
-    explicit Invite(nlohmann::json data);
+    explicit Invite(const nlohmann::json& data);
   };
 }

@@ -31,7 +31,7 @@ namespace Discord
     std::string m_webhook_id;
   public:
     Message();
-    explicit Message(nlohmann::json data);
+    explicit Message(const nlohmann::json& data);
 
     Snowflake channel_id() const;
     std::shared_ptr<User> author() const;

@@ -40,7 +40,7 @@ namespace Discord
     uint32_t m_permissions;
   public:
     Permission();
-    explicit Permission(nlohmann::json data);
+    explicit Permission(const nlohmann::json& data);
 
     /** Get the integer value of this object.
      

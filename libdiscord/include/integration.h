@@ -12,7 +12,7 @@ namespace Discord
     std::string m_id;
     std::string m_name;
   public:
-    explicit IntegrationAccount(nlohmann::json data);
+    explicit IntegrationAccount(const nlohmann::json& data);
 
     std::string id() const;
     std::string name() const;
@@ -32,6 +32,6 @@ namespace Discord
     std::string m_timestamp;
   public:
     Integration();
-    explicit Integration(nlohmann::json data);
+    explicit Integration(const nlohmann::json& data);
   };
 }

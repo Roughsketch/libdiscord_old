@@ -2,7 +2,7 @@
 
 namespace Discord
 {
-  EmbedFooter::EmbedFooter(nlohmann::json data)
+  EmbedFooter::EmbedFooter(const nlohmann::json& data)
   {
     set_from_json(m_text, "text", data);
     set_from_json(m_icon_url, "icon_url", data);
@@ -55,7 +55,7 @@ namespace Discord
     m_width = 0;
   }
 
-  EmbedImage::EmbedImage(nlohmann::json data)
+  EmbedImage::EmbedImage(const nlohmann::json& data)
   {
     set_from_json(m_url, "url", data);
     set_from_json(m_proxy_url, "proxy_url", data);
@@ -119,7 +119,7 @@ namespace Discord
     m_width = 0;
   }
 
-  EmbedVideo::EmbedVideo(nlohmann::json data)
+  EmbedVideo::EmbedVideo(const nlohmann::json& data)
   {
     set_from_json(m_url, "url", data);
     set_from_json(m_height, "height", data);
@@ -166,7 +166,7 @@ namespace Discord
     }
   }
 
-  EmbedProvider::EmbedProvider(nlohmann::json data)
+  EmbedProvider::EmbedProvider(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_url, "url", data);
@@ -202,7 +202,7 @@ namespace Discord
     }
   }
 
-  EmbedAuthor::EmbedAuthor(nlohmann::json data)
+  EmbedAuthor::EmbedAuthor(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_url, "url", data);
@@ -265,7 +265,7 @@ namespace Discord
     m_inline = false;
   }
 
-  EmbedField::EmbedField(nlohmann::json data)
+  EmbedField::EmbedField(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_value, "value", data);
@@ -313,7 +313,7 @@ namespace Discord
     m_color = 0;
   }
 
-  Embed::Embed(nlohmann::json data)
+  Embed::Embed(const nlohmann::json& data)
   {
     set_from_json(m_title, "title", data);
     set_from_json(m_type, "type", data);

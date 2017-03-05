@@ -13,7 +13,7 @@ namespace Discord
     m_mentionable = false;
   }
 
-  Role::Role(nlohmann::json data)
+  Role::Role(const nlohmann::json& data)
   {
     set_id_from_json("id", data);
     set_from_json(m_name, "name", data);

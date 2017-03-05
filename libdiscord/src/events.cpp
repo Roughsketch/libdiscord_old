@@ -7,7 +7,7 @@ namespace Discord
   {
   }
 
-  Game::Game(nlohmann::json data)
+  Game::Game(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_type, "type", data);
@@ -18,7 +18,7 @@ namespace Discord
   {
   }
 
-  PresenceUpdate::PresenceUpdate(nlohmann::json data)
+  PresenceUpdate::PresenceUpdate(const nlohmann::json& data)
   {
     set_from_json(m_user, "user", data);
     set_from_json(m_roles, "roles", data);

@@ -12,7 +12,7 @@ namespace Discord
     m_mute = false;
   }
 
-  Member::Member(nlohmann::json data)
+  Member::Member(const nlohmann::json& data)
   {
     set_from_json(m_user, "user", data);
     set_from_json(m_nick, "nick", data);
@@ -42,9 +42,9 @@ namespace Discord
     return nick();
   }
 
-  void Member::set_user(User user)
+  void Member::set_user(std::shared_ptr<User> user)
   {
-    m_user = std::make_shared<User>(user);
+    m_user = user;
   }
 
   void Member::set_nick(std::string nick)

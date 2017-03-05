@@ -15,7 +15,7 @@ namespace Discord
     m_revoked = false;
   }
 
-  InviteMetadata::InviteMetadata(nlohmann::json data)
+  InviteMetadata::InviteMetadata(const nlohmann::json& data)
   {
     set_from_json(m_invitor, "invitor", data);
     set_from_json(m_uses, "uses", data);
@@ -30,7 +30,7 @@ namespace Discord
   {
   }
 
-  InviteGuild::InviteGuild(nlohmann::json data)
+  InviteGuild::InviteGuild(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_splash, "splash", data);
@@ -42,7 +42,7 @@ namespace Discord
     m_type = Text;
   }
 
-  InviteChannel::InviteChannel(nlohmann::json data)
+  InviteChannel::InviteChannel(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_type, "type", data);
@@ -52,7 +52,7 @@ namespace Discord
   {
   }
 
-  Invite::Invite(nlohmann::json data)
+  Invite::Invite(const nlohmann::json& data)
   {
     set_from_json(m_code, "code", data);
     set_from_json(m_guild, "guild", data);

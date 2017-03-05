@@ -17,7 +17,7 @@ namespace Discord
     bool m_suppress;
   public:
     VoiceState();
-    explicit VoiceState(nlohmann::json data);
+    explicit VoiceState(const nlohmann::json& data);
   };
 
   inline void from_json(const nlohmann::json& json, VoiceState& state)
@@ -37,6 +37,11 @@ namespace Discord
     bool m_custom;
   public:
     VoiceRegion();
-    explicit VoiceRegion(nlohmann::json data);
+    explicit VoiceRegion(const nlohmann::json& data);
   };
+
+  inline void from_json(const nlohmann::json& json, VoiceRegion& region)
+  {
+    region = VoiceRegion(json);
+  }
 }

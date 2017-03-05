@@ -7,7 +7,7 @@ namespace Discord
     m_permissions = 0;
   }
 
-  Permission::Permission(nlohmann::json data)
+  Permission::Permission(const nlohmann::json& data)
   {
     m_permissions = data.get<uint32_t>();
   }

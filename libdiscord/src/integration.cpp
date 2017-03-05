@@ -3,7 +3,7 @@
 
 namespace Discord
 {
-  IntegrationAccount::IntegrationAccount(nlohmann::json data)
+  IntegrationAccount::IntegrationAccount(const nlohmann::json& data)
   {
     set_from_json(m_id, "id", data);
     set_from_json(m_name, "name", data);
@@ -27,7 +27,7 @@ namespace Discord
     m_expire_grace_period = 0;
   }
 
-  Integration::Integration(nlohmann::json data)
+  Integration::Integration(const nlohmann::json& data)
   {
     set_from_json(m_name, "name", data);
     set_from_json(m_type, "type", data);

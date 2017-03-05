@@ -13,7 +13,7 @@ namespace Discord
     std::string m_url;
   public:
     Game();
-    explicit Game(nlohmann::json data);
+    explicit Game(const nlohmann::json& data);
   };
 
   inline void from_json(const nlohmann::json& json, Game& game)
@@ -30,7 +30,7 @@ namespace Discord
     std::string m_status;
   public:
     PresenceUpdate();
-    explicit PresenceUpdate(nlohmann::json data);
+    explicit PresenceUpdate(const nlohmann::json& data);
 
     /** Overwrite data in this object with another.
      

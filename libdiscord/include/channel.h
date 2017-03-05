@@ -19,7 +19,7 @@ namespace Discord
     std::shared_ptr<Permission> m_deny;
   public:
     Overwrite();
-    explicit Overwrite(nlohmann::json data);
+    explicit Overwrite(const nlohmann::json& data);
 
     std::string type() const;
     std::shared_ptr<Permission> allow() const;
@@ -77,7 +77,10 @@ namespace Discord
     bool m_is_dm;
   public:
     Channel();
-    explicit Channel(nlohmann::json data);
+    explicit Channel(const nlohmann::json& data);
+
+    /** Used by the Guild constructor when creating Channels. Do not use manually. */
+    void set_guild_id(Snowflake guild_id);
 
     /** Merge the values of another channel object into this one.
 

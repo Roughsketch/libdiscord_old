@@ -13,7 +13,7 @@ namespace Discord
     bool m_managed;
   public:
     Emoji();
-    explicit Emoji(nlohmann::json data);
+    explicit Emoji(const nlohmann::json& data);
 
     /** Get the name of this emoji.
      
@@ -40,7 +40,7 @@ namespace Discord
     std::shared_ptr<Emoji> m_emoji;
   public:
     Reaction();
-    explicit Reaction(nlohmann::json data);
+    explicit Reaction(const nlohmann::json& data);
 
     uint32_t count() const;
     bool me() const;
