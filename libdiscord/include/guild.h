@@ -10,6 +10,7 @@ namespace Discord
   class Channel;
   class Emoji;
   class Member;
+  class Overwrite;
   class Permission;
   class PresenceUpdate;
   class Role;
@@ -128,6 +129,12 @@ namespace Discord
      */
     Snowflake owner_id() const;
 
+    /** Get the owner of a guild.
+     
+        @return The owner of the guild.
+     */
+    std::shared_ptr<User> owner() const;
+
     /** Get the name of a Guild
 
         @return A vector of Emoji that the guild owns.
@@ -145,7 +152,7 @@ namespace Discord
         @param user_id The id of the user to get.
         @return The user that was found.
      */
-    std::shared_ptr<User> get_user(Snowflake user_id);
+    std::shared_ptr<User> get_user(Snowflake user_id) const;
 
     /** Set the name of this guild.
 
@@ -257,11 +264,36 @@ namespace Discord
     */
     void update_role(Role role);
 
+    /** Adds a channel to a guild.
+     
+        @param channel The channel to add.
+     */
+    void add_channel(std::shared_ptr<Channel> channel);
+
+    /** Removes a channel from a guild.
+     
+        @param channel The channel to remove.
+     */
+    void remove_channel(std::shared_ptr<Channel> channel);
+
     /** Updates a presence object in a guild.
      
         @param presence The presence to update.
      */
     void update_presence(std::shared_ptr<PresenceUpdate> presence);
+
+    /** Find a channel by name.
+     
+        @param name The name of the channel to find.
+     */
+    std::shared_ptr<Channel> find_channel(std::string name);
+
+    /* *********************
+    *
+    * API Calls start here.
+    *
+    * ********************/
+
 
     /** Modify a guild's attributes. Attributes must be changed in the callback.
      
@@ -276,6 +308,43 @@ namespace Discord
         @return The modified guild object.
      */
     std::shared_ptr<Guild> modify(std::function<void(std::shared_ptr<Guild>)> modify_block) const;
+
+    /** Removes a guild. Cannot be undone.
+     
+        @return The guild that was removed.
+     */
+    std::shared_ptr<Guild> remove() const;
+
+    /** Get a list of this guild's channels.
+     
+        @return A list of channels this guild owns.
+     */
+    std::vector<std::shared_ptr<Channel>> channels() const;
+
+    /** Create a new text channel in this guild.
+
+        @param name The name of the new channel.
+        @param permission_overwrites The permission overwrites this channel should inherit.
+        @return The channel that was created.
+    */
+    std::shared_ptr<Channel> create_text_channel(std::string name, std::vector<std::shared_ptr<Overwrite>> permission_overwrites = {}) const;
+
+    /** Create a new voice channel in this guild.
+
+        @param name The name of the new channel.
+        @param bitrate The bitrate for this channel.
+        @param user_limit The user limit for this channel.
+        @param permission_overwrites The permission overwrites this channel should inherit.
+        @return The channel that was created.
+    */
+    std::shared_ptr<Channel> create_voice_channel(std::string name, uint32_t bitrate, uint32_t user_limit, std::vector<std::shared_ptr<Overwrite>> permission_overwrites = {}) const;
+
+    /** Change the order of channels in the guild.
+     
+        @param positions A map of channel ids to positions that will be used to reorder them.
+        @return The list of channels in the guild.
+     */
+    std::vector<std::shared_ptr<Channel>> reorder_channels(const std::map<Snowflake, uint32_t>& positions) const;
   };
 
   inline void from_json(const nlohmann::json& json, Guild& guild)

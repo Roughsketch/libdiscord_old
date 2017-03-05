@@ -141,6 +141,11 @@ namespace Discord
     return m_owner_id;
   }
 
+  std::shared_ptr<User> Guild::owner() const
+  {
+    return get_user(m_owner_id);
+  }
+
   std::vector<std::shared_ptr<Emoji>> Guild::emojis() const
   {
     return m_emojis;
@@ -151,7 +156,7 @@ namespace Discord
     return m_member_count;
   }
 
-  std::shared_ptr<User> Guild::get_user(Snowflake user_id)
+  std::shared_ptr<User> Guild::get_user(Snowflake user_id) const
   {
     auto user_itr = m_members.find(user_id);
 
@@ -277,6 +282,19 @@ namespace Discord
     old->merge(role);
   }
 
+  void Guild::add_channel(std::shared_ptr<Channel> channel)
+  {
+    m_channels.push_back(channel);
+  }
+
+  void Guild::remove_channel(std::shared_ptr<Channel> channel)
+  {
+    m_channels.erase(std::remove_if(std::begin(m_channels), std::end(m_channels), [channel](std::shared_ptr<Channel> chan)
+    {
+      return chan->id() == channel->id();
+    }));
+  }
+
   void Guild::update_presence(std::shared_ptr<PresenceUpdate> presence)
   {
     if (m_presences.count(presence->user()->id()))
@@ -289,6 +307,21 @@ namespace Discord
     }
   }
 
+  std::shared_ptr<Channel> Guild::find_channel(std::string name)
+  {
+    auto found = std::find_if(std::begin(m_channels), std::end(m_channels), [name](std::shared_ptr<Channel> channel)
+    {
+      return channel->name() == name;
+    });
+
+    if (found == std::end(m_channels))
+    {
+      return nullptr;
+    }
+
+    return *found;
+  }
+
   std::shared_ptr<Guild> Guild::modify(std::function<void(std::shared_ptr<Guild>)> modify_block) const
   {
     auto guild = Discord::API::Guild::get(m_id);
@@ -296,6 +329,31 @@ namespace Discord
     modify_block(guild);
 
     return Discord::API::Guild::modify(m_id, guild);
+  }
+
+  std::shared_ptr<Guild> Guild::remove() const
+  {
+    return Discord::API::Guild::remove(m_id);
+  }
+
+  std::vector<std::shared_ptr<Channel>> Guild::channels() const
+  {
+    return Discord::API::Guild::get_channels(m_id);
+  }
+
+  std::shared_ptr<Channel> Guild::create_text_channel(std::string name, std::vector<std::shared_ptr<Overwrite>> permission_overwrites) const
+  {
+    return Discord::API::Guild::create_text_channel(m_id, name, permission_overwrites);
+  }
+
+  std::shared_ptr<Channel> Guild::create_voice_channel(std::string name, uint32_t bitrate, uint32_t user_limit, std::vector<std::shared_ptr<Overwrite>> permission_overwrites) const
+  {
+    return Discord::API::Guild::create_voice_channel(m_id, name, bitrate, user_limit, permission_overwrites);
+  }
+
+  std::vector<std::shared_ptr<Channel>> Guild::reorder_channels(const std::map<Snowflake, uint32_t>& positions) const
+  {
+    return Discord::API::Guild::modify_channel_positions(m_id, positions);
   }
 
   UserGuild::UserGuild()
