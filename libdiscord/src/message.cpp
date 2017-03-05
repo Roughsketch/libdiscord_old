@@ -32,9 +32,20 @@ namespace Discord
     set_from_json(m_attachments, "attachments", data);
     set_from_json(m_embeds, "embeds", data);
     set_from_json(m_reactions, "reactions", data);
-    set_from_json(m_nonce, "nonce", data);
     set_from_json(m_pinned, "pinned", data);
     set_from_json(m_webhook_id, "webhook_id", data);
+
+    if (data.count("nonce"))
+    {
+      if (data["nonce"].is_number_integer())
+      {
+        m_nonce = Snowflake(data["nonce"].get<uint64_t>());
+      }
+      else
+      {
+        set_from_json(m_nonce, "nonce", data);
+      }
+    }
   }
 
   Snowflake Message::channel_id() const
