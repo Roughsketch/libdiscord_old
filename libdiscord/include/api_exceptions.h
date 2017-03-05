@@ -5,19 +5,29 @@
 
 namespace Discord
 {
-  class UnknownException : public std::exception
+  class DiscordException : public std::exception
   {
   protected:
     std::string m_msg;
 
   public:
-    explicit UnknownException(const char* message) : m_msg(message)
-    {
-    }
+    explicit DiscordException(const char* message) : m_msg(message) {}
 
-    explicit UnknownException(const std::string& message) :
-      m_msg(message)
-    {}
+    explicit DiscordException(const std::string& message) : m_msg(message) {}
+
+    virtual ~DiscordException() throw () {}
+
+    virtual const char* what() const throw () override {
+      return m_msg.c_str();
+    }
+  };
+
+  class UnknownException : public DiscordException
+  {
+  public:
+    explicit UnknownException(const char* message) : DiscordException(message) {}
+
+    explicit UnknownException(const std::string& message) : DiscordException(message) {}
 
     virtual ~UnknownException() throw () {}
 
@@ -26,19 +36,15 @@ namespace Discord
     }
   };
 
-  class PermissionException : public std::exception
+  class PermissionException : public DiscordException
   {
   protected:
     std::string m_msg;
 
   public:
-    explicit PermissionException(const char* message) : m_msg(message)
-    {
-    }
+    explicit PermissionException(const char* message) : DiscordException(message) {}
 
-    explicit PermissionException(const std::string& message) :
-      m_msg(message)
-    {}
+    explicit PermissionException(const std::string& message) : DiscordException(message) {}
 
     virtual ~PermissionException() throw () {}
 
@@ -47,19 +53,15 @@ namespace Discord
     }
   };
 
-  class AuthorizationException : public std::exception
+  class AuthorizationException : public DiscordException
   {
   protected:
     std::string m_msg;
 
   public:
-    explicit AuthorizationException(const char* message) : m_msg(message)
-    {
-    }
+    explicit AuthorizationException(const char* message) : DiscordException(message) {}
 
-    explicit AuthorizationException(const std::string& message) :
-      m_msg(message)
-    {}
+    explicit AuthorizationException(const std::string& message) : DiscordException(message) {}
 
     virtual ~AuthorizationException() throw () {}
 
@@ -68,19 +70,15 @@ namespace Discord
     }
   };
 
-  class EmbedException : public std::exception
+  class EmbedException : public DiscordException
   {
   protected:
     std::string m_msg;
 
   public:
-    explicit EmbedException(const char* message) : m_msg(message)
-    {
-    }
+    explicit EmbedException(const char* message) : DiscordException(message) {}
 
-    explicit EmbedException(const std::string& message) :
-      m_msg(message)
-    {}
+    explicit EmbedException(const std::string& message) : DiscordException(message) {}
 
     virtual ~EmbedException() throw () {}
 
@@ -89,42 +87,17 @@ namespace Discord
     }
   };
 
-  class TooManyException : public std::exception
+  class TooManyException : public DiscordException
   {
   protected:
     std::string m_msg;
 
   public:
-    explicit TooManyException(const char* message) : m_msg(message)
-    {
-    }
+    explicit TooManyException(const char* message) : DiscordException(message) {}
 
-    explicit TooManyException(const std::string& message) :
-      m_msg(message)
-    {}
+    explicit TooManyException(const std::string& message) : DiscordException(message) {}
 
     virtual ~TooManyException() throw () {}
-
-    virtual const char* what() const throw () override {
-      return m_msg.c_str();
-    }
-  };
-
-  class DiscordException : public std::exception
-  {
-  protected:
-    std::string m_msg;
-
-  public:
-    explicit DiscordException(const char* message) : m_msg(message)
-    {
-    }
-
-    explicit DiscordException(const std::string& message) :
-      m_msg(message)
-    {}
-
-    virtual ~DiscordException() throw () {}
 
     virtual const char* what() const throw () override {
       return m_msg.c_str();
