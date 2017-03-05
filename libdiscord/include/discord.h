@@ -1,5 +1,6 @@
 #pragma once
 
+#include "api_exceptions.h"
 #include "bot.h"
 #include "channel.h"
 #include "emoji.h"
