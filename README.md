@@ -6,6 +6,7 @@
 - [Examples](#examples)
   - [Handling OnMessage](#handling-onmessage)
   - [Creating a Command](#creating-a-command)
+  - [Respond as a Stream](#respond-as-a-stream)
   
 ## Getting Started
 
@@ -88,4 +89,12 @@ int main() {
   
   bot->run();
 }
+```
+
+### Respond as a Stream
+You may also respond to events with a stream format.
+```cpp
+bot->add_command("hello", [](std::shared_ptr<Discord::MessageEvent> event) {
+  event->respond() << "Hello " << event->author()->distinct() << "!";
+});
 ```
