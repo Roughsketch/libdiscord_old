@@ -92,6 +92,12 @@ namespace Discord
      */
     std::shared_ptr<User> profile() const;
 
+    /** Get the Bot's command prefix.
+     
+        @return The Bot's command prefix.
+     */
+    std::string prefix() const;
+
     /** Get the Bot's invite url.
      
         @return The Bot's invite url.
