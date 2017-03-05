@@ -188,5 +188,8 @@
     <ClInclude Include="include\attachment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\api_exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

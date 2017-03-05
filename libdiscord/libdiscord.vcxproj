@@ -51,6 +51,7 @@
     <ClInclude Include="include\api\api_channel.h" />
     <ClInclude Include="include\api\api_guild.h" />
     <ClInclude Include="include\api\api_user.h" />
+    <ClInclude Include="include\api_exceptions.h" />
     <ClInclude Include="include\attachment.h" />
     <ClInclude Include="include\bot.h" />
     <ClInclude Include="include\channel.h" />
@@ -131,8 +132,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\libs\zlib128-dll\include;C:\libs\boost_1_63_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\libs\zlib128-dll\include;C:\libs\boost_1_63_0;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <MinimalRebuild>false</MinimalRebuild>
@@ -150,15 +151,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(SolutionName)\include;C:\libs\zlib128-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(SolutionName)\include;C:\libs\zlib128-dll\include;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\libs\zlib128-dll\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>zdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>zdll.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\libs\zlib128-dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlibd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -171,8 +173,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;ELPP_DISABLE_TRACE_LOGS;ELPP_DISABLE_DEBUG_LOGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -195,7 +197,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(SolutionName)\include;C:\libs\zlib128-dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(SolutionName)\include;C:\libs\zlib128-dll\include;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;ELPP_DISABLE_TRACE_LOGS;ELPP_DISABLE_DEBUG_LOGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -204,8 +207,8 @@
       <AdditionalDependencies>zdll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>zdll.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\libs\zlib128-dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>zlib.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
