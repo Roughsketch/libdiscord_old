@@ -5,6 +5,7 @@
   - [Compiling a bot on Linux](#compiling-a-bot-on-linux)
 - [Examples](#examples)
   - [Handling OnMessage](#handling-onmessage)
+  - [Creating a Command](#creating-a-command)
   
 ## Getting Started
 
@@ -64,6 +65,25 @@ int main() {
     if (event->content() == "Ping!") {
       event->respond("Pong!");
     }
+  });
+  
+  bot->run();
+}
+```
+
+### Creating a Command
+Creating a command is just like handing `on_message`, except it takes a command name parameter.
+
+```cpp
+#include <discord.h>
+
+int main() {
+  std::string token = "YOUR_TOKEN";
+  auto bot = Discord::Bot::create(token, "!"); // ! is the prefix
+  
+  //  This command will respond "Pong!" to any "!ping"
+  bot->add_command("ping", [](std::shared_ptr<Discord::MessageEvent> event) {
+    event->respond("Pong!");
   });
   
   bot->run();
