@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
   }
 
-  LOG(TRACE) << "Settings loaded.";
+  LOG(INFO) << "Settings loaded.";
 
   if (!valid_settings(settings))
   {
@@ -85,75 +85,83 @@ int main(int argc, char* argv[])
 
   auto bot = Discord::Bot::create(settings);
 
-  bot->on_message([bot](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("info", [bot](std::shared_ptr<Discord::MessageEvent> event)
   {
-    LOG(INFO) << "Got into OnMessage handler with message " << event->content();
-    if (event->content() == "md.info")
-    {
-      event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
-    }
-    else if (event->content() == ".emoji")
-    {
-      auto emojis = event->channel()->guild()->emojis();
-      auto response = "There are " + std::to_string(emojis.size()) + " emojis";
+    event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
+  });
 
-      if (emojis.size() > 0)
-      {
-        response += " including ";
-      }
+  bot->add_command("emoji", [](std::shared_ptr<Discord::MessageEvent> event)
+  {      
+    auto emojis = event->channel()->guild()->emojis();
+    auto response = "There are " + std::to_string(emojis.size()) + " emojis";
 
-      for (auto& emoji : emojis)
-      {
-        response += emoji->name() + " ";
-      }
-      event->respond(response);
+    if (emojis.size() > 0)
+    {
+      response += " including ";
     }
-    else if (event->content() == "md.modify")
+
+    for (auto& emoji : emojis)
+    {
+      response += emoji->name() + " ";
+    }
+    event->respond(response);
+  });
+
+  bot->add_command("modify", [](std::shared_ptr<Discord::MessageEvent> event)
+  {
+    try
     {
       event->channel()->modify([](std::shared_ptr<Discord::Channel> chan)
       {
         chan->set_name("sandcastle");
       });
     }
-    else if (event->content() == "md.invite")
+    catch (const Discord::PermissionException&)
     {
-      event->respond("Invite me with this link: " + bot->invite_url());
+      event->respond("I do not have the permissions to modify a channel.");
     }
-    else if (event->content() == "md.guilds")
+  });
+
+  bot->add_command("invite", [bot](std::shared_ptr<Discord::MessageEvent> event) {
+    event->respond("Invite me with this link: " + bot->invite_url());
+  });
+
+  bot->add_command("guilds", [bot](std::shared_ptr<Discord::MessageEvent> event) {
+    std::string response = "I am currently in the following guilds:\n```";
+
+    for (auto& guild : bot->guilds())
     {
-      std::string response = "I am currently in the following guilds:\n```";
-
-      for (auto& guild : bot->guilds())
-      {
-        response += guild->name() + ": " + std::to_string(guild->member_count()) + "\n";
-      }
-
-      response += "```";
-
-      event->respond(response);
+      response += guild->name() + ": " + std::to_string(guild->member_count()) + "\n";
     }
-    else if (event->content() == "md.mem")
-    {
-      auto current_mb = std::round(RSS::current() / 1000.0) / 1000.0;
-      auto peak_mb = std::round(RSS::peak() / 1000.0) / 1000.0;
-      event->respond("```Current memory usage: " + std::to_string(current_mb) + "MB\nPeak memory usage:    " + std::to_string(peak_mb) + "MB```");
-    }
-    else if (event->content() == "md.layout")
-    {
-      std::string response = "```Channel: ";
 
-      response += event->channel()->name() + " (" + event->channel()->id().to_string() + ")\n";
-      response += "Guild: " + event->guild()->name() + " (" + event->guild()->id().to_string() + ")\n";
-      response += "User: " + event->guild()->get_user(event->author()->id())->distinct() + " (" + event->author()->id().to_string() + ")\n";
-      response += "```";
+    response += "```";
 
-      event->respond(response);
-    }
+    event->respond(response);
+  });
+
+
+  bot->add_command("mem", [](std::shared_ptr<Discord::MessageEvent> event) {
+    auto current_mb = std::round(RSS::current() / 1000.0) / 1000.0;
+    auto peak_mb = std::round(RSS::peak() / 1000.0) / 1000.0;
+    event->respond("```Current memory usage: " + std::to_string(current_mb) + "MB\nPeak memory usage:    " + std::to_string(peak_mb) + "MB```");
+  });
+
+  bot->add_command("layout", [](std::shared_ptr<Discord::MessageEvent> event)
+  {
+    std::string response = "```Channel: ";
+
+    response += event->channel()->name() + " (" + event->channel()->id().to_string() + ")\n";
+    response += "Guild: " + event->guild()->name() + " (" + event->guild()->id().to_string() + ")\n";
+    response += "User: " + event->guild()->get_user(event->author()->id())->distinct() + " (" + event->author()->id().to_string() + ")\n";
+    response += "```";
+
+    event->respond(response);
   });
 
   bot->add_command("test", [](std::shared_ptr<Discord::MessageEvent> event)
   {
-    event->respond("Got into test command.");
+    event->respond() << "Got into test command.";
+    event->respond() << "Can respond twice.";
   });
 
   bot->add_command("new", [bot](std::shared_ptr<Discord::MessageEvent> event)
@@ -165,7 +173,7 @@ int main(int argc, char* argv[])
       event->guild()->create_text_channel(channel_name);
       event->respond("Created new channel " + channel_name + ".");
     }
-    catch (const Discord::PermissionException& e)
+    catch (const Discord::PermissionException&)
     {
       event->respond("I do not have the permission to create a channel.");
     }
@@ -194,8 +202,23 @@ int main(int argc, char* argv[])
     }
   });
 
+  bot->add_command("help", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  {
+    event->respond()  << "List of commands:```"
+                      << "help  : This command.\n"
+                      << "info  : Info placeholder.\n"
+                      << "guilds: A list of guilds this bot is currently in.\n"
+                      << "new   : Create a new channel.\n"
+                      << "rem   : Remove a channel.\n"
+                      << "mem   : Get current a peak memory of this bot process.\n"
+                      << "layout: Test if user, channel, and guild information can be retrieved correctly.\n"
+                      << "```";
+  });
+
   bot->run(); //  Start the bot.
   
-  std::cout << "Done.";
-  std::cin.get();
+  for (;;)
+  {
+    std::this_thread::sleep_for(std::chrono::seconds(100000));
+  }
 }
