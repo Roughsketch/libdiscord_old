@@ -48,19 +48,19 @@ In here, you should be using the -L flag to add the path where libdiscord.so is 
 The following bot will respond to any `Ping!` with a `Pong!`
 
 ```cpp
-#include <mod_discord>
+#include <discord.h>
 
-//  Use this to avoid using ModDiscord:: everywhere
-//  using namespace ModDiscord;
+//  Use this to avoid using Discord:: everywhere
+//  using namespace Discord;
 
-//  Or use this to shorten it to just md::
-//  namespace md = ModDiscord;
+//  Or use this to shorten it to just ds::
+//  namespace ds = Discord;
 
 int main() {
   std::string token = "YOUR_TOKEN";
-  auto bot = ModDiscord::Bot::create(token);
+  auto bot = Discord::Bot::create(token);
   
-  bot->on_message([bot](std::shared_ptr<ModDiscord::MessageEvent> event) {
+  bot->on_message([](std::shared_ptr<Discord::MessageEvent> event) {
     if (event->content() == "Ping!") {
       event->respond("Pong!");
     }
