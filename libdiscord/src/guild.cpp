@@ -24,16 +24,9 @@ namespace Discord
     m_unavailable = false;
   }
 
-  Guild::Guild(nlohmann::json data)
+  Guild::Guild(const nlohmann::json& data)
   {
     set_id_from_json("id", data);
-
-    for (auto& channel : data["channels"])
-    {
-      //  Set the guild_id member for each channel since it is missing.
-      channel["guild_id"] = m_id;
-    }
-
     set_from_json(m_name, "name", data);
     set_from_json(m_icon, "icon", data);
     set_from_json(m_splash, "splash", data);
@@ -56,8 +49,11 @@ namespace Discord
     set_from_json(m_channels, "channels", data);
     set_from_json(m_unavailable, "unavailable", data);
 
+    //  Add each channel in this guild to the cache
     for (auto& channel : m_channels)
     {
+      //  Each channel should know what guild it is in.
+      channel->set_guild_id(m_id);
       Discord::API::Channel::update_cache(channel);
     }
 
@@ -157,15 +153,12 @@ namespace Discord
 
   std::shared_ptr<User> Guild::get_user(Snowflake user_id)
   {
-    auto user_itr = std::find_if(std::begin(m_members), std::end(m_members), [user_id](const std::pair<Snowflake, std::shared_ptr<Member>>& elem)
-    {
-      return elem.second->user()->id() == user_id;
-    });
+    auto user_itr = m_members.find(user_id);
 
     if (user_itr == std::end(m_members))
     {
       LOG(ERROR) << "Could not find user with id " << user_id.to_string();
-      return nullptr;
+      return std::make_shared<User>();
     }
 
     return user_itr->second->user();
@@ -241,9 +234,9 @@ namespace Discord
     }
   }
 
-  void Guild::update_member(std::vector<Snowflake> roles, User user, std::string nick)
+  void Guild::update_member(std::vector<Snowflake> roles, std::shared_ptr<User> user, std::string nick)
   {
-    auto member_itr = m_members.find(user.id());
+    auto member_itr = m_members.find(user->id());
 
     if (member_itr == std::end(m_members))
     {
@@ -310,7 +303,7 @@ namespace Discord
     m_owner = false;
   }
 
-  UserGuild::UserGuild(nlohmann::json data)
+  UserGuild::UserGuild(const nlohmann::json& data)
   {
     set_id_from_json("id", data);
     set_from_json(m_name, "name", data);
@@ -344,7 +337,7 @@ namespace Discord
     m_enabled = false;
   }
 
-  GuildEmbed::GuildEmbed(nlohmann::json data)
+  GuildEmbed::GuildEmbed(const nlohmann::json& data)
   {
     set_from_json(m_enabled, "enabled", data);
     set_from_json(m_channel_id, "channel_id", data);
