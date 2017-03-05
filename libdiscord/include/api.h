@@ -2,6 +2,7 @@
 
 #include "external/json.hpp"
 
+#include "api_exceptions.h"
 #include "common.h"
 
 namespace Discord
@@ -22,6 +23,51 @@ namespace Discord
       OK = 200,
       Created = 201,
       NoContent = 204
+    };
+
+    enum ResponseCode : uint32_t
+    {
+      UnknownAccount = 10001,
+      UnknownApplication,
+      UnknownChannel,
+      UnknownGuild,
+      UnknownIntegration,
+      UnknownInvite,
+      UnknownMember,
+      UnknownMessage,
+      UnknownOverwrite,
+      UnknownProvider,
+      UnknownRole,
+      UnknownToken,
+      UnknownUser,
+      UnknownEmoji,
+      UserOnlyEndpoint = 20001,
+      BotOnlyEndpoint,
+      MaxGuildsReached = 30001,
+      MaxFriendsReached,
+      MaxPinsReached,
+      MaxGuildRolesReached = 30005,
+      TooManyReactions = 30010,
+      Unauthorized = 40001,
+      MissingAccess = 50001,
+      InvalidAccountType,
+      CannotExecuteOnDM,
+      EmbedDisabled,
+      CannotEditAnotherUser,
+      CannotSendEmptyMessage,
+      CannotSendMessageToUser,
+      CannotSendMessagesToVoiceChannel,
+      ChannelVerificationTooHigh,
+      OAuth2DoesNotHaveBot,
+      OAuth2AppLimitReached,
+      InvalidOAuth2State,
+      MissingPermissions,
+      InvalidAuthToken,
+      NoteTooLong,
+      TooFewOrTooManyMessagesToDelete,
+      InvalidChannelForPin = 50019,
+      TooOldToDelete = 50034,
+      ReactionBlocked = 90001
     };
 
     class APICall

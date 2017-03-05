@@ -124,8 +124,36 @@ namespace Discord
         }
         else
         {
-          LOG(ERROR) << "Did not get proper response from API call (" << res.status_code() << ") - " << utility::conversions::to_utf8string(res.extract_string().get());
-          return{ { "response_status", res.status_code() } };
+          auto json_str = utility::conversions::to_utf8string(res.extract_string().get());
+          auto response = json::parse(json_str.c_str());
+
+          auto code = response["code"].get<int>();
+          auto message = response["message"].get<std::string>();
+
+          if (code < 20000)
+          {
+            throw UnknownException(message);
+          }
+
+          if (code < 30000)
+          {
+            throw TooManyException(message);
+          }
+
+          switch (code)
+          {
+          case EmbedDisabled:
+            throw EmbedException(message);
+          case MissingPermissions:
+          case ChannelVerificationTooHigh:
+            throw PermissionException(message);
+          case Unauthorized:
+          case MissingAccess:
+          case InvalidAuthToken:
+            throw AuthorizationException(message);
+          default:
+            throw DiscordException(message);
+          }
         }
       });
 
