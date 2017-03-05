@@ -13,6 +13,7 @@ namespace Discord
   class Guild;
   class MessageEvent;
   class MessageDeletedEvent;
+  class PresenceUpdate;
   class TypingEvent;
   class User;
 
@@ -20,6 +21,7 @@ namespace Discord
   {
     Snowflake m_client_id;
     bool m_is_user;
+    std::string m_prefix;
     std::shared_ptr<User> m_self;
 
     std::shared_ptr<Gateway> m_gateway;
@@ -35,6 +37,7 @@ namespace Discord
     typedef std::function<void(std::shared_ptr<MessageDeletedEvent>)> OnMessageDeletedCallback;
     typedef std::function<void(std::shared_ptr<Emoji>)> OnEmojiChangedCallback;
     typedef std::function<void(std::shared_ptr<TypingEvent>)> OnTypingCallback;
+    typedef std::function<void(std::shared_ptr<PresenceUpdate>)> OnPresenceCallback;
 
     OnMessageCallback m_on_message;
     OnMessageCallback m_on_message_edited;
@@ -43,6 +46,9 @@ namespace Discord
     OnEmojiChangedCallback m_on_emoji_deleted;
     OnEmojiChangedCallback m_on_emoji_updated;
     OnTypingCallback m_on_typing;
+    OnPresenceCallback m_on_presence;
+
+    std::map<std::string, OnMessageCallback> m_commands;
 
     void update_emojis(nlohmann::json data);
   public:
@@ -60,7 +66,7 @@ namespace Discord
         @param token The token for this bot.
         @return A shared pointer to the bot that was created.
      */
-    static std::shared_ptr<Bot> create(std::string token);
+    static std::shared_ptr<Bot> create(std::string token, std::string prefix = "");
 
     /** Used to create a Bot using settings loaded from a JSON file.
     
@@ -162,5 +168,13 @@ namespace Discord
         @param callback The callback to call when a typing event is raised.
      */
     void on_typing(OnTypingCallback callback);
+
+    /** Assign a callback that is called whenever a presence update is received.
+     
+        @param callback The callback to call when a presence update is received.
+     */
+    void on_presence(OnPresenceCallback callback);
+
+    void add_command(std::string command, OnMessageCallback callback);
   };
 }

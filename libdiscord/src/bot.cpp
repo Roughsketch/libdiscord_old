@@ -21,12 +21,13 @@ namespace Discord
   {
     m_is_user = false;
 
-    m_on_message = [](std::shared_ptr<MessageEvent>) {};
-    m_on_message_edited = [](std::shared_ptr<MessageEvent>) {};
-    m_on_emoji_created = [](std::shared_ptr<Emoji>) {};
-    m_on_emoji_deleted = [](std::shared_ptr<Emoji>) {};
-    m_on_emoji_updated = [](std::shared_ptr<Emoji>) {};
-    m_on_typing = [](std::shared_ptr<TypingEvent>) {};
+    m_on_message = nullptr;
+    m_on_message_edited = nullptr;
+    m_on_emoji_created = nullptr;
+    m_on_emoji_deleted = nullptr;
+    m_on_emoji_updated = nullptr;
+    m_on_typing = nullptr;
+    m_on_presence = nullptr;
   }
 
   std::shared_ptr<Bot> Bot::create(nlohmann::json settings)
@@ -35,6 +36,7 @@ namespace Discord
 
     set_from_json(bot->m_client_id, "client_id", settings);
     set_from_json(bot->m_is_user, "user_account", settings);
+    set_from_json(bot->m_prefix, "prefix", settings);
 
     std::string token;
     set_from_json(token, "token", settings);
@@ -52,9 +54,12 @@ namespace Discord
     return bot;
   }
 
-  std::shared_ptr<Bot> Bot::create(std::string token)
+  std::shared_ptr<Bot> Bot::create(std::string token, std::string prefix)
   {
-    return create({ "token", token });
+    return create({ 
+      { "token", token },
+      { "prefix", prefix } 
+    });
   }
 
   std::shared_ptr<Bot> Bot::create_from_json(std::string filename)
@@ -215,24 +220,46 @@ namespace Discord
     }
     else if (event_name == "MESSAGE_CREATE")
     {
-      m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
-        LOG(INFO) << "Got message: " << msg->content();
-        callback(msg);
-      }, std::make_shared<MessageEvent>(data), m_on_message));
+      auto event = std::make_shared<MessageEvent>(data);
+      auto content = event->content();
+
+      //  If we have a prefix and it's the start of this message and it's a command
+      if (!m_prefix.empty() &&
+          (content.compare(0, m_prefix.size(), m_prefix) == 0) &&
+          m_commands.count(content.substr(m_prefix.size(), content.find_first_of(" \n")))
+        )
+      {
+        //  Call the command
+        m_commands[content.substr(m_prefix.size(), content.find_first_of(" \n"))](event);
+      }
+      else if (m_on_message) 
+      {
+        //  Not a command, but if we have an OnMessage handler call that instead.
+        m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
+          LOG(INFO) << "Got message: " << msg->content();
+          callback(msg);
+        }, event, m_on_message));
+      }
     }
     else if (event_name == "MESSAGE_UPDATE")
     {
-      m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
-        LOG(INFO) << "Got edited message: " << msg->content();
-        callback(msg);
-      }, std::make_shared<MessageEvent>(data), m_on_message_edited));
+      if (m_on_message_edited)
+      {
+        m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
+          LOG(INFO) << "Got edited message: " << msg->content();
+          callback(msg);
+        }, std::make_shared<MessageEvent>(data), m_on_message_edited));
+      }
     }
     else if (event_name == "MESSAGE_DELETE")
     {
-      m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
-        LOG(INFO) << "Got deleted message: " << msg->id().to_string();
-        callback(msg);
-      }, std::make_shared<MessageDeletedEvent>(data), m_on_message_deleted));
+      if (m_on_message_deleted)
+      {
+        m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
+          LOG(INFO) << "Got deleted message: " << msg->id().to_string();
+          callback(msg);
+        }, std::make_shared<MessageDeletedEvent>(data), m_on_message_deleted));
+      }
     }
     else if (event_name == "MESSAGE_DELETE_BULK")
     {
@@ -241,12 +268,15 @@ namespace Discord
 
       LOG(INFO) << "Sending out " << ids.size() << " MessageDeletedEvents";
 
-      for (auto& id : ids)
+      if (m_on_message_deleted)
       {
-        m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
-          LOG(INFO) << "Got deleted message: " << msg->id().to_string();
-          callback(msg);
-        }, std::make_shared<MessageDeletedEvent>(id, chan_id), m_on_message_deleted));
+        for (auto& id : ids)
+        {
+          m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
+            LOG(INFO) << "Got deleted message: " << msg->id().to_string();
+            callback(msg);
+          }, std::make_shared<MessageDeletedEvent>(id, chan_id), m_on_message_deleted));
+        }
       }
     }
     else if (event_name == "PRESENCE_UPDATE")
@@ -258,11 +288,13 @@ namespace Discord
     }
     else if (event_name == "TYPING_START")
     {
-      auto event = std::make_shared<TypingEvent>(data);
-      m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<TypingEvent> event, OnTypingCallback callback) {
-        LOG(INFO) << "Got typing event from " << event->author()->distinct();
-        callback(event);
-      }, event, m_on_typing));
+      if (m_on_typing)
+      {
+        m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<TypingEvent> event, OnTypingCallback callback) {
+          LOG(INFO) << "Got typing event from " << event->author()->distinct();
+          callback(event);
+        }, std::make_shared<TypingEvent>(data), m_on_typing));
+      }
     }
     else if (event_name == "VOICE_STATE_UPDATE")
     {
@@ -321,6 +353,16 @@ namespace Discord
   void Bot::on_typing(OnTypingCallback callback)
   {
     m_on_typing = callback;
+  }
+
+  void Bot::on_presence(OnPresenceCallback callback)
+  {
+    m_on_presence = callback;
+  }
+
+  void Bot::add_command(std::string command, OnMessageCallback callback)
+  {
+    m_commands[command] = callback;
   }
 
   void Bot::update_emojis(nlohmann::json data)

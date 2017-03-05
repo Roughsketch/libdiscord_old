@@ -151,6 +151,11 @@ int main(int argc, char* argv[])
     }
   });
 
+  bot->add_command("test", [](std::shared_ptr<Discord::MessageEvent> event)
+  {
+    event->respond("Got into test command.");
+  });
+
   bot->run(); //  Start the bot.
   
   std::cout << "Done.";
