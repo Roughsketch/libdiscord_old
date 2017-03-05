@@ -45,7 +45,7 @@ namespace Discord
         }
         else
         {
-          LOG(ERROR) << "Attempted to delete a channel that wasn't in the cache.";
+          LOG(ERROR) << "Attempted to delete a guild that wasn't in the cache.";
         }
       }
 
@@ -64,9 +64,10 @@ namespace Discord
       {
         if (GuildCache.count(guild_id))
         {
-          LOG(TRACE) << "Returning channel from cache.";
           return GuildCache[guild_id];
         }
+
+        LOG(INFO) << "Returning guild from cache.";
 
         //auto json = request(Guilds, guild_id, GET, "guilds/" + guild_id.to_string());
         auto response = request(APICall(guild_id) << "guilds" << guild_id, GET);

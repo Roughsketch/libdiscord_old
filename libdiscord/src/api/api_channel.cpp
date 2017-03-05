@@ -51,9 +51,10 @@ namespace Discord
       {
         if (ChannelCache.count(channel_id))
         {
-          LOG(TRACE) << "Returning channel from cache.";
           return ChannelCache[channel_id];
         }
+
+        LOG(INFO) << "Could not return channel from cache, calling API.";
 
         auto json = request(APICall(channel_id) << "channels" << channel_id, GET);
 
