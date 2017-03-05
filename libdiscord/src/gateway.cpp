@@ -37,12 +37,10 @@ namespace Discord
     auto wss_url = utility::conversions::to_string_t(API::get_wss_url());
     wss_url += builder.to_string();
 
-    LOG(INFO) << "WSS URL: " << utility::conversions::to_utf8string(wss_url);
-
-    std::lock_guard<std::mutex> lock(m_client_mutex);
+    LOG(DEBUG) << "WSS URL: " << utility::conversions::to_utf8string(wss_url);
 
     m_client.connect(wss_url).then([]() {
-      LOG(INFO) << "Gateway connected.";
+      LOG(DEBUG) << "Gateway connected.";
     });
 
     m_client.set_message_handler([this](web::websockets::client::websocket_incoming_message msg)
@@ -55,6 +53,11 @@ namespace Discord
       {
         LOG(ERROR) << "WebSocket Exception: " << e.what();
       }
+    });
+
+    m_client.set_close_handler([this](web::websockets::client::websocket_close_status status, const utility::string_t& reason, const std::error_code& code)
+    {
+      LOG(ERROR) << "WebSocket connection has closed with reason " << utility::conversions::to_utf8string(reason) << " - " << code.message() <<  " (" << code.value() << ")";
     });
   }
 
@@ -117,7 +120,14 @@ namespace Discord
     //  Parse our payload as JSON.
     auto payload = nlohmann::json::parse(str.c_str());
 
-    //LOG(INFO) << "Got WS Payload: " << payload.dump(2);
+    if (str.size() > 1000)
+    {
+      LOG(DEBUG) << "Got WS Payload: " << payload.dump(2).substr(0, 1000);
+    }
+    else
+    {
+      LOG(DEBUG) << "Got WS Payload: " << payload.dump(2);
+    }
 
     auto data = payload["d"]; //  Get the data for the event
 
@@ -132,9 +142,9 @@ namespace Discord
       break;
     case Hello:
       m_heartbeat_interval = data["heartbeat_interval"].get<uint32_t>();
-      LOG(INFO) << "Set heartbeat interval to " << m_heartbeat_interval;
+      LOG(DEBUG) << "Set heartbeat interval to " << m_heartbeat_interval;
 
-      m_heartbeat_thread = std::thread([this]() {
+      m_heartbeat_thread = std::thread([&]() {
         for (;;)
         {
           send_heartbeat();
@@ -155,11 +165,11 @@ namespace Discord
 
   void Gateway::handle_dispatch_event(std::string event_name, nlohmann::json data)
   {
-    LOG(INFO) << "Recieved " << event_name << " event.";
+    //LOG(INFO) << "Recieved " << event_name << " event.";
 
     if (event_name == "READY")
     {
-      LOG(INFO) << "Using gateway version " << data["v"];
+      LOG(DEBUG) << "Using gateway version " << data["v"];
 
       //  Save session id so we can restart a session
       m_session_id = data["session_id"].get<std::string>();
@@ -175,7 +185,7 @@ namespace Discord
     }
     else if (event_name == "RESUMED")
     {
-      LOG(INFO) << "Successfully resumed.";
+      LOG(DEBUG) << "Successfully resumed.";
     }
     else
     {
@@ -202,8 +212,14 @@ namespace Discord
 
     LOG(DEBUG) << "Sending packet: " << packet.dump(2);
 
-    std::lock_guard<std::mutex> lock(m_client_mutex);
-    m_client.send(msg);
+    try
+    {
+      m_client.send(msg);
+    }
+    catch(web::websockets::client::websocket_exception& e)
+    {
+      LOG(ERROR) << "WS Exception: " << e.what();
+    }
   }
 
   void Gateway::send_heartbeat()

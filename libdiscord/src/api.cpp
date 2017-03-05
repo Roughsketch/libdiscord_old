@@ -74,7 +74,7 @@ namespace Discord
       
       if (!data.empty())
       {
-        LOG(INFO) << "Setting request data: " << data.dump();
+        LOG(DEBUG) << "Setting request data: " << data.dump();
         request.set_body(data.dump());
       }
 
@@ -127,6 +127,18 @@ namespace Discord
           auto json_str = utility::conversions::to_utf8string(res.extract_string().get());
           auto response = json::parse(json_str.c_str());
 
+          if (response.count("name"))
+          {
+            auto name = response["name"].get<std::vector<std::string>>();
+
+            if (name.size() > 0) 
+            {
+              throw DiscordException(name[0]);
+            }
+
+            throw DiscordException("API call failed and response was null.");
+          }
+
           auto code = response["code"].get<int>();
           auto message = response["message"].get<std::string>();
 
@@ -163,7 +175,7 @@ namespace Discord
 
     nlohmann::json request(APICall& key, RequestType type, nlohmann::json data)
     {
-      LOG(INFO) << "Request: (" 
+      LOG(DEBUG) << "Request: ("
                 << detail::get_method_name(type) 
                 << ") - " << key.endpoint() 
                 << " " << data.dump(2);
@@ -189,16 +201,16 @@ namespace Discord
       {
         //  If we can't lock the global mutex, then we might be rate limited.
         //  Wait for the global mutex to become available again before continuing.
-        LOG(INFO) << "Could not lock global mutex. Waiting for it to unlock.";
+        LOG(DEBUG) << "Could not lock global mutex. Waiting for it to unlock.";
         std::lock_guard<std::mutex> global_lock(GlobalMutex);
-        LOG(INFO) << "Global mutex unlocked.";
+        LOG(DEBUG) << "Global mutex unlocked.";
       }
 
       auto response = raw_request(detail::get_method(type), utility::conversions::to_string_t(key.endpoint()), data);
 
       if (response["response_status"].get<int>() == 429)
       {
-        LOG(INFO) << "Locking global mutex due to 429 response.";
+        LOG(DEBUG) << "Locking global mutex due to 429 response.";
         //  Lock the global mutex and wait until our rate limit is over.
         std::lock_guard<std::mutex> global_lock(GlobalMutex);
         auto reset_time = response["X-RateLimit-Reset"].get<uint32_t>();
@@ -208,8 +220,6 @@ namespace Discord
         LOG(WARNING) << "We hit the rate limit. Sleeping for " << total_time << " seconds.";
         std::this_thread::sleep_until(end_time);
       }
-
-      LOG(INFO) << "Returning response.";
 
       return response;
     }

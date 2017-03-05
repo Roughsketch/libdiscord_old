@@ -195,13 +195,13 @@ namespace Discord
     {
       auto user = std::make_shared<User>(data);
       auto guild = Discord::API::Guild::get(data["guild_id"].get<Snowflake>());
-      LOG(INFO) << "User " << user->distinct() << " has been banned from " << guild->name() << ".";
+      LOG(DEBUG) << "User " << user->distinct() << " has been banned from " << guild->name() << ".";
     }
     else if (event_name == "GUILD_BAN_REMOVE")
     {
       auto user = std::make_shared<User>(data);
       auto guild = Discord::API::Guild::get(data["guild_id"].get<Snowflake>());
-      LOG(INFO) << "User " << user->distinct() << " has been unbanned from " << guild->name();
+      LOG(DEBUG) << "User " << user->distinct() << " has been unbanned from " << guild->name();
     }
     else if (event_name == "GUILD_EMOJIS_UPDATE")
     {
@@ -211,7 +211,7 @@ namespace Discord
     }
     else if (event_name == "GUILD_INTEGRATIONS_UPDATE")
     {
-      LOG(INFO) << "Got a Guild Integrations Update, but left it unhandled.";
+      LOG(DEBUG) << "Got a Guild Integrations Update, but left it unhandled.";
     }
     else if (event_name == "GUILD_MEMBER_ADD")
     {
@@ -281,7 +281,7 @@ namespace Discord
       {
         //  Not a command, but if we have an OnMessage handler call that instead.
         m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
-          LOG(INFO) << "Got message: " << msg->content();
+          LOG(DEBUG) << "Got message: " << msg->content();
           callback(msg);
         }, event, m_on_message));
       }
@@ -291,7 +291,7 @@ namespace Discord
       if (m_on_message_edited)
       {
         m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageEvent> msg, OnMessageCallback callback) {
-          LOG(INFO) << "Got edited message: " << msg->content();
+          LOG(DEBUG) << "Got edited message: " << msg->content();
           callback(msg);
         }, std::make_shared<MessageEvent>(data), m_on_message_edited));
       }
@@ -301,7 +301,7 @@ namespace Discord
       if (m_on_message_deleted)
       {
         m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
-          LOG(INFO) << "Got deleted message: " << msg->id().to_string();
+          LOG(DEBUG) << "Got deleted message: " << msg->id().to_string();
           callback(msg);
         }, std::make_shared<MessageDeletedEvent>(data), m_on_message_deleted));
       }
@@ -311,14 +311,14 @@ namespace Discord
       auto ids = data["ids"].get<std::vector<Snowflake>>();
       auto chan_id = data["channel_id"].get<Snowflake>();
 
-      LOG(INFO) << "Sending out " << ids.size() << " MessageDeletedEvents";
+      LOG(DEBUG) << "Sending out " << ids.size() << " MessageDeletedEvents";
 
       if (m_on_message_deleted)
       {
         for (auto& id : ids)
         {
           m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<MessageDeletedEvent> msg, OnMessageDeletedCallback callback) {
-            LOG(INFO) << "Got deleted message: " << msg->id().to_string();
+            LOG(DEBUG) << "Got deleted message: " << msg->id().to_string();
             callback(msg);
           }, std::make_shared<MessageDeletedEvent>(id, chan_id), m_on_message_deleted));
         }
@@ -336,7 +336,7 @@ namespace Discord
       if (m_on_typing)
       {
         m_threads.push_back(std::async(std::launch::async, [](std::shared_ptr<TypingEvent> event, OnTypingCallback callback) {
-          LOG(INFO) << "Got typing event from " << event->author()->distinct();
+          LOG(DEBUG) << "Got typing event from " << event->author()->distinct();
           callback(event);
         }, std::make_shared<TypingEvent>(data), m_on_typing));
       }

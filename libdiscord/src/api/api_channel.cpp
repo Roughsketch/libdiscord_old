@@ -20,7 +20,7 @@ namespace Discord
 
       void update_cache(std::shared_ptr<Discord::Channel> channel)
       {
-        LOG(INFO) << "Adding channel " << channel->name() << " (" << channel->id().to_string() << ") to cache.";
+        LOG(DEBUG) << "Adding channel " << channel->name() << " (" << channel->id().to_string() << ") to cache.";
         if (ChannelCache.count(channel->id()))
         {
           LOG(TRACE) << "Merging new channel information with cached value.";
@@ -54,7 +54,7 @@ namespace Discord
           return ChannelCache[channel_id];
         }
 
-        LOG(INFO) << "Could not return channel from cache, calling API.";
+        LOG(DEBUG) << "Could not return channel from cache, calling API.";
 
         auto json = request(APICall(channel_id) << "channels" << channel_id, GET);
 
@@ -155,6 +155,12 @@ namespace Discord
 
       std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts)
       {
+        if (content.empty())
+        {
+          //  Preemptively throw to avoid API call.
+          throw DiscordException("Cannot send an empty message.");
+        }
+
         auto response = request(APICall(channel_id) << "channels" << channel_id << "messages", POST, {
           { "content", content },
           { "mentions", nlohmann::json::array() },
