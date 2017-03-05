@@ -204,7 +204,7 @@ namespace Discord
     return channel;
   }
 
-  std::shared_ptr<Channel> Channel::close() const
+  std::shared_ptr<Channel> Channel::remove() const
   {
     return Discord::API::Channel::remove(m_id);
   }

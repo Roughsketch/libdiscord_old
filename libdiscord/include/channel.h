@@ -220,11 +220,11 @@ namespace Discord
     */
     std::shared_ptr<Channel> modify(std::function<void(std::shared_ptr<Channel>)> modify_block) const;
 
-    /** Closes a channel. Cannot be undone.
+    /** Removes a channel. Cannot be undone.
      
-        @return The channel that was closed.
+        @return The channel that was removed.
      */
-    std::shared_ptr<Channel> close() const;
+    std::shared_ptr<Channel> remove() const;
 
     /** Get a list of messages from this channel.
     
