@@ -85,6 +85,11 @@ namespace Discord
     return m_self;
   }
 
+  std::string Bot::prefix() const
+  {
+    return m_prefix;
+  }
+
   std::string Bot::invite_url() const
   {
     return "https://discordapp.com/oauth2/authorize?client_id=" + profile()->id().to_string() + "&scope=bot";
@@ -106,11 +111,45 @@ namespace Discord
     }
     else if (event_name == "CHANNEL_CREATE" || event_name == "CHANNEL_UPDATE")
     {
-      Discord::API::Channel::update_cache(std::make_shared<Channel>(data));
+      auto channel = std::make_shared<Channel>(data);
+      auto guild_id = channel->guild_id();
+
+      Discord::API::Channel::update_cache(channel);
+
+      auto owner = std::find_if(std::begin(m_guilds), std::end(m_guilds), [guild_id](std::shared_ptr<Guild> guild)
+      {
+        return guild->id() == guild_id;
+      });
+
+      if (owner == std::end(m_guilds))
+      {
+        LOG(ERROR) << "Tried to add a channel from a non-existent guild.";
+      }
+      else
+      {
+        owner->get()->add_channel(channel);
+      }
     }
     else if (event_name == "CHANNEL_DELETE")
     {
-      Discord::API::Channel::remove_cache(std::make_shared<Channel>(data));
+      auto channel = std::make_shared<Channel>(data);
+      auto guild_id = channel->guild_id();
+
+      Discord::API::Channel::remove_cache(channel);
+
+      auto owner = std::find_if(std::begin(m_guilds), std::end(m_guilds), [guild_id](std::shared_ptr<Guild> guild)
+      {
+        return guild->id() == guild_id;
+      });
+
+      if (owner == std::end(m_guilds))
+      {
+        LOG(ERROR) << "Tried to remove a channel from a non-existent guild.";
+      }
+      else
+      {
+        owner->get()->remove_channel(channel);
+      }
     }
     else if (event_name == "GUILD_CREATE")
     {
@@ -143,8 +182,13 @@ namespace Discord
       }
       else
       {
-        //  The user was removed from the guild, remove it from our cache.
+        //  The user was removed from the guild, remove it from our cache and list.
         Discord::API::Guild::remove_cache(id);
+
+        m_guilds.erase(std::remove_if(std::begin(m_guilds), std::end(m_guilds), [id](std::shared_ptr<Guild> guild)
+        {
+          return guild->id() == id;
+        }));
       }
     }
     else if (event_name == "GUILD_BAN_ADD")
@@ -221,16 +265,17 @@ namespace Discord
     else if (event_name == "MESSAGE_CREATE")
     {
       auto event = std::make_shared<MessageEvent>(data);
-      auto content = event->content();
+      auto word = event->content().substr(0, event->content().find_first_of(" \n"));
 
       //  If we have a prefix and it's the start of this message and it's a command
       if (!m_prefix.empty() &&
-          (content.compare(0, m_prefix.size(), m_prefix) == 0) &&
-          m_commands.count(content.substr(m_prefix.size(), content.find_first_of(" \n")))
+          word.size() > m_prefix.size() && 
+          (word.compare(0, m_prefix.size(), m_prefix) == 0) &&
+          m_commands.count(word.substr(m_prefix.size()))
         )
       {
         //  Call the command
-        m_commands[content.substr(m_prefix.size(), content.find_first_of(" \n"))](event);
+        m_commands[word.substr(m_prefix.size())](event);
       }
       else if (m_on_message) 
       {
