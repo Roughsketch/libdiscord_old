@@ -156,6 +156,44 @@ int main(int argc, char* argv[])
     event->respond("Got into test command.");
   });
 
+  bot->add_command("new", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  {
+    auto channel_name = event->content().substr(event->content().find_first_of(" ") + 1);
+
+    try
+    {
+      event->guild()->create_text_channel(channel_name);
+      event->respond("Created new channel " + channel_name + ".");
+    }
+    catch (const Discord::PermissionException& e)
+    {
+      event->respond("I do not have the permission to create a channel.");
+    }
+  });
+
+  bot->add_command("rem", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  {
+    auto channel_name = event->content().substr(event->content().find_first_of(" ") + 1);
+    auto channel = event->guild()->find_channel(channel_name);
+
+    if (channel)
+    {
+      try
+      {
+        channel->remove();
+        event->respond("Removed " + channel_name + ".");
+      }
+      catch (const Discord::PermissionException&)
+      {
+        event->respond("I do not have the permission to remove a channel.");
+      }
+    }
+    else
+    {
+      event->respond("Could not find channel with name " + channel_name + ".");
+    }
+  });
+
   bot->run(); //  Start the bot.
   
   std::cout << "Done.";
