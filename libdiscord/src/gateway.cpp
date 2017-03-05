@@ -47,7 +47,14 @@ namespace Discord
 
     m_client.set_message_handler([this](web::websockets::client::websocket_incoming_message msg)
     {
-      this->on_message(msg);
+      try 
+      {
+        this->on_message(msg);
+      }
+      catch (const std::exception& e)
+      {
+        LOG(ERROR) << "WebSocket Exception: " << e.what();
+      }
     });
   }
 
@@ -110,7 +117,7 @@ namespace Discord
     //  Parse our payload as JSON.
     auto payload = nlohmann::json::parse(str.c_str());
 
-    LOG(INFO) << "Got WS Payload: " << payload.dump(2);
+    //LOG(INFO) << "Got WS Payload: " << payload.dump(2);
 
     auto data = payload["d"]; //  Get the data for the event
 
@@ -148,7 +155,7 @@ namespace Discord
 
   void Gateway::handle_dispatch_event(std::string event_name, nlohmann::json data)
   {
-    LOG(TRACE) << "Recieved " << event_name << " event.";
+    LOG(INFO) << "Recieved " << event_name << " event.";
 
     if (event_name == "READY")
     {
