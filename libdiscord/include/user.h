@@ -66,7 +66,7 @@ namespace Discord
      
         @return A string that will mention the user.
      */
-    std::string User::mention_nick() const;
+    std::string mention_nick() const;
   };
 
   inline void from_json(const nlohmann::json& json, User& user)
