@@ -10,6 +10,9 @@ namespace Discord
   class Message;
   class User;
 
+  class MessageEvent;
+  MessageEvent& operator<<(MessageEvent& event, std::string& message);
+
   template <typename T>
   class Respondable
   {
@@ -18,15 +21,16 @@ namespace Discord
   public:
     explicit Respondable(T& owner) : m_owner(owner) {}
 
-    Respondable(Respondable<T>& other)
+    Respondable(Respondable<T>& other) : m_owner(other.m_owner)
     {
-      m_owner = other->m_owner;
-      m_stream << other->m_stream.str();
+      m_stream << other.m_stream.str();
     }
 
     ~Respondable()
     {
-      m_owner << m_stream.str();
+      std::string str = m_stream.str();
+      m_stream.clear();
+      m_owner << str;
     }
 
     template <typename U>
@@ -44,14 +48,6 @@ namespace Discord
   public:
     explicit MessageEvent(nlohmann::json data);
     explicit MessageEvent(std::shared_ptr<Message> msg) : m_message(msg) {};
-
-    void operator<<(std::string& message) const
-    {
-      if (!message.empty())
-      {
-        respond(message);
-      }
-    }
 
     /** Get the user who posted this message.
      
@@ -100,16 +96,6 @@ namespace Discord
         @return The message that was sent.
      */
     std::shared_ptr<Message> respond(std::string content, bool tts = false) const;
-
-    /** Allow using operator << to respond to an event.
-     
-        @code
-        event->respond() << "This is a response! " << "And more!";
-        @endcode
-     
-        @return An object you can use like a stream.
-     */
-    Respondable<MessageEvent> respond();
   };
 
   class MessageDeletedEvent : public Identifiable

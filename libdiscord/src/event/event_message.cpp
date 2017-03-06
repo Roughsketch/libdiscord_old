@@ -8,6 +8,16 @@
 
 namespace Discord
 {
+  MessageEvent& operator<<(MessageEvent& event, std::string& message)
+  {
+    if (!message.empty())
+    {
+      event.respond(message);
+    }
+
+    return event;
+  }
+
   MessageEvent::MessageEvent(nlohmann::json data)
   {
     m_message = std::make_shared<Message>(data);
@@ -51,11 +61,6 @@ namespace Discord
   std::shared_ptr<Message> MessageEvent::respond(std::string content, bool tts) const
   {
     return m_message->respond(content, tts);
-  }
-
-  Respondable<MessageEvent> MessageEvent::respond()
-  {
-    return Respondable<MessageEvent>(*this);
   }
 
   MessageDeletedEvent::MessageDeletedEvent(Snowflake id, Snowflake channel_id) : Identifiable(id)
