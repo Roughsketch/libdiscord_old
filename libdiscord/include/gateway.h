@@ -44,6 +44,8 @@ namespace Discord
     std::string m_session_id;
 
     std::weak_ptr<Bot> m_bot;
+
+    volatile bool m_connected;
   public:
     Gateway();
     explicit Gateway(std::string token);
@@ -59,5 +61,7 @@ namespace Discord
     void send_heartbeat();
     void send_identify();
     void send_resume();
+
+    bool connected() const;
   };
 }

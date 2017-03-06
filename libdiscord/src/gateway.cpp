@@ -16,6 +16,7 @@ namespace Discord
     m_heartbeat_interval = 0;
     m_last_seq = 0;
     m_recieved_ack = true; // Set true to start because first hearbeat sent doesn't require an ACK.
+    m_connected = false;
   }
 
   Gateway::Gateway(std::string token) : Gateway()
@@ -39,15 +40,16 @@ namespace Discord
 
     LOG(DEBUG) << "WSS URL: " << utility::conversions::to_utf8string(wss_url);
 
-    m_client.connect(wss_url).then([]() {
+    m_client.connect(wss_url).then([&]() {
       LOG(DEBUG) << "Gateway connected.";
+      m_connected = true;
     });
 
-    m_client.set_message_handler([this](web::websockets::client::websocket_incoming_message msg)
+    m_client.set_message_handler([&](web::websockets::client::websocket_incoming_message msg)
     {
       try 
       {
-        this->on_message(msg);
+        on_message(msg);
       }
       catch (const std::exception& e)
       {
@@ -55,9 +57,12 @@ namespace Discord
       }
     });
 
-    m_client.set_close_handler([this](web::websockets::client::websocket_close_status status, const utility::string_t& reason, const std::error_code& code)
+    m_client.set_close_handler([&](web::websockets::client::websocket_close_status status, const utility::string_t& reason, const std::error_code& code)
     {
-      LOG(ERROR) << "WebSocket connection has closed with reason " << utility::conversions::to_utf8string(reason) << " - " << code.message() <<  " (" << code.value() << ")";
+      LOG(ERROR)  << "WebSocket connection has closed with reason " 
+                  << utility::conversions::to_utf8string(reason) << " - " 
+                  << code.message() <<  " (" << code.value() << ")";
+      m_connected = false;
     });
   }
 
@@ -267,5 +272,10 @@ namespace Discord
       { "session_id", m_session_id },
       { "seq", m_last_seq }
     });
+  }
+
+  bool connected() const
+  {
+    return m_connected;
   }
 }
