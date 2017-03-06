@@ -153,9 +153,9 @@ namespace Discord
         return std::make_shared<Message>(response);
       }
 
-      std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts)
+      std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts, std::shared_ptr<Embed> embed)
       {
-        if (content.empty())
+        if (content.empty() && embed == nullptr)
         {
           //  Preemptively throw to avoid API call.
           throw DiscordException("Cannot send an empty message.");
@@ -165,7 +165,7 @@ namespace Discord
           { "content", content },
           { "mentions", nlohmann::json::array() },
           { "tts", tts },
-          { "embed", nullptr }
+          { "embed", embed }
         });
 
         return std::make_shared<Message>(response);

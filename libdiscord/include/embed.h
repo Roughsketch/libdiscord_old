@@ -4,6 +4,7 @@
 
 namespace Discord
 {
+  /** The footer object of an embed. */
   class EmbedFooter
   {
     std::string m_text;
@@ -35,6 +36,7 @@ namespace Discord
   void from_json(const nlohmann::json& json, EmbedFooter& footer);
   void to_json(nlohmann::json& json, const EmbedFooter& footer);
 
+  /** An image object of an embed. */
   class EmbedImage
   {
     std::string m_url;
@@ -46,18 +48,38 @@ namespace Discord
     explicit EmbedImage(const nlohmann::json& data);
     explicit EmbedImage(std::string url = "", uint32_t width = 0, uint32_t height = 0, std::string proxy_url = "");
 
+    /** Get the URL of the image.
+     
+        @return The URL of the image.
+     */
     std::string url() const;
+
+    /** Get the proxied URL of the image.
+     
+        @return The proxied URL of the image.
+     */
     std::string proxy_url() const;
+    
+    /** Get the width of the image.
+     
+        @return The width of the image
+     */
     uint32_t width() const;
+
+    /** Get the height of the image.
+     
+        @return The height of the image.
+     */
     uint32_t height() const;
   };
 
   void from_json(const nlohmann::json& json, EmbedImage& image);
   void to_json(nlohmann::json& json, const EmbedImage& image);
 
+  //  EmbedImage and EmbedThumbnail objects are identical, so just typedef it.
   typedef EmbedImage EmbedThumbnail;
 
-
+  /** A video object of an embed. */
   class EmbedVideo
   {
     std::string m_url;
@@ -68,14 +90,29 @@ namespace Discord
     explicit EmbedVideo(const nlohmann::json& data);
     explicit EmbedVideo(std::string url = "", uint32_t width = 0, uint32_t height = 0);
 
+    /** Get the URL of the video.
+     
+        @return The URL of the video.
+     */
     std::string url() const;
+
+    /** Get the width of the video.
+     
+        @return The width of the video.
+     */
     uint32_t width() const;
+
+    /** Get the height of the video.
+     
+        @return The height of the video.
+     */
     uint32_t height() const;
   };
 
   void from_json(const nlohmann::json& json, EmbedVideo& video);
   void to_json(nlohmann::json& json, const EmbedVideo& video);
 
+  /** Wraps embed provider information */
   class EmbedProvider
   {
     std::string m_name;
@@ -84,13 +121,23 @@ namespace Discord
     explicit EmbedProvider(const nlohmann::json& data);
     explicit EmbedProvider(std::string name = "", std::string url = "");
 
+    /** Get the name of the provider.
+     
+        @return The name of the provider.
+     */
     std::string name() const;
+
+    /** Get the URL of the provider.
+     
+        @return The URL of the provider.
+     */
     std::string url() const;
   };
 
   void from_json(const nlohmann::json& json, EmbedProvider& provider);
   void to_json(nlohmann::json& json, const EmbedProvider& provider);
 
+  /** Holds information on the listed author of an embed. */
   class EmbedAuthor
   {
     std::string m_name;
@@ -101,15 +148,35 @@ namespace Discord
     explicit EmbedAuthor(const nlohmann::json& data);
     explicit EmbedAuthor(std::string name = "", std::string url = "", std::string icon_url = "", std::string proxy_icon_url = "");
 
+    /** Get the name of the author.
+     
+        @return The name of the author.
+     */
     std::string name() const;
+
+    /** Get the URL of the author.
+
+        @return The URL of the author.
+    */
     std::string url() const;
+
+    /** Get the icon URL of the author.
+
+        @return The icon URL of the author.
+    */
     std::string icon_url() const;
+
+    /** Get the proxied icon URL of the author.
+
+        @return The proxied icon URL of the author.
+    */
     std::string proxy_icon_url() const;
   };
 
   void from_json(const nlohmann::json& json, EmbedAuthor& author);
   void to_json(nlohmann::json& json, const EmbedAuthor& author);
 
+  /** Represents a field of an embed. */
   class EmbedField
   {
     std::string m_name;
@@ -120,14 +187,29 @@ namespace Discord
     explicit EmbedField(const nlohmann::json& data);
     explicit EmbedField(std::string name = "", std::string value = "", bool is_inline = false);
 
+    /** Get the name of the field.
+     
+        @return The name of the field.
+     */
     std::string name() const;
+
+    /** Get the content of the field.
+     
+        @return The content of the field.
+     */
     std::string content() const;
+
+    /** Whether this field is inline or not.
+     
+        @return Whether this field is inline or not.
+     */
     bool is_inline() const;
   };
 
   void from_json(const nlohmann::json& json, EmbedField& field);
   void to_json(nlohmann::json& json, const EmbedField& field);
 
+  /** Represents a Discord embed object. */
   class Embed
   {
     std::string m_title;
@@ -163,7 +245,7 @@ namespace Discord
         });
         @endcode
      */
-    std::shared_ptr<Embed> create(std::function<void(std::shared_ptr<Embed>)> modify_callback) const;
+    static std::shared_ptr<Embed> create(std::function<void(std::shared_ptr<Embed>)> modify_callback);
 
     /** Sets the title of the embed.
      

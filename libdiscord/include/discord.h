@@ -3,6 +3,7 @@
 #include "api_exceptions.h"
 #include "bot.h"
 #include "channel.h"
+#include "embed.h"
 #include "emoji.h"
 #include "events.h"
 #include "event/event_message.h"

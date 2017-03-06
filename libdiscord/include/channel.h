@@ -6,6 +6,7 @@
 
 namespace Discord
 {
+  class Embed;
   class Emoji;
   class Guild;
   class Invite;
@@ -21,8 +22,22 @@ namespace Discord
     Overwrite();
     explicit Overwrite(const nlohmann::json& data);
 
+    /** Get the type of this overwrite (either "role" or "member")
+     
+        @return The type of this overwrite.
+     */
     std::string type() const;
+
+    /** Get the permissions that are allowed.
+     
+        @return The permissions that are allowed.
+     */
     std::shared_ptr<Permission> allow() const;
+
+    /** Get the permissions that are denied.
+     
+        @return The permissions that are denied.
+     */
     std::shared_ptr<Permission> deny() const;
   };
 
@@ -39,6 +54,7 @@ namespace Discord
     json["deny"] = overwrite.deny();
   }
 
+  /** Types of channels that can be sent by the API. */
   enum ChannelType : uint8_t
   {
     Text = 0,
@@ -47,8 +63,10 @@ namespace Discord
     Group
   };
 
+  /** Represents a Channel object in the Discord API. */
   class Channel : public Identifiable
   {
+    //  Constants
     static const uint32_t MinNameSize = 2;
     static const uint32_t MaxNameSize = 100;
     static const uint32_t MaxTopicSize = 1024;
@@ -262,6 +280,8 @@ namespace Discord
      */
     void send_temp_message(std::string content, uint32_t timeout, bool tts = false) const;
 
+    std::shared_ptr<Message> send_embed(Embed embed, std::string content = "", bool tts = false) const;
+
     /** React to a message with an emoji.
      
         @param message_id The id of the message to react to.
@@ -332,11 +352,11 @@ namespace Discord
         @code
         channel->edit_permissions(
           [](std::shared_ptr<Permission> allow, std::shared_ptr<Permission> deny) {
-            allow.add(MANAGE_NICKNAMES);
-            allow.remove(KICK_MEMBERS);
+              allow->add(MANAGE_NICKNAMES);
+              allow->remove(KICK_MEMBERS);
 
-            deny.add(BAN_MEMBERS);
-            deny.remove(MANAGE_NICKNAMES);
+              deny->add(BAN_MEMBERS);
+              deny->remove(MANAGE_NICKNAMES);
           });
         @endcode
 

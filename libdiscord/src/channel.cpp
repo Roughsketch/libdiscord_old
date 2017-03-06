@@ -4,6 +4,7 @@
 #include "api/api_channel.h"
 #include "api/api_guild.h"
 #include "channel.h"
+#include "embed.h"
 #include "message.h"
 #include "user.h"
 #include "guild.h"
@@ -227,15 +228,20 @@ namespace Discord
 
   std::shared_ptr<Message> Channel::send_message(std::string content, bool tts) const
   {
-    return Discord::API::Channel::create_message(m_id, content);
+    return Discord::API::Channel::create_message(m_id, content, tts);
   }
 
   void Channel::send_temp_message(std::string content, uint32_t timeout, bool tts) const
   {
     using namespace std::chrono;
-    auto message = Discord::API::Channel::create_message(m_id, content);
+    auto message = Discord::API::Channel::create_message(m_id, content, tts);
     std::this_thread::sleep_for(10s);
     message->remove();
+  }
+
+  std::shared_ptr<Message> Channel::send_embed(Embed embed, std::string content, bool tts) const
+  {
+    return Discord::API::Channel::create_message(m_id, content, tts, std::make_shared<Embed>(embed));
   }
 
   bool Channel::add_reaction(Snowflake message_id, std::shared_ptr<Emoji> emoji) const

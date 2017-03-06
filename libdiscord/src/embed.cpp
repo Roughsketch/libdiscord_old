@@ -330,7 +330,7 @@ namespace Discord
     set_from_json(m_fields, "fields", data);
   }
 
-  std::shared_ptr<Embed> Embed::create(std::function<void(std::shared_ptr<Embed>)> modify_callback) const
+  std::shared_ptr<Embed> Embed::create(std::function<void(std::shared_ptr<Embed>)> modify_callback)
   {
     auto embed = std::shared_ptr<Embed>();
 
@@ -476,27 +476,27 @@ namespace Discord
       json["color"] = embed.color();
     }
 
-    if (!embed.footer())
+    if (embed.footer())
     {
       json["footer"] = embed.footer();
     }
 
-    if (!embed.image())
+    if (embed.image())
     {
       json["image"] = embed.image();
     }
 
-    if (!embed.thumbnail())
+    if (embed.thumbnail())
     {
       json["thumbnail"] = embed.thumbnail();
     }
 
-    if (!embed.video())
+    if (embed.video())
     {
       json["video"] = embed.video();
     }
 
-    if (!embed.author())
+    if (embed.author())
     {
       json["author"] = embed.author();
     }

@@ -5,6 +5,7 @@
 namespace Discord
 {
   class Channel;
+  class Embed;
   class Emoji;
   class Invite;
   class Message;
@@ -87,7 +88,7 @@ namespace Discord
           @param tts Whether or not this message should be text-to-speech.
           @return The message that was sent.
        */
-      std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts = false);
+      std::shared_ptr<Message> create_message(Snowflake channel_id, std::string content, bool tts = false, std::shared_ptr<Embed> embed = nullptr);
 
       /** Creates a reaction on a message.
        
