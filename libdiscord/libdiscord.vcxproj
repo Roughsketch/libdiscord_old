@@ -133,7 +133,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\libs\zlib128-dll\include;C:\libs\boost_1_63_0;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <MinimalRebuild>false</MinimalRebuild>
@@ -152,7 +152,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)$(SolutionName)\include;C:\libs\zlib128-dll\include;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\libs\zlib128-dll\lib</AdditionalLibraryDirectories>
@@ -174,7 +174,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)\include;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;ELPP_DISABLE_TRACE_LOGS;ELPP_DISABLE_DEBUG_LOGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;ELPP_DISABLE_TRACE_LOGS;ELPP_DISABLE_DEBUG_LOGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -198,7 +198,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)$(SolutionName)\include;C:\libs\zlib128-dll\include;%(AdditionalIncludeDirectories);$(ProjectDir)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NOMINMAX;ELPP_THREAD_SAFE;ELPP_FORCE_USE_STD_THREAD;ELPP_DISABLE_TRACE_LOGS;ELPP_DISABLE_DEBUG_LOGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;ELPP_DISABLE_TRACE_LOGS;ELPP_DISABLE_DEBUG_LOGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

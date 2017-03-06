@@ -90,4 +90,14 @@ namespace Discord
   {
     return m_bot;
   }
+
+  std::string User::mention() const
+  {
+    return "<@" + id().to_string() + ">";
+  }
+
+  std::string User::mention_nick() const
+  {
+    return "<@!" + id().to_string() + ">";
+  }
 }

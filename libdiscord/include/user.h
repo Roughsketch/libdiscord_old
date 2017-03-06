@@ -55,6 +55,18 @@ namespace Discord
         @return true if user is a bot.
      */
     bool is_bot() const;
+
+    /** Get a mention string for this user.
+     
+        @return A string that will mention the user.
+     */
+    std::string mention() const;
+
+    /** Get a mention string for this user using their nickname.
+     
+        @return A string that will mention the user.
+     */
+    std::string User::mention_nick() const;
   };
 
   inline void from_json(const nlohmann::json& json, User& user)
