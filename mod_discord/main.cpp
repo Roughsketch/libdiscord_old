@@ -160,8 +160,8 @@ int main(int argc, char* argv[])
 
   bot->add_command("test", [](std::shared_ptr<Discord::MessageEvent> event)
   {
-    event->respond() << "Got into test command.";
-    event->respond() << "Can respond twice.";
+    *event << "Got into test command.";
+    *event << "Can respond twice.";
   });
 
   bot->add_command("new", [bot](std::shared_ptr<Discord::MessageEvent> event)
@@ -204,15 +204,16 @@ int main(int argc, char* argv[])
 
   bot->add_command("help", [bot](std::shared_ptr<Discord::MessageEvent> event)
   {
-    event->respond()  << "List of commands:```"
-                      << "help  : This command.\n"
-                      << "info  : Info placeholder.\n"
-                      << "guilds: A list of guilds this bot is currently in.\n"
-                      << "new   : Create a new channel.\n"
-                      << "rem   : Remove a channel.\n"
-                      << "mem   : Get current a peak memory of this bot process.\n"
-                      << "layout: Test if user, channel, and guild information can be retrieved correctly.\n"
-                      << "```";
+    *event << "List of commands:```"
+          << "help  : This command.\n"
+          << "info  : Info placeholder.\n"
+          << "guilds: A list of guilds this bot is currently in.\n"
+          << "new   : Create a new channel.\n"
+          << "rem   : Remove a channel.\n"
+          << "mem   : Get current a peak memory of this bot process.\n"
+          << "layout: Test if user, channel, and guild information can be retrieved correctly.\n"
+          << "```";
+
   });
 
   bot->add_command("prune", [](std::shared_ptr<Discord::MessageEvent> event)
