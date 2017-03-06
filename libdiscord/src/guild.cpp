@@ -233,23 +233,22 @@ namespace Discord
       m_members.erase(member->user()->id());
       m_member_count -= 1;
     }
-    else
-    {
-      LOG(ERROR) << "Tried to remove a member that doesn't exist. Ignoring.";
-    }
   }
 
   void Guild::update_member(std::vector<Snowflake> roles, std::shared_ptr<User> user, std::string nick)
   {
+    std::shared_ptr<Member> member;
     auto member_itr = m_members.find(user->id());
 
     if (member_itr == std::end(m_members))
     {
-      LOG(ERROR) << "Update member called with previously unseen member. Ignoring.";
-      return;
+      //  Previously unseen user being updated, so make a new one.
+      member = std::make_shared<Member>();
     }
-
-    auto member = member_itr->second;
+    else
+    {
+      member = member_itr->second;
+    }
 
     member->set_roles(roles);
     member->set_user(user);
