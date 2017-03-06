@@ -91,9 +91,16 @@ namespace Discord
 
       std::shared_ptr<Discord::Channel> create_group_dm(std::vector<std::string> access_tokens, std::map<Snowflake, std::string> user_nicknames)
       {
+        nlohmann::json nicks = {};
+
+        for (auto& pair : user_nicknames)
+        {
+          nicks[pair.first.to_string()] = pair.second;
+        }
+
         auto response = request(APICall() << "users/@me/channels", POST, {
           { "access_tokens", access_tokens },
-          { "nicks", user_nicknames }
+          { "nicks", nicks }
         });
 
         return response;

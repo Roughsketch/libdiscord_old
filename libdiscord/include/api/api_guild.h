@@ -223,7 +223,7 @@ namespace Discord
           @param positions A map of role ids to positions.
           @return The list of roles from the server.
        */
-      std::vector<std::shared_ptr<Role>> modify_role_positions(Snowflake guild_id, std::map<Snowflake, uint32_t> positions);
+      std::vector<std::shared_ptr<Role>> modify_role_positions(Snowflake guild_id, const std::map<Snowflake, uint32_t>& positions);
 
       /** Modify the attributes of a role.
        

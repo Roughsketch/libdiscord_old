@@ -140,7 +140,14 @@ namespace Discord
 
       std::vector<std::shared_ptr<Discord::Channel>> modify_channel_positions(Snowflake guild_id, const std::map<Snowflake, uint32_t>& positions)
       {
-        auto response = request(APICall() << "guilds" << guild_id << "channels", PATCH, { positions });
+        nlohmann::json payload = {};
+        
+        for (auto& pair : positions)
+        {
+          payload[pair.first.to_string()] = pair.second;
+        }
+
+        auto response = request(APICall() << "guilds" << guild_id << "channels", PATCH, payload);
 
         return response;
       }
@@ -268,9 +275,16 @@ namespace Discord
         return response;
       }
 
-      std::vector<std::shared_ptr<Role>> modify_role_positions(Snowflake guild_id, std::map<Snowflake, uint32_t> positions)
+      std::vector<std::shared_ptr<Role>> modify_role_positions(Snowflake guild_id, const std::map<Snowflake, uint32_t>& positions)
       {
-        auto response = request(APICall() << "guilds" << guild_id << "roles", PATCH, { positions });
+        nlohmann::json payload = {};
+        
+        for (auto& pair : positions)
+        {
+          payload[pair.first.to_string()] = pair.second;
+        }
+
+        auto response = request(APICall() << "guilds" << guild_id << "roles", PATCH, payload);
 
         return response;
       }
