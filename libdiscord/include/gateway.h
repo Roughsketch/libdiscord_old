@@ -32,7 +32,7 @@ namespace Discord
     static const utility::string_t ENCODING;
 
     std::string m_token;
-    std::string m_wss_url;
+    utility::string_t m_wss_url;
     web::websockets::client::websocket_callback_client m_client;
     std::mutex m_client_mutex;
 
@@ -46,12 +46,14 @@ namespace Discord
     std::weak_ptr<Bot> m_bot;
 
     volatile bool m_connected;
+    bool m_use_resume;
   public:
     Gateway();
     explicit Gateway(std::string token);
 
     void set_bot(std::weak_ptr<Bot> bot);
     void start();
+    void connect();
 
     void on_message(web::websockets::client::websocket_incoming_message);
 

@@ -4,6 +4,7 @@
 #include "bot.h"
 
 #include <zlib.h>
+#include <cpprest/http_msg.h>
 
 namespace Discord
 {
@@ -17,6 +18,7 @@ namespace Discord
     m_last_seq = 0;
     m_recieved_ack = true; // Set true to start because first hearbeat sent doesn't require an ACK.
     m_connected = false;
+    m_use_resume = false;
   }
 
   Gateway::Gateway(std::string token) : Gateway()
@@ -35,15 +37,25 @@ namespace Discord
     builder.append_query(U("v"), VERSION);
     builder.append_query(U("encoding"), ENCODING);
 
-    auto wss_url = utility::conversions::to_string_t(API::get_wss_url());
-    wss_url += builder.to_string();
+    if (m_wss_url.empty())
+    {
+      do
+      {
+        try
+        {
+          //  Attempt to get the Gateway URL.
+          m_wss_url = utility::conversions::to_string_t(API::get_wss_url());
+        }
+        catch (const web::http::http_exception& e)
+        {
+          LOG(ERROR) << "Exception getting gateway URL: " << e.what();
+          LOG(ERROR) << "Sleeping for 5 seconds and trying again.";
+          std::this_thread::sleep_for(std::chrono::seconds(5));
+        }
+      } while (m_wss_url.empty());  //  Keep trying until we get it.
 
-    LOG(DEBUG) << "WSS URL: " << utility::conversions::to_utf8string(wss_url);
-
-    m_client.connect(wss_url).then([&]() {
-      LOG(DEBUG) << "Gateway connected.";
-      m_connected = true;
-    });
+      m_wss_url += builder.to_string();
+    }
 
     m_client.set_message_handler([&](web::websockets::client::websocket_incoming_message msg)
     {
@@ -59,11 +71,35 @@ namespace Discord
 
     m_client.set_close_handler([&](web::websockets::client::websocket_close_status status, const utility::string_t& reason, const std::error_code& code)
     {
-      LOG(ERROR)  << "WebSocket connection has closed with reason " 
-                  << utility::conversions::to_utf8string(reason) << " - " 
-                  << code.message() <<  " (" << code.value() << ")";
-      m_connected = false;
+      if (m_connected)
+      {
+        LOG(ERROR)  << "WebSocket connection has closed with reason "
+                    << utility::conversions::to_utf8string(reason) << " - "
+                    << code.message() << " (" << code.value() << ")";
+        m_connected = false;
+        connect();
+      }
     });
+
+    connect();
+  }
+
+  void Gateway::connect()
+  {
+    LOG(INFO) << "Connecting to " << utility::conversions::to_utf8string(m_wss_url);
+
+    while (!m_connected)
+    {
+      //  Try to connect
+      m_client.connect(m_wss_url).then([](){}).get();
+
+      //  If not connected, sleep 5 seconds and try again.
+      if (!m_connected)
+      {
+        LOG(INFO) << "Could not connect to gateway, sleeping for 5 seconds and trying again.";
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+      }
+    }
   }
 
   void Gateway::on_message(web::websockets::client::websocket_incoming_message msg)
@@ -146,18 +182,31 @@ namespace Discord
       send_resume();
       break;
     case Hello:
+      m_connected = true;
       m_heartbeat_interval = data["heartbeat_interval"].get<uint32_t>();
-      LOG(DEBUG) << "Set heartbeat interval to " << m_heartbeat_interval;
+      LOG(INFO) << "Set heartbeat interval to " << m_heartbeat_interval;
 
-      m_heartbeat_thread = std::thread([&]() {
-        for (;;)
-        {
-          send_heartbeat();
-          std::this_thread::sleep_for(std::chrono::milliseconds(m_heartbeat_interval));
-        }
-      });
+      if (m_use_resume)
+      {
+        LOG(INFO) << "Connected again, sending Resume packet.";
+        send_resume();
+      }
+      else
+      {
+        m_heartbeat_thread = std::thread([&]() {
+          while (connected())
+          {
+            send_heartbeat();
+            std::this_thread::sleep_for(std::chrono::milliseconds(m_heartbeat_interval));
+          }
 
-      send_identify();
+          LOG(INFO) << "Disconnected, stopping heartbeats.";
+        });
+
+        LOG(INFO) << "Connected, sending Identify packet.";
+        send_identify();
+        m_use_resume = true;  //  Next time use Resume
+      }
       break;
     case Heartbeat_ACK:
       LOG(TRACE) << "Recieved Heartbeat ACK.";
