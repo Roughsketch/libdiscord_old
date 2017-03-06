@@ -8,16 +8,6 @@
 
 namespace Discord
 {
-  MessageEvent& operator<<(MessageEvent& event, std::string& message)
-  {
-    if (!message.empty())
-    {
-      event.respond(message);
-    }
-
-    return event;
-  }
-
   MessageEvent::MessageEvent(nlohmann::json data)
   {
     m_message = std::make_shared<Message>(data);

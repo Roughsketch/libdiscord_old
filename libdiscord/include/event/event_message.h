@@ -10,44 +10,30 @@ namespace Discord
   class Message;
   class User;
 
-  class MessageEvent;
-  MessageEvent& operator<<(MessageEvent& event, std::string& message);
-
-  template <typename T>
-  class Respondable
-  {
-    T& m_owner;
-    std::stringstream m_stream;
-  public:
-    explicit Respondable(T& owner) : m_owner(owner) {}
-
-    Respondable(Respondable<T>& other) : m_owner(other.m_owner)
-    {
-      m_stream << other.m_stream.str();
-    }
-
-    ~Respondable()
-    {
-      std::string str = m_stream.str();
-      m_stream.clear();
-      m_owner << str;
-    }
-
-    template <typename U>
-    Respondable& operator<<(U& obj)
-    {
-      m_stream << obj;
-      return *this;
-    }
-  };
-
   /** An Event wrapper meant to provide convenient methods for handling messages. */
   class MessageEvent
   {
+    std::stringstream m_stream;
     std::shared_ptr<Message> m_message;
   public:
     explicit MessageEvent(nlohmann::json data);
     explicit MessageEvent(std::shared_ptr<Message> msg) : m_message(msg) {};
+
+    ~MessageEvent() {
+      auto str = m_stream.str();
+      
+      if (!str.empty())
+      {
+        respond(m_stream.str());
+      }
+    }
+  
+    template <typename U>
+    MessageEvent& operator<<(U& obj)
+    {
+      m_stream << obj;
+      return *this;
+    }
 
     /** Get the user who posted this message.
      
