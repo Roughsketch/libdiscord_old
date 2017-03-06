@@ -85,6 +85,11 @@ namespace Discord
     }
   }
 
+  void Bot::run_async() const
+  {
+    m_gateway->start();
+  }
+
   std::shared_ptr<User> Bot::profile() const
   {
     return m_self;

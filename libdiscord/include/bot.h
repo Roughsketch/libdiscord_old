@@ -83,8 +83,11 @@ namespace Discord
      */
     static std::shared_ptr<Bot> create_from_json(std::string filename);
 
-    /** Starts the bot. */
+    /** Starts the bot and loops forever. */
     void run() const;
+
+    /** Starts a bot, but allows execution after the gateway is started. */
+    void run_async() const;
 
     /** Get the Bot's user profile.
      
