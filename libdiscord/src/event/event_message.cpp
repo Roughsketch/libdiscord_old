@@ -13,6 +13,12 @@ namespace Discord
     m_message = std::make_shared<Message>(data);
   }
 
+  MessageEvent::MessageEvent(const MessageEvent& other)
+  {
+    m_stream << other.m_stream.str();
+    m_message = other.m_message;
+  }
+
   std::shared_ptr<User> MessageEvent::author() const
   {
     return m_message->author();

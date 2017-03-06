@@ -18,6 +18,7 @@ namespace Discord
   public:
     explicit MessageEvent(nlohmann::json data);
     explicit MessageEvent(std::shared_ptr<Message> msg) : m_message(msg) {};
+    MessageEvent(const MessageEvent& other);
 
     ~MessageEvent() {
       auto str = m_stream.str();
