@@ -274,7 +274,7 @@ namespace Discord
     });
   }
 
-  bool connected() const
+  bool Gateway::connected() const
   {
     return m_connected;
   }
