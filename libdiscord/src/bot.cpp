@@ -78,6 +78,11 @@ namespace Discord
   void Bot::run() const
   {
     m_gateway->start();
+
+    for (;;)
+    {
+      std::this_thread::sleep_for(std::chrono::seconds(100000));
+    }
   }
 
   std::shared_ptr<User> Bot::profile() const
