@@ -58,6 +58,7 @@ namespace Discord
     /** Used to create a Bot with just a token.
      
         @param token The token for this bot.
+        @param prefix The prefix that commands will use.
         @return A shared pointer to the bot that was created.
      */
     static std::shared_ptr<Bot> create(std::string token, std::string prefix = "");

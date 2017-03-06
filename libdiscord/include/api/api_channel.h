@@ -124,7 +124,7 @@ namespace Discord
           @param emoji The emoji that we should get the user list for.
           @return A list of users who reacted with the given emoji.
        */
-      std::vector<std::shared_ptr<User>> get_reactions(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji);
+      std::vector<std::shared_ptr<Discord::User>> get_reactions(Snowflake channel_id, Snowflake message_id, std::shared_ptr<Emoji> emoji);
 
       /** Deletes all reactions on a message.
        
@@ -164,6 +164,7 @@ namespace Discord
           @param overwrite The overwrite to update.
           @param allow The permissions to allow.
           @param deny The permissions to deny.
+          @param type The type of permission to edit.
           @return Success status.
        */
       bool edit_permissions(Snowflake channel_id, std::shared_ptr<Overwrite> overwrite, uint32_t allow, uint32_t deny, std::string type);

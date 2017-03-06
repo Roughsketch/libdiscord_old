@@ -63,6 +63,7 @@ namespace Discord
       /** Creates a group DM with a list of users.
        
           @param access_tokens Access tokens of users that have granted this user the gdm.join scope.
+          @param user_nicknames A map of user ids to nicknames that will be assigned.
           @return The channel that was created for this group DM.
        */
       std::shared_ptr<Discord::Channel> create_group_dm(std::vector<std::string> access_tokens, std::map<Snowflake, std::string> user_nicknames);

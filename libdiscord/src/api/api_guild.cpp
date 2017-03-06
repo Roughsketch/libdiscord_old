@@ -229,7 +229,7 @@ namespace Discord
         return response.get<int>() == Status::NoContent;
       }
 
-      std::vector<std::shared_ptr<User>> get_bans(Snowflake guild_id)
+      std::vector<std::shared_ptr<Discord::User>> get_bans(Snowflake guild_id)
       {
         auto response = request(APICall() << "guilds" << guild_id << "bans", GET);
 

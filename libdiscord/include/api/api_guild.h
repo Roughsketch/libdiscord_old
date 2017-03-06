@@ -55,6 +55,7 @@ namespace Discord
       /** Modify the attributes of a guild.
        
           @param guild_id The guild to modify
+          @param guild A guild whose attributes will be sent.
           @return The modified guild object.
        */
       std::shared_ptr<Discord::Guild> modify(Snowflake guild_id, std::shared_ptr<Discord::Guild> guild);
@@ -139,6 +140,7 @@ namespace Discord
           @param roles The roles to give the user.
           @param muted Whether or not this user should be muted.
           @param deafened Whether or not this user should be deaf.
+          @param channel_id Voice channel to move user to.
           @return Success status.
        */
       bool modify_member(Snowflake guild_id, Snowflake user_id, std::string nick = "", std::vector<Role> roles = {}, bool muted = false, bool deafened = false, Snowflake channel_id = 0);
@@ -179,7 +181,7 @@ namespace Discord
           @param guild_id The guild to list bans from.
           @return A list of bans that are currently active in the guild.
        */
-      std::vector<std::shared_ptr<User>> get_bans(Snowflake guild_id);
+      std::vector<std::shared_ptr<Discord::User>> get_bans(Snowflake guild_id);
 
       /** Bans a member from the guild.
        
@@ -298,6 +300,8 @@ namespace Discord
           @param integration_id The integration to modify.
           @param expire_behavior The behavior when an integration subscription lapses.
           @param expire_grace_period The period in seconds where the integration will ignore lapsed subscriptions.
+          @param enable_emoticons Whether emoticons should be synced.
+          @return Success status.
        */
       bool modify_integration(Snowflake guild_id, Snowflake integration_id, uint32_t expire_behavior, uint32_t expire_grace_period, bool enable_emoticons);
 
