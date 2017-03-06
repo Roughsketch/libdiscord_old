@@ -74,8 +74,35 @@ namespace Discord
       
       if (!data.empty())
       {
-        LOG(DEBUG) << "Setting request data: " << data.dump();
-        request.set_body(data.dump());
+        if (type == web::http::methods::GET)
+        {
+          LOG(DEBUG) << "Setting query parameters: " << data.dump();
+          uri_builder builder(endpoint);
+          
+          for (auto it = std::begin(data); it != std::end(data); ++it)
+          {
+            std::string value;
+
+            if (it.value().is_string())
+            {
+              value = it.value().get<std::string>();
+            }
+            else if (it.value().is_number_integer())
+            {
+              value = std::to_string(it.value().get<int>());
+            }
+            
+            builder.append_query( utility::conversions::to_string_t(it.key()),
+                                  utility::conversions::to_string_t(value));
+          }
+
+          request.set_request_uri(builder.to_string());
+        }
+        else
+        {
+          LOG(DEBUG) << "Setting request data: " << data.dump();
+          request.set_body(data.dump());
+        }
       }
 
       pplx::task<json> requestTask = client.request(request).then([=](http_response res) -> json
@@ -90,6 +117,7 @@ namespace Discord
           }).then([res](std::string text)
           {
             auto payload = json::parse(text.c_str());
+            nlohmann::json container = { { "response_data", payload } };
 
             auto headers = res.headers();
 
@@ -99,25 +127,25 @@ namespace Discord
 
             if (limit != std::end(headers))
             {
-              payload["X-RateLimit-Limit"] = utility::conversions::to_utf8string(limit->second);
+              container["X-RateLimit-Limit"] = utility::conversions::to_utf8string(limit->second);
             }
 
             if (remaining != std::end(headers))
             {
-              payload["X-RateLimit-Remaining"] = utility::conversions::to_utf8string(remaining->second);
+              container["X-RateLimit-Remaining"] = utility::conversions::to_utf8string(remaining->second);
             }
 
             if (reset != std::end(headers))
             {
-              payload["X-RateLimit-Reset"] = utility::conversions::to_utf8string(reset->second);
+              container["X-RateLimit-Reset"] = utility::conversions::to_utf8string(reset->second);
             }
 
-            payload["response_status"] = res.status_code();
+            container["response_status"] = res.status_code();
 
-            return payload;
+            return container;
           }).get();
         }
-        else if ((type == methods::DEL || type == methods::PUT) && res.status_code() == status_codes::NoContent)
+        else if (res.status_code() == status_codes::NoContent)
         {
           //  NoContent is returned when a DELETE or PUT operation succeeds.
           return{ { "response_status", res.status_code() } };
@@ -219,6 +247,11 @@ namespace Discord
         auto total_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - std::chrono::system_clock::from_time_t(0)).count();
         LOG(WARNING) << "We hit the rate limit. Sleeping for " << total_time << " seconds.";
         std::this_thread::sleep_until(end_time);
+      }
+
+      if (response.count("response_data"))
+      {
+        return response["response_data"];
       }
 
       return response;
