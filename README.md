@@ -10,7 +10,7 @@
   
 ## Getting Started
 
-### Compiling Library for Windows
+### Compiling libdiscord for Windows
 
 You should be able to simply download this git repository and open up the .sln file and build it after installing some dependencies. 
 
@@ -24,7 +24,7 @@ After installing these dependencies you should be able to compile the libdiscord
 ### Compiling a Bot on Windows
 To compile a bot on Windows you must have libdiscord.lib and the libdiscord include directory in your path. If using Visual Studio, simply add them to your project settings. After your project is set up, you must include the `discord.h` header file to access the library.
 
-### Compiling Library for Linux
+### Compiling libdiscord for Linux
 The git project has a very simple makefile, so you should be able to just use make in the root directory. However, you will need to have CPPRestSDK and its dependencies installed. Visit [this link](https://github.com/Microsoft/cpprestsdk/wiki/How-to-build-for-Linux) to learn how to install it.
 
 Here is a list of all the libraries you must have installed:
@@ -36,14 +36,16 @@ Here is a list of all the libraries you must have installed:
 - ssl
 - z
 
+The command that you should run is `make && sudo make install`. This will build libdiscord.so into the `lib` directory (Create this if it's missing), and the install command will place the resulting library into `/usr/lib/libdiscord.so`. From there, your programs should be able to compile using this library.
+
 ### Compiling a Bot on Linux
 This is a bit more involved than Windows simply because I don't know if you can combine shared libraries easily. Assuming you have a project with a single `main.cpp` file, you would compile it like so:
 
 ```
-g++ main.cpp -Llibdiscord/bin -Ilibdiscord/include -ldiscord -lboost_system -lcrypto -lssl -lcpprest -lz -lpthread -std=c++14 -o output_file
+g++ main.cpp -Ilibdiscord/include -ldiscord -lboost_system -lcrypto -lssl -lcpprest -lz -lpthread -std=c++14 -o output_file
 ```
 
-In here, you should be using the `-L` flag to add the path where libdiscord.so is stored. Likewise, `-I` should be the path to the libdiscord includes. After that, you must include `-ldiscord` for this library, and then link it against all its dependencies as well. This is a bit more than I would like for a simple program, so I'll try to look into simplifying it later.
+In here, you should be using the `-I` flag to point to the libdiscord includes. After that, you must include `-ldiscord` for this library, and then link it against all its dependencies as well. This is a bit more than I would like for a simple program, so I'll try to look into simplifying it later.
 
 ## Examples
 ### Handling OnMessage
@@ -62,9 +64,9 @@ int main() {
   std::string token = "YOUR_TOKEN";
   auto bot = Discord::Bot::create(token);
   
-  bot->on_message([](std::shared_ptr<Discord::MessageEvent> event) {
-    if (event->content() == "Ping!") {
-      event->respond("Pong!");
+  bot->on_message([](Discord::MessageEvent event) {
+    if (event.content() == "Ping!") {
+      event.respond("Pong!");
     }
   });
   
@@ -83,8 +85,8 @@ int main() {
   auto bot = Discord::Bot::create(token, "!"); // ! is the prefix
   
   //  This command will respond "Pong!" to any "!ping"
-  bot->add_command("ping", [](std::shared_ptr<Discord::MessageEvent> event) {
-    event->respond("Pong!");
+  bot->add_command("ping", [](Discord::MessageEvent event) {
+    event.respond("Pong!");
   });
   
   bot->run();
@@ -92,9 +94,21 @@ int main() {
 ```
 
 ### Respond as a Stream
-You may also respond to events similar to how you would use `std::cout`.
+You may also respond to events similar to how you would use `std::cout`. An example out put of this command is `Hello Amoo#2681!`.
+
 ```cpp
-bot->add_command("hello", [](std::shared_ptr<Discord::MessageEvent> event) {
-  event->respond() << "Hello " << event->author()->distinct() << "!";
+bot->add_command("hello", [](Discord::MessageEvent event) {
+  event << "Hello " << event.author()->distinct() << "!";
+});
+```
+
+You may also queue up several different responses and they will be combined into one single response. This example is another way to write the above.
+
+```cpp
+bot->add_command("hello", [](Discord::MessageEvent event) {
+  event << "Hello ";
+  event << event.author()->distinct();
+  event << "!";
+  //  Message is sent after lambda is finished.
 });
 ```
