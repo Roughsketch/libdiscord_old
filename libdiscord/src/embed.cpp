@@ -330,15 +330,6 @@ namespace Discord
     set_from_json(m_fields, "fields", data);
   }
 
-  std::shared_ptr<Embed> Embed::create(std::function<void(std::shared_ptr<Embed>)> modify_callback)
-  {
-    auto embed = std::shared_ptr<Embed>();
-
-    modify_callback(embed);
-
-    return embed;
-  }
-
   void Embed::set_title(std::string title)
   {
     m_title = title;

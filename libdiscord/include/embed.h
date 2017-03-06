@@ -228,24 +228,6 @@ namespace Discord
   public:
     Embed();
     explicit Embed(const nlohmann::json& data);
-    
-    /** Used to create an Embed.
-     
-        @code
-        auto embed = Embed::create([](std::shared_ptr<Embed> embed) {
-            embed->set_title("Creating an embed.");
-            embed->set_description("This is how you create an embed object.");
-            embed->set_author("Roughsketch", 
-                              "https://github.com/Roughsketch",
-                              "https://avatars2.githubusercontent.com/u/1938661?v=3&s=40);
-            embed->add_field("Field Example 1", "This is an inline field", true);
-            embed->add_field("Field Example 2", "This is also an inline field", true);
-            embed->add_field("Field Example 3", "This isn't an inline field");
-            embed->set_footer("This is a footer with just text.");
-        });
-        @endcode
-     */
-    static std::shared_ptr<Embed> create(std::function<void(std::shared_ptr<Embed>)> modify_callback);
 
     /** Sets the title of the embed.
      
