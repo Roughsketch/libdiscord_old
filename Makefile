@@ -1,9 +1,9 @@
 CXX=g++
-CXXFLAGS=-Ilibdiscord/include -std=c++14 -c -fPIC -DELPP_DISABLE_TRACE_LOGS -DELPP_DISABLE_DEBUG_LOGS
+CXXFLAGS=-DELPP_DISABLE_DEBUG_LOGS -DELPP_DISABLE_TRACE_LOGS -Ilibdiscord/include -std=c++14 -c -fPIC
 LDLIBS=-lboost_system -lcrypto -lssl -lcpprest -lz -lpthread
 SRCS=$(wildcard libdiscord/src/*.cpp) $(wildcard libdiscord/src/api/*.cpp) $(wildcard libdiscord/src/event/*.cpp) $(wildcard libdiscord/src/external/*.cpp)
 OBJS=$(subst .cpp,.o,$(SRCS))
-LIB=bin/libdiscord.so
+LIB=lib/libdiscord.so
 
 all: $(SRCS) $(LIB)
 
@@ -12,6 +12,9 @@ $(LIB): $(OBJS)
 
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $< $(LDLIBS) -o $@
+
+install:
+	cp lib/libdiscord.so /usr/lib/ 
 
 rebuild: clean all
 
