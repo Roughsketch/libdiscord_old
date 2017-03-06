@@ -7,6 +7,7 @@
 
 namespace Discord
 {
+  /** Used for methods that take a search method. */
   enum class SearchCriteria
   {
     None,

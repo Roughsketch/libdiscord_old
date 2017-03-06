@@ -114,9 +114,9 @@ namespace Discord
     /** Assign a callback for when a message is received. There may only be one callback at a time.
     
         @code
-        bot->on_message([](std::shared_ptr<MessageEvent> event){
-            if (event->content() == "Ping!") {
-                event->respond("Pong!");
+        bot->on_message([](MessageEvent event){
+            if (event.content() == "Ping!") {
+                event.respond("Pong!");
             }
         });
         @endcode
@@ -128,8 +128,8 @@ namespace Discord
     /** Assign a callback for when a message is edited. There may only be one callback at a time.
 
     @code
-    bot->on_message_edited([](std::shared_ptr<MessageEvent> event){
-    event->respond("You can't hide your editing from me " + event->author()->distinct() + "!");
+    bot->on_message_edited([](MessageEvent event){
+        event.respond("You can't hide your editing from me " + event.author()->distinct() + "!");
     });
     @endcode
 
@@ -140,8 +140,8 @@ namespace Discord
     /** Assign a callback for when a message is deleted. There may only be one callback at a time.
 
         @code
-        bot->on_message_edited([](std::shared_ptr<MessageEvent> event){
-            event->respond("Message with id " + event->id().to_string() + " was deleted.");
+        bot->on_message_edited([](MessageEvent event){
+            event.respond("Message with id " + event.id().to_string() + " was deleted.");
         });
         @endcode
 

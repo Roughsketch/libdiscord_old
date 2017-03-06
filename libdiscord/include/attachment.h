@@ -5,6 +5,7 @@
 
 namespace Discord
 {
+  /** A container for an attachment on a message. */
   class Attachment : public Identifiable
   {
     std::string m_filename;
@@ -17,11 +18,40 @@ namespace Discord
     Attachment();
     explicit Attachment(nlohmann::json data);
 
+    /** Get the filename of this attachment.
+     
+        @return The filename of the attachment.
+     */
     std::string filename() const;
+    
+    /** Get the size of the attachment.
+     
+        @return The size of the attachment in bytes.
+     */
     uint32_t size() const;
+
+    /** Get the URL to download this attachment.
+     
+        @return The URL that can be used to download this attachment.
+     */
     std::string url() const;
+
+    /** Get a proxied URL of the file.
+     
+        @return The proxied URL of the file.
+     */
     std::string proxy_url() const;
+
+    /** Get the height of this attachment. 
+     
+        @return The height of this attachment.
+     */
     uint32_t height() const;
+
+    /** Get the width of this attachment.
+
+        @return The width of this attachment.
+    */
     uint32_t width() const;
   };
 
