@@ -317,6 +317,16 @@ namespace Discord
      */
     bool remove_messages(std::vector<Snowflake> message_ids) const;
 
+    /** Bulk remove messages.
+    
+        This method is a simpler call to remove_messages that will grab history automatically.
+        This method will silently throw out message ids that are older than 2 weeks.
+
+        @param amount The amount of messages to prune. Must be between 2 and 100.
+        @return Success status.
+     */
+    bool prune(uint32_t amount);
+
     /** Edit the permissions of a channel.
      
         @code

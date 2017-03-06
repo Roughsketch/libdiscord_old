@@ -285,6 +285,25 @@ namespace Discord
     return Discord::API::Channel::bulk_remove_messages(m_id, message_ids);
   }
 
+  bool Channel::prune(uint32_t amount)
+  {
+    if (amount < 2 || amount > 100)
+    {
+      throw DiscordException("Must prune between 2 and 100 messages, but got " + std::to_string(amount) + " as an argument.");
+    }
+
+    auto messages = Discord::API::Channel::get_messages(m_id, amount);
+    std::vector<Snowflake> message_ids;
+
+    std::transform(std::begin(messages), std::end(messages), std::back_inserter(message_ids), 
+      [](const std::shared_ptr<Message>& msg)
+      {
+        return msg->id();
+      });
+
+    return remove_messages(message_ids);
+  }
+
   bool Channel::edit_permissions(std::shared_ptr<Overwrite> overwrite, 
     std::function<void(std::shared_ptr<Permission>, std::shared_ptr<Permission>)> callback) const
   {

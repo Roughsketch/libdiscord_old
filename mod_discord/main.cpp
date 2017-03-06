@@ -215,10 +215,20 @@ int main(int argc, char* argv[])
                       << "```";
   });
 
-  bot->run(); //  Start the bot.
-  
-  for (;;)
+  bot->add_command("prune", [](std::shared_ptr<Discord::MessageEvent> event)
   {
-    std::this_thread::sleep_for(std::chrono::seconds(100000));
-  }
+    auto word = event->content().substr(event->content().find_first_of(" ") + 1);
+    int amount = std::stoull(word);
+
+    try
+    {
+      event->channel()->prune(amount);
+    }
+    catch (const Discord::DiscordException& e)
+    {
+      event->respond(e.what());
+    }
+  });
+
+  bot->run(); //  Start the bot.
 }
