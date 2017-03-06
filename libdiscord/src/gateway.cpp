@@ -254,7 +254,7 @@ namespace Discord
     }
   }
 
-  void Gateway::send(Opcodes op, nlohmann::json data)
+  void Gateway::send(Opcode op, nlohmann::json data)
   {
     nlohmann::json packet = {
       { "op", op },
@@ -284,7 +284,7 @@ namespace Discord
     }
 
     LOG(DEBUG) << "Sending heartbeat packet.";
-    send(Opcodes::Heartbeat, { m_last_seq });
+    send(Heartbeat, { m_last_seq });
     m_recieved_ack = false;
   }
 
@@ -292,7 +292,7 @@ namespace Discord
   {
     LOG(DEBUG) << "Sending identify packet.";
 
-    send(Opcodes::Identify,
+    send(Identify,
     {
       { "token", m_token },
       {
