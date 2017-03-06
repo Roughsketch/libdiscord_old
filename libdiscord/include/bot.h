@@ -33,22 +33,16 @@ namespace Discord
     std::mutex m_thread_mutex;
 
     //  Callbacks for events
-    typedef std::function<void(std::shared_ptr<MessageEvent>)> OnMessageCallback;
-    typedef std::function<void(std::shared_ptr<MessageDeletedEvent>)> OnMessageDeletedCallback;
-    typedef std::function<void(std::shared_ptr<Emoji>)> OnEmojiChangedCallback;
-    typedef std::function<void(std::shared_ptr<TypingEvent>)> OnTypingCallback;
-    typedef std::function<void(std::shared_ptr<PresenceUpdate>)> OnPresenceCallback;
+    std::function<void(MessageEvent)> m_on_message;
+    std::function<void(MessageEvent)> m_on_message_edited;
+    std::function<void(MessageDeletedEvent)> m_on_message_deleted;
+    std::function<void(Emoji)> m_on_emoji_created;
+    std::function<void(Emoji)> m_on_emoji_deleted;
+    std::function<void(Emoji)> m_on_emoji_updated;
+    std::function<void(TypingEvent)> m_on_typing;
+    std::function<void(PresenceUpdate)> m_on_presence;
 
-    OnMessageCallback m_on_message;
-    OnMessageCallback m_on_message_edited;
-    OnMessageDeletedCallback m_on_message_deleted;
-    OnEmojiChangedCallback m_on_emoji_created;
-    OnEmojiChangedCallback m_on_emoji_deleted;
-    OnEmojiChangedCallback m_on_emoji_updated;
-    OnTypingCallback m_on_typing;
-    OnPresenceCallback m_on_presence;
-
-    std::map<std::string, OnMessageCallback> m_commands;
+    std::map<std::string, std::function<void(MessageEvent)>> m_commands;
 
     void update_emojis(nlohmann::json data);
   public:
@@ -128,7 +122,7 @@ namespace Discord
 
         @param callback The callback to call when a message is received.
      */
-    void on_message(OnMessageCallback callback);
+    void on_message(std::function<void(MessageEvent)> callback);
 
     /** Assign a callback for when a message is edited. There may only be one callback at a time.
 
@@ -140,7 +134,7 @@ namespace Discord
 
     @param callback The callback to call when a message is edited.
     */
-    void on_message_edited(OnMessageCallback callback);
+    void on_message_edited(std::function<void(MessageEvent)> callback);
 
     /** Assign a callback for when a message is deleted. There may only be one callback at a time.
 
@@ -152,38 +146,43 @@ namespace Discord
 
         @param callback The callback to call when a message is deleted.
     */
-    void on_message_deleted(OnMessageDeletedCallback callback);
+    void on_message_deleted(std::function<void(MessageDeletedEvent)> callback);
 
     /** Assign a callback for when an emoji is created. There may only be one callback at a time.
 
         @param callback The callback to call when an emoji is created.
     */
-    void on_emoji_created(OnEmojiChangedCallback callback);
+    void on_emoji_created(std::function<void(Emoji)> callback);
 
     /** Assign a callback for when an emoji is deleted. There may only be one callback at a time.
 
         @param callback The callback to call when an emoji is deleted.
     */
-    void on_emoji_deleted(OnEmojiChangedCallback callback);
+    void on_emoji_deleted(std::function<void(Emoji)> callback);
 
     /** Assign a callback for when an emoji is updated. There may only be one callback at a time.
 
         @param callback The callback to call when an emoji is updated.
     */
-    void on_emoji_updated(OnEmojiChangedCallback callback);
+    void on_emoji_updated(std::function<void(Emoji)> callback);
 
     /** Assign a callback that is called whenever a user starts typing.
       
         @param callback The callback to call when a typing event is raised.
      */
-    void on_typing(OnTypingCallback callback);
+    void on_typing(std::function<void(TypingEvent)> callback);
 
     /** Assign a callback that is called whenever a presence update is received.
      
         @param callback The callback to call when a presence update is received.
      */
-    void on_presence(OnPresenceCallback callback);
+    void on_presence(std::function<void(PresenceUpdate)> callback);
 
-    void add_command(std::string command, OnMessageCallback callback);
+    /** Add a command to the bot. Requires the bot have a prefix.
+     
+        @param command The command name without the prefix.
+        @param callback The callback to call when the command it issued.
+     */
+    void add_command(std::string command, std::function<void(MessageEvent)> callback);
   };
 }

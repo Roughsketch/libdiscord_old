@@ -85,14 +85,14 @@ int main(int argc, char* argv[])
 
   auto bot = Discord::Bot::create(settings);
 
-  bot->add_command("info", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("info", [bot](Discord::MessageEvent event)
   {
-    event->respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
+    event.respond("I am " + bot->profile()->distinct() + " (" + bot->profile()->id().to_string() + ")");
   });
 
-  bot->add_command("emoji", [](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("emoji", [](Discord::MessageEvent event)
   {      
-    auto emojis = event->channel()->guild()->emojis();
+    auto emojis = event.channel()->guild()->emojis();
     auto response = "There are " + std::to_string(emojis.size()) + " emojis";
 
     if (emojis.size() > 0)
@@ -104,29 +104,29 @@ int main(int argc, char* argv[])
     {
       response += emoji->name() + " ";
     }
-    event->respond(response);
+    event.respond(response);
   });
 
-  bot->add_command("modify", [](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("modify", [](Discord::MessageEvent event)
   {
     try
     {
-      event->channel()->modify([](std::shared_ptr<Discord::Channel> chan)
+      event.channel()->modify([](std::shared_ptr<Discord::Channel> chan)
       {
         chan->set_name("sandcastle");
       });
     }
     catch (const Discord::PermissionException&)
     {
-      event->respond("I do not have the permissions to modify a channel.");
+      event.respond("I do not have the permissions to modify a channel.");
     }
   });
 
-  bot->add_command("invite", [bot](std::shared_ptr<Discord::MessageEvent> event) {
-    event->respond("Invite me with this link: " + bot->invite_url());
+  bot->add_command("invite", [bot](Discord::MessageEvent event) {
+    event.respond("Invite me with this link: " + bot->invite_url());
   });
 
-  bot->add_command("guilds", [bot](std::shared_ptr<Discord::MessageEvent> event) {
+  bot->add_command("guilds", [bot](Discord::MessageEvent event) {
     std::string response = "I am currently in the following guilds:\n```";
 
     for (auto& guild : bot->guilds())
@@ -136,75 +136,75 @@ int main(int argc, char* argv[])
 
     response += "```";
 
-    event->respond(response);
+    event.respond(response);
   });
 
 
-  bot->add_command("mem", [](std::shared_ptr<Discord::MessageEvent> event) {
+  bot->add_command("mem", [](Discord::MessageEvent event) {
     auto current_mb = std::round(RSS::current() / 1000.0) / 1000.0;
     auto peak_mb = std::round(RSS::peak() / 1000.0) / 1000.0;
-    event->respond("```Current memory usage: " + std::to_string(current_mb) + "MB\nPeak memory usage:    " + std::to_string(peak_mb) + "MB```");
+    event.respond("```Current memory usage: " + std::to_string(current_mb) + "MB\nPeak memory usage:    " + std::to_string(peak_mb) + "MB```");
   });
 
-  bot->add_command("layout", [](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("layout", [](Discord::MessageEvent event)
   {
     std::string response = "```Channel: ";
 
-    response += event->channel()->name() + " (" + event->channel()->id().to_string() + ")\n";
-    response += "Guild: " + event->guild()->name() + " (" + event->guild()->id().to_string() + ")\n";
-    response += "User: " + event->guild()->get_user(event->author()->id())->distinct() + " (" + event->author()->id().to_string() + ")\n";
+    response += event.channel()->name() + " (" + event.channel()->id().to_string() + ")\n";
+    response += "Guild: " + event.guild()->name() + " (" + event.guild()->id().to_string() + ")\n";
+    response += "User: " + event.guild()->get_user(event.author()->id())->distinct() + " (" + event.author()->id().to_string() + ")\n";
     response += "```";
 
-    event->respond(response);
+    event.respond(response);
   });
 
-  bot->add_command("test", [](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("test", [](Discord::MessageEvent event)
   {
-    *event << "Got into test command.";
-    *event << "Can respond twice.";
+    event << "Got into test command.";
+    event << "Can respond twice.";
   });
 
-  bot->add_command("new", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("new", [bot](Discord::MessageEvent event)
   {
-    auto channel_name = event->content().substr(event->content().find_first_of(" ") + 1);
+    auto channel_name = event.content().substr(event.content().find_first_of(" ") + 1);
 
     try
     {
-      event->guild()->create_text_channel(channel_name);
-      event->respond("Created new channel " + channel_name + ".");
+      event.guild()->create_text_channel(channel_name);
+      event.respond("Created new channel " + channel_name + ".");
     }
     catch (const Discord::PermissionException&)
     {
-      event->respond("I do not have the permission to create a channel.");
+      event.respond("I do not have the permission to create a channel.");
     }
   });
 
-  bot->add_command("rem", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("rem", [bot](Discord::MessageEvent event)
   {
-    auto channel_name = event->content().substr(event->content().find_first_of(" ") + 1);
-    auto channel = event->guild()->find_channel(channel_name);
+    auto channel_name = event.content().substr(event.content().find_first_of(" ") + 1);
+    auto channel = event.guild()->find_channel(channel_name);
 
     if (channel)
     {
       try
       {
         channel->remove();
-        event->respond("Removed " + channel_name + ".");
+        event.respond("Removed " + channel_name + ".");
       }
       catch (const Discord::PermissionException&)
       {
-        event->respond("I do not have the permission to remove a channel.");
+        event.respond("I do not have the permission to remove a channel.");
       }
     }
     else
     {
-      event->respond("Could not find channel with name " + channel_name + ".");
+      event.respond("Could not find channel with name " + channel_name + ".");
     }
   });
 
-  bot->add_command("help", [bot](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("help", [bot](Discord::MessageEvent event)
   {
-    *event << "List of commands:```"
+    event << "List of commands:```"
           << "help  : This command.\n"
           << "info  : Info placeholder.\n"
           << "guilds: A list of guilds this bot is currently in.\n"
@@ -216,18 +216,18 @@ int main(int argc, char* argv[])
 
   });
 
-  bot->add_command("prune", [](std::shared_ptr<Discord::MessageEvent> event)
+  bot->add_command("prune", [](Discord::MessageEvent event)
   {
-    auto word = event->content().substr(event->content().find_first_of(" ") + 1);
-    int amount = std::stoull(word);
+    auto word = event.content().substr(event.content().find_first_of(" ") + 1);
+    int amount = std::stoul(word);
 
     try
     {
-      event->channel()->prune(amount);
+      event.channel()->prune(amount);
     }
     catch (const Discord::DiscordException& e)
     {
-      event->respond(e.what());
+      event.respond(e.what());
     }
   });
 
