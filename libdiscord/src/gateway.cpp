@@ -86,18 +86,19 @@ namespace Discord
 
   void Gateway::connect()
   {
-    LOG(INFO) << "Connecting to " << utility::conversions::to_utf8string(m_wss_url);
+    LOG(DEBUG) << "Connecting to " << utility::conversions::to_utf8string(m_wss_url);
 
     while (!m_connected)
     {
       //  Try to connect
       m_client.connect(m_wss_url).then([](){}).get();
 
-      //  If not connected, sleep 5 seconds and try again.
+      //  Sleep 5 seconds before checking connected status.
+      std::this_thread::sleep_for(std::chrono::seconds(5));
+
       if (!m_connected)
       {
-        LOG(INFO) << "Could not connect to gateway, sleeping for 5 seconds and trying again.";
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        LOG(DEBUG) << "Took longer than 5 seconds to receive a HELLO response, trying to connect again.";
       }
     }
   }
