@@ -3,7 +3,7 @@
 
 namespace Discord
 {
-  Game::Game() : m_type(0)
+  Game::Game() : m_type(Normal)
   {
   }
 
@@ -12,6 +12,21 @@ namespace Discord
     set_from_json(m_name, "name", data);
     set_from_json(m_type, "type", data);
     set_from_json(m_url, "url", data);
+  }
+
+  std::string Game::name() const
+  {
+    return m_name;
+  }
+
+  GameType Game::type() const
+  {
+    return m_type;
+  }
+
+  std::string Game::url() const
+  {
+    return m_url;
   }
 
   PresenceUpdate::PresenceUpdate()
