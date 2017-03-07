@@ -107,94 +107,69 @@ namespace Discord
 
       pplx::task<json> requestTask = client.request(request).then([=](http_response res) -> json
       {
+        //  A container to hold all our response stuff.
+        nlohmann::json container = { { "response_status", res.status_code() } };
+
+        auto headers = res.headers();
+
+        //  Various rate-limit related headers
+        auto limit = headers.find(U("X-RateLimit-Limit"));
+        auto remaining = headers.find(U("X-RateLimit-Remaining"));
+        auto reset = headers.find(U("X-RateLimit-Reset"));
+        auto retry = headers.find(U("Retry-After"));
+        auto global = headers.find(U("X-RateLimit-Global"));
+
+        //  Add each type of rate limit header to our container if it exists.
+        if (limit != std::end(headers))
+        {
+          container["X-RateLimit-Limit"] = std::stoull(utility::conversions::to_utf8string(limit->second));
+        }
+
+        if (remaining != std::end(headers))
+        {
+          container["X-RateLimit-Remaining"] = std::stoull(utility::conversions::to_utf8string(remaining->second));
+        }
+
+        if (reset != std::end(headers))
+        {
+          container["X-RateLimit-Reset"] = std::stoull(utility::conversions::to_utf8string(reset->second));
+        }
+
+        if (retry != std::end(headers))
+        {
+          container["Retry-After"] = std::stoull(utility::conversions::to_utf8string(retry->second));
+        }
+
+        if (global != std::end(headers))
+        {
+          container["X-RateLimit-Global"] = std::stoull(utility::conversions::to_utf8string(global->second));
+        }
+
+        container["response_status"] = res.status_code();
+
+
         if (res.status_code() == status_codes::OK)
         {
           auto bodyStream = res.body();
           container_buffer<std::string> inStringBuffer;
-          return bodyStream.read_to_end(inStringBuffer).then([inStringBuffer](size_t bytesRead)
+          bodyStream.read_to_end(inStringBuffer).then([inStringBuffer](size_t bytesRead)
           {
             return inStringBuffer.collection();
-          }).then([res](std::string text)
+          }).then([&container](std::string text)
           {
             auto payload = json::parse(text.c_str());
-            nlohmann::json container = { { "response_data", payload } };
-
-            auto headers = res.headers();
-
-            auto limit = headers.find(U("X-RateLimit-Limit"));
-            auto remaining = headers.find(U("X-RateLimit-Remaining"));
-            auto reset = headers.find(U("X-RateLimit-Reset"));
-
-            if (limit != std::end(headers))
-            {
-              container["X-RateLimit-Limit"] = utility::conversions::to_utf8string(limit->second);
-            }
-
-            if (remaining != std::end(headers))
-            {
-              container["X-RateLimit-Remaining"] = utility::conversions::to_utf8string(remaining->second);
-            }
-
-            if (reset != std::end(headers))
-            {
-              container["X-RateLimit-Reset"] = utility::conversions::to_utf8string(reset->second);
-            }
-
-            container["response_status"] = res.status_code();
-
-            return container;
+            container["response_data"] = payload;
           }).get();
         }
-        else if (res.status_code() == status_codes::NoContent)
-        {
-          //  NoContent is returned when a DELETE or PUT operation succeeds.
-          return{ { "response_status", res.status_code() } };
-        }
-        else
+        else if (res.status_code() != status_codes::NoContent)
         {
           auto json_str = utility::conversions::to_utf8string(res.extract_string().get());
           auto response = json::parse(json_str.c_str());
 
-          if (response.count("name"))
-          {
-            auto name = response["name"].get<std::vector<std::string>>();
-
-            if (name.size() > 0) 
-            {
-              throw DiscordException(name[0]);
-            }
-
-            throw DiscordException("API call failed and response was null.");
-          }
-
-          auto code = response["code"].get<int>();
-          auto message = response["message"].get<std::string>();
-
-          if (code < 20000)
-          {
-            throw UnknownException(message);
-          }
-
-          if (code < 30000)
-          {
-            throw TooManyException(message);
-          }
-
-          switch (code)
-          {
-          case EmbedDisabled:
-            throw EmbedException(message);
-          case MissingPermissions:
-          case ChannelVerificationTooHigh:
-            throw PermissionException(message);
-          case Unauthorized:
-          case MissingAccess:
-          case InvalidAuthToken:
-            throw AuthorizationException(message);
-          default:
-            throw DiscordException(message);
-          }
+          container["response_data"] = response;
         }
+
+        return container;
       });
 
       requestTask.wait();
@@ -234,19 +209,73 @@ namespace Discord
         LOG(DEBUG) << "Global mutex unlocked.";
       }
 
+      //  Get result from the request.
       auto response = raw_request(detail::get_method(type), utility::conversions::to_string_t(key.endpoint()), data);
+      auto rdata = response["response_data"];
 
-      if (response["response_status"].get<int>() == 429)
+      if (response.count("X-RateLimit-Global"))
       {
-        LOG(DEBUG) << "Locking global mutex due to 429 response.";
-        //  Lock the global mutex and wait until our rate limit is over.
+        auto wait_time = response["Retry-After"].get<uint32_t>();
+        LOG(ERROR) << "Hit the global rate limit. Waiting for " << wait_time << "ms.";
+
+        //  This is a global rate limit, lock the global mutex and wait.
         std::lock_guard<std::mutex> global_lock(GlobalMutex);
+        std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
+      }
+      else if (response.count("X-RateLimit-Remaining") && !response["X-RateLimit-Remaining"].get<int>())
+      {
+        //  Get the time that the rate limit will reset.
         auto reset_time = response["X-RateLimit-Reset"].get<uint32_t>();
         auto end_time = std::chrono::system_clock::time_point(std::chrono::seconds(reset_time));
 
-        auto total_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - std::chrono::system_clock::from_time_t(0)).count();
-        LOG(WARNING) << "We hit the rate limit. Sleeping for " << total_time << " seconds.";
+        //  Get the total amount of time to wait from this point.
+        auto total_time = std::chrono::duration_cast<std::chrono::seconds>(end_time - std::chrono::system_clock::now()).count();
+
+        LOG(WARNING) << "We hit the rate limit for endpoint " << key.endpoint() << ". Sleeping for " << total_time << " seconds.";
         std::this_thread::sleep_until(end_time);
+      }
+      else if (rdata.count("code"))
+      {
+        //  We got a response code from the request.
+        if (rdata.count("name"))
+        {
+          auto name = rdata["name"].get<std::vector<std::string>>();
+
+          if (name.size() > 0)
+          {
+            throw DiscordException(name[0]);
+          }
+
+          throw DiscordException("API call failed and response was null.");
+        }
+
+        auto code = rdata["code"].get<int>();
+        auto message = rdata["message"].get<std::string>();
+
+        if (code < 20000)
+        {
+          throw UnknownException(message);
+        }
+
+        if (code < 30000)
+        {
+          throw TooManyException(message);
+        }
+
+        switch (code)
+        {
+        case EmbedDisabled:
+          throw EmbedException(message);
+        case MissingPermissions:
+        case ChannelVerificationTooHigh:
+          throw PermissionException(message);
+        case Unauthorized:
+        case MissingAccess:
+        case InvalidAuthToken:
+          throw AuthorizationException(message);
+        default:
+          throw DiscordException(message);
+        }
       }
 
       if (response.count("response_data"))
