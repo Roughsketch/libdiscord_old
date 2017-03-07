@@ -14,7 +14,16 @@ namespace Discord
   public:
     explicit IntegrationAccount(const nlohmann::json& data);
 
+    /** Get the id of this integration account.
+     
+        @return The id of this account.
+     */
     std::string id() const;
+
+    /** Get the name of this integration account.
+     
+        @return The name of this account.
+     */
     std::string name() const;
   };
 

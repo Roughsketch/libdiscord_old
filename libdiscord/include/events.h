@@ -6,14 +6,40 @@ namespace Discord
 {
   class User;
 
+  /** Enumeration of types that a Game object can be.
+      Current only valid options are Stream and Normal. */
+  enum GameType : uint8_t
+  {
+    Normal = 0,
+    Stream
+  };
+
   class Game
   {
     std::string m_name;
-    uint32_t m_type;
+    GameType m_type;
     std::string m_url;
   public:
     Game();
     explicit Game(const nlohmann::json& data);
+
+    /** Get the name of the game.
+     
+        @return The game's name.
+     */
+    std::string name() const;
+
+    /** Get the type of this game status.
+
+        @return The type of this game status.
+     */
+    GameType type() const;
+
+    /** Gets the streaming URL if available.
+     
+        @return The streaming URL, or empty if not streaming.
+     */
+    std::string url() const;
   };
 
   inline void from_json(const nlohmann::json& json, Game& game)
@@ -21,6 +47,7 @@ namespace Discord
     game = Game(json);
   }
 
+  /** Represents a presence update event. */
   class PresenceUpdate
   {
     std::shared_ptr<User> m_user;

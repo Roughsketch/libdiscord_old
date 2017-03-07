@@ -17,6 +17,7 @@ namespace Discord
   class User;
   class VoiceState;
 
+  /** Represents a Guild's verification level requirement. */
   enum class VerificationLevel
   {
     None,
@@ -35,6 +36,7 @@ namespace Discord
     json = static_cast<int>(level);
   }
 
+  /** Represents the default notification level of a Guild. */
   enum class NotificationLevel
   {
     None,
@@ -51,6 +53,7 @@ namespace Discord
     json = static_cast<int>(level);
   }
 
+  /** Represents a Guild or Server. */
   class Guild : public Identifiable
   {
     std::string m_name;
