@@ -161,12 +161,22 @@ namespace Discord
           throw DiscordException("Cannot send an empty message.");
         }
 
-        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages", POST, {
-          { "content", content },
-          { "mentions", nlohmann::json::array() },
+        nlohmann::json payload = {
           { "tts", tts },
-          { "embed", embed }
-        });
+          { "mentions", nlohmann::json::array() }
+        };
+
+        if (!content.empty())
+        {
+          payload["content"] = content;
+        }
+
+        if (embed)
+        {
+          payload["embed"] = embed;
+        }
+
+        auto response = request(APICall(channel_id) << "channels" << channel_id << "messages", POST, payload);
 
         return std::make_shared<Message>(response);
       }
