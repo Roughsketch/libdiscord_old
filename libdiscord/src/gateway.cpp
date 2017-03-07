@@ -185,7 +185,7 @@ namespace Discord
     case Hello:
       m_connected = true;
       m_heartbeat_interval = data["heartbeat_interval"].get<uint32_t>();
-      LOG(INFO) << "Set heartbeat interval to " << m_heartbeat_interval;
+      LOG(DEBUG) << "Set heartbeat interval to " << m_heartbeat_interval;
 
       if (m_use_resume)
       {
@@ -201,10 +201,10 @@ namespace Discord
             std::this_thread::sleep_for(std::chrono::milliseconds(m_heartbeat_interval));
           }
 
-          LOG(INFO) << "Disconnected, stopping heartbeats.";
+          LOG(DEBUG) << "Disconnected, stopping heartbeats.";
         });
 
-        LOG(INFO) << "Connected, sending Identify packet.";
+        LOG(DEBUG) << "Connected, sending Identify packet.";
         send_identify();
         m_use_resume = true;  //  Next time use Resume
       }
