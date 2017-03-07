@@ -27,6 +27,11 @@ namespace Discord
     return m_roles;
   }
 
+  std::string Emoji::mention() const
+  {
+    return "<:" + name() + ":" + id().to_string() + ">";
+  }
+
   Reaction::Reaction()
   {
     m_count = 0;
